@@ -113,6 +113,14 @@
       #main { grid-template-columns: 1fr; }
       aside { height: 420px; border-left: none; border-top: 1px solid #ddd; }
     }
+    .panel-divider {
+      margin: 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    #ismusPanel {
+      padding-top: 8px;
+    }
   </style>
 </head>
 
@@ -138,6 +146,13 @@
   <input id="ornefniToggle" type="checkbox" />
   Örnefni
 </label>
+<label class="toggle">
+  <input id="ismusToggle" type="checkbox" />
+  Ismus
+</label>
+
+
+
 
 <div class="group">
   <strong style="font-size:14px;">GPS:</strong>
@@ -170,17 +185,26 @@
     <div id="map"></div>
 
     <aside>
-      <div class="panel">
+    <div class="panel">
         <div style="font-weight:600; margin-bottom:6px;">Selected trail</div>
         <canvas id="elevCanvas"></canvas>
         <div class="small" id="trailStats" style="margin-top:8px;">Load a GPX file to see elevation/time stats.</div>
       </div>
 
-      <div class="panel">
-        <div class="status" id="status">Tip: load GPX files one by one — they’ll all stay visible.</div>
-      </div>
-
       <div class="trails-list" id="trailsList"></div>
+
+      <hr class="panel-divider" />
+
+      <div class="panel" id="ismusPanel" style="display:none;">
+        <div style="font-weight:600; margin-bottom:6px;">Ismus</div>
+        <div class="small" id="ismusMeta">Click an Ismus point.</div>
+        <audio id="ismusAudio" controls style="width:100%; margin-top:8px;"></audio>
+      </div>
+      
+      <!-- Status LAST -->
+      <div class="panel">
+          <div class="status" id="status"></div>
+      </div>
     </aside>
   </div>
 </div>
@@ -401,6 +425,187 @@ function setBaseLayer(id) {
     }
   });
 
+  // --------------------------
+// ISMUS (new structure: top-level array in ismus.json)
+// --------------------------
+const ismusToggle = document.getElementById("ismusToggle");
+const ismusLayer = L.layerGroup(); // only added when toggled on
+let ismusLoaded = false;
+
+// Right panel elements
+const ismusPanelEl = document.getElementById("ismusPanel");
+const ismusMetaEl  = document.getElementById("ismusMeta");
+const ismusAudioEl = document.getElementById("ismusAudio");
+
+function showIsmusPanel(show) {
+  if (!ismusPanelEl) return;
+  ismusPanelEl.style.display = show ? "" : "none";
+}
+
+function esc(s) {
+  return String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function toNum(x) {
+  if (x == null) return NaN;
+  const n = Number(String(x).trim().replace(",", "."));
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function setAudio(url) {
+  if (!ismusAudioEl) return;
+  const u = String(url ?? "").trim();
+  if (u) {
+    ismusAudioEl.src = u;
+    ismusAudioEl.load();
+  } else {
+    ismusAudioEl.pause();
+    ismusAudioEl.removeAttribute("src");
+    ismusAudioEl.load();
+  }
+}
+
+// Decide what "name" means for the right panel (your requested field)
+// Preference: contents -> stanza[0].first_line -> "Recording <id>"
+function getRecordingName(rec) {
+  const c = String(rec?.contents ?? "").trim();
+  if (c) return c;
+
+  const fl = String(rec?.stanza?.[0]?.first_line ?? "").trim();
+  if (fl) return fl;
+
+  const id = rec?.id != null ? String(rec.id) : "";
+  return id ? `Recording ${id}` : "Recording";
+}
+
+// Get mp3 URL (first file)
+function getMp3Url(rec) {
+  const f0 = rec?.files?.[0];
+  return f0 ? String(f0).trim() : "";
+}
+
+// Get map coordinate for the marker
+// Preference: rec.location.lat/lng -> first source[0].location_objs[0].lat/lng
+function getLatLng(rec) {
+  const lat1 = toNum(rec?.location?.lat);
+  const lng1 = toNum(rec?.location?.lng);
+  if (Number.isFinite(lat1) && Number.isFinite(lng1)) return L.latLng(lat1, lng1);
+
+  const lat2 = toNum(rec?.source?.[0]?.location_objs?.[0]?.lat);
+  const lng2 = toNum(rec?.source?.[0]?.location_objs?.[0]?.lng);
+  if (Number.isFinite(lat2) && Number.isFinite(lng2)) return L.latLng(lat2, lng2);
+
+  return null;
+}
+
+function renderIsmusPanel(rec) {
+  showIsmusPanel(true);
+
+  const name = getRecordingName(rec);
+  const mp3 = getMp3Url(rec);
+
+  // NEW fields requested
+  const sourceName = String(rec?.source?.[0]?.name ?? "").trim();      // source[0].name
+  const locationName = String(rec?.location?.name ?? "").trim();       // location.name
+  const dateOld = String(rec?.date_old ?? "").trim();                  // date_old
+
+  // Build panel HTML:
+  // - song name above player (as before)
+  // - player
+  // - extra fields underneath
+  let html = `<b>${esc(name)}</b>`;
+
+  // Put extra info under the player (but we render the text block now;
+  // the player is a separate <audio> element already in the panel)
+  const lines = [];
+  if (sourceName) lines.push(`Source: <b>${esc(sourceName)}</b>`);
+  if (locationName) lines.push(`Location: <b>${esc(locationName)}</b>`);
+  if (dateOld) lines.push(`Date: <b>${esc(dateOld)}</b>`);
+
+  // We’ll show the lines under the player by putting them after a spacer.
+  // The player itself stays where it is in HTML.
+  if (lines.length) {
+    html += `<div style="margin-top:8px; line-height:1.35;">${lines.join("<br>")}</div>`;
+  }
+
+  if (ismusMetaEl) ismusMetaEl.innerHTML = html;
+
+  // Audio player
+  setAudio(mp3);
+  if (!mp3 && ismusMetaEl) {
+    ismusMetaEl.innerHTML += `<div style="margin-top:8px;"><i>No MP3 URL in files[0].</i></div>`;
+  }
+}
+
+
+async function loadIsmusOnce() {
+  if (ismusLoaded) return;
+
+  setStatus("Loading Ismus…");
+
+  // Since your file is next to the HTML:
+  // If you serve from a subfolder, use "/ismus.json" instead.
+  const res = await fetch("./ismus.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Could not load ismus.json (HTTP ${res.status})`);
+
+  const data = await res.json();
+
+  // New structure: top-level array
+  if (!Array.isArray(data)) {
+    throw new Error("ismus.json expected a top-level JSON array: [ { ... }, { ... } ]");
+  }
+
+  ismusLayer.clearLayers();
+
+  let added = 0;
+  for (const rec of data) {
+    const ll = getLatLng(rec);
+    if (!ll) continue;
+
+    const name = getRecordingName(rec);
+
+    const m = L.circleMarker(ll, {
+      radius: 6,
+      weight: 2,
+      opacity: 0.9,
+      fillOpacity: 0.5
+    });
+
+    m.bindPopup(`<b>${esc(name)}</b>`);
+    m.on("click", () => renderIsmusPanel(rec));
+
+    m.addTo(ismusLayer);
+    added++;
+  }
+
+  ismusLoaded = true;
+  setStatus(`Ismus loaded: ${added} points`);
+}
+
+ismusToggle.addEventListener("change", async () => {
+  if (ismusToggle.checked) {
+    try {
+      await loadIsmusOnce();
+      ismusLayer.addTo(map);
+      setStatus("Ismus: ON");
+    } catch (err) {
+      ismusToggle.checked = false;
+      setStatus("Ismus load failed: " + err.message);
+    }
+  } else {
+    map.removeLayer(ismusLayer);
+    setAudio("");
+    showIsmusPanel(false);
+    setStatus("Ismus: OFF");
+  }
+});
+
+
 
     // --------------------------
   // GPS (phone location)
@@ -492,7 +697,7 @@ function setBaseLayer(id) {
 
   gpsStartBtn.addEventListener("click", startGps);
   gpsStopBtn.addEventListener("click", stopGps);
-  
+
   // --------------------------
   // MANUAL POINT PATH
   // --------------------------
@@ -619,6 +824,7 @@ function setBaseLayer(id) {
   const trailsListEl = document.getElementById("trailsList");
   const trailStatsEl = document.getElementById("trailStats");
   const elevCanvas = document.getElementById("elevCanvas");
+
   const elevCtx = elevCanvas.getContext("2d");
 
   const colors = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"];
@@ -973,6 +1179,7 @@ function setBaseLayer(id) {
       trail.stats = buildTrailStats(trail);
       trails.push(trail);
 
+      
       addTrailToMap(trail);
       selectTrail(trail.id);
       fitToTrail(trail);
