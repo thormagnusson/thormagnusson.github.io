@@ -150,7 +150,10 @@
   <input id="ismusToggle" type="checkbox" />
   Ismus
 </label>
-
+<label class="toggle">
+  <input id="quakesToggle" type="checkbox" />
+  Earthquakes
+</label>
 
 
 
@@ -605,6 +608,141 @@ ismusToggle.addEventListener("change", async () => {
   }
 });
 
+// --------------------------
+// EARTHQUAKES (IMO Skjálftalísa API)
+// --------------------------
+const quakesToggle = document.getElementById("quakesToggle");
+const quakesLayer = L.layerGroup();
+let quakeTimer = null;
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+
+// API expects: "yyyy-mm-dd HH:MM:SS" (UTC) :contentReference[oaicite:1]{index=1}
+function formatUtc(dt) {
+  return `${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth()+1)}-${pad2(dt.getUTCDate())} ` +
+         `${pad2(dt.getUTCHours())}:${pad2(dt.getUTCMinutes())}:${pad2(dt.getUTCSeconds())}`;
+}
+
+// colour by depth (km) – simple, readable palette
+function depthColor(depthKm){
+  if (!Number.isFinite(depthKm)) return "#666";
+  if (depthKm < 3) return "#d73027";     // very shallow
+  if (depthKm < 7) return "#fc8d59";
+  if (depthKm < 12) return "#fee08b";
+  if (depthKm < 18) return "#91bfdb";
+  return "#4575b4";                      // deeper
+}
+
+// radius by magnitude
+function magRadius(m){
+  if (!Number.isFinite(m)) return 4;
+  // feels close to Skjálftalísa visually without going huge
+  return Math.max(3, 3 + m * 2.2);
+}
+
+async function fetchRecentQuakes(hoursBack = 48) {
+  // Clear old markers
+  quakesLayer.clearLayers();
+
+  const end = new Date();
+  const start = new Date(end.getTime() - hoursBack * 3600 * 1000);
+
+  const body = {
+    start_time: formatUtc(start),
+    end_time: formatUtc(end),
+    // Ask for what we need
+    fields: ["event_id", "lat", "long", "time", "magnitude", "depth", "magnitude_type"],
+    // Optional: choose preferred magnitude systems if you want
+    // magnitude_preference: ["Mlw","Ml","Autmag"],
+    // event_type: ["qu"],
+    // originating_system: ["SIL picks","SIL aut.mag"],
+    sort: ["time"] // descending
+  };
+
+  // POST /quake/array returns arrays of fields :contentReference[oaicite:2]{index=2}
+  const res = await fetch("https://api.vedur.is/skjalftalisa/v1/quake/array", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) throw new Error(`Skjálftalísa API error (HTTP ${res.status})`);
+  const data = await res.json();
+
+  if (!data || !data.data) return;
+
+  const d = data.data;
+  const n = (d.event_id?.length || d.lat?.length || 0);
+
+  for (let i = 0; i < n; i++) {
+    const id = d.event_id?.[i];
+    const lat = d.lat?.[i];
+    const lng = d.long?.[i];
+    const mag = d.magnitude?.[i];
+    const dep = d.depth?.[i];
+    const magType = d.magnitude_type?.[i] || "";
+    const t = d.time?.[i]; // docs show time as integer in this endpoint response example :contentReference[oaicite:3]{index=3}
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+
+    // Attempt to interpret time:
+    // If it's seconds since epoch -> new Date(t*1000)
+    // If it's ms since epoch -> new Date(t)
+    // If unknown -> omit
+    let dtStr = "";
+    if (Number.isFinite(t)) {
+      const ms = (t > 10_000_000_000 ? t : t * 1000);
+      const dt = new Date(ms);
+      if (!isNaN(dt)) dtStr = dt.toUTCString();
+    }
+
+    const marker = L.circleMarker([lat, lng], {
+      radius: magRadius(mag),
+      weight: 1.5,
+      opacity: 0.95,
+      fillOpacity: 0.55,
+      color: depthColor(dep),
+      fillColor: depthColor(dep)
+    });
+
+    const magLabel = Number.isFinite(mag) ? mag.toFixed(1) : "—";
+    const depLabel = Number.isFinite(dep) ? `${dep.toFixed(1)} km` : "—";
+    const idLabel = (id != null) ? String(id) : "";
+
+    marker.bindPopup(
+      `<div style="font-weight:700;margin-bottom:4px;">M ${magLabel} ${magType}</div>` +
+      `<div style="font-size:12.5px;line-height:1.35;">` +
+      (dtStr ? `Time: <b>${dtStr}</b><br>` : "") +
+      `Depth: <b>${depLabel}</b><br>` +
+      (idLabel ? `Event ID: <b>${idLabel}</b>` : "") +
+      `</div>`
+    );
+
+    marker.addTo(quakesLayer);
+  }
+}
+
+async function refreshQuakes() {
+  try {
+    setStatus("Loading earthquakes…");
+    await fetchRecentQuakes(48);
+    setStatus("Earthquakes updated.");
+  } catch (err) {
+    setStatus("Earthquake load failed: " + err.message);
+  }
+}
+
+quakesToggle.addEventListener("change", async () => {
+  if (quakesToggle.checked) {
+    quakesLayer.addTo(map);
+    await refreshQuakes();
+    quakeTimer = setInterval(refreshQuakes, 60_000);
+  } else {
+    if (quakeTimer) { clearInterval(quakeTimer); quakeTimer = null; }
+    map.removeLayer(quakesLayer);
+    setStatus("Earthquakes: OFF");
+  }
+});
 
 
     // --------------------------
