@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,23 +10,64 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <style>
-    html, body { height: 100%; margin: 0; }
-    #app { height: 100%; display: grid; grid-template-rows: auto 1fr; }
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
 
-    header{
+    #app {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
       padding: 10px 12px;
-      display:flex; gap:12px; align-items:center; flex-wrap:wrap;
-      border-bottom:1px solid #ddd;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #ddd;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
-    header .title{ font-weight:600; }
-    header button{
-      padding:6px 10px; border:1px solid #ccc; background:#fff; border-radius:8px; cursor:pointer;
+
+    header .title {
+      font-weight: 600;
     }
-    header button:hover{ background:#f6f6f6; }
-    .hint{ color:#444; font-size:13px; }
-    .toggle{ display:inline-flex; align-items:center; gap:6px; user-select:none; font-size:14px; }
-    .select{ display:inline-flex; align-items:center; gap:6px; font-size:14px; }
+
+    header button {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    header button:hover {
+      background: #f6f6f6;
+    }
+
+    .hint {
+      color: #444;
+      font-size: 13px;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      font-size: 14px;
+    }
+
+    .select {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+
     .group {
       display: inline-flex;
       align-items: center;
@@ -35,7 +77,10 @@
       border-radius: 12px;
       background: #fafafa;
     }
-    input[type="file"] { font-size: 13px; }
+
+    input[type="file"] {
+      font-size: 13px;
+    }
 
     #main {
       height: 100%;
@@ -43,7 +88,10 @@
       grid-template-columns: 1fr 360px;
       gap: 0;
     }
-    #map { height: 100%; }
+
+    #map {
+      height: 100%;
+    }
 
     aside {
       border-left: 1px solid #ddd;
@@ -58,34 +106,43 @@
       border-bottom: 1px solid #eee;
     }
 
-    .status { font-size: 13px; color:#333; }
+    .status {
+      font-size: 13px;
+      color: #333;
+    }
 
     /* draggable "point" look */
-    .pt-icon{
-      width:14px; height:14px; border-radius:999px;
-      border:2px solid rgba(0,0,0,0.85);
-      background: rgba(255,255,255,0.9);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    .pt-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 2px solid rgba(0, 0, 0, 0.85);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     /* segment tooltip label */
-    .seg-tooltip{
-      background: rgba(255,255,255,0.9);
-      border: 1px solid rgba(0,0,0,0.25);
+    .seg-tooltip {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0, 0, 0, 0.25);
       border-radius: 10px;
       padding: 2px 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
       font-size: 12px;
-      color:#111;
-      white-space:nowrap;
+      color: #111;
+      white-space: nowrap;
     }
-    .leaflet-tooltip.seg-tooltip:before { border-top-color: rgba(0,0,0,0.25); }
+
+    .leaflet-tooltip.seg-tooltip:before {
+      border-top-color: rgba(0, 0, 0, 0.25);
+    }
 
     /* Trails list */
     .trails-list {
       overflow: auto;
       padding: 10px 12px;
     }
+
     .trail-item {
       border: 1px solid #eee;
       border-radius: 12px;
@@ -94,1261 +151,1934 @@
       cursor: pointer;
       background: #fff;
     }
-    .trail-item.selected { outline: 2px solid #111; }
+
+    .trail-item.selected {
+      outline: 2px solid #111;
+    }
+
     .trail-title {
-      display:flex;
-      align-items:center;
-      gap:8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-weight: 600;
       margin-bottom: 6px;
     }
-    .swatch { width: 12px; height: 12px; border-radius: 999px; border: 1px solid rgba(0,0,0,0.35); }
-    .trail-meta { font-size: 12.5px; color: #333; line-height: 1.35; }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.35);
+    }
+
+    .trail-meta {
+      font-size: 12.5px;
+      color: #333;
+      line-height: 1.35;
+    }
 
     /* Elevation canvas */
-    #elevCanvas { width: 100%; height: 140px; border: 1px solid #eee; border-radius: 12px; background: #fff; }
-    .small { font-size: 12.5px; color: #333; line-height: 1.35; }
+    #elevCanvas {
+      width: 100%;
+      height: 140px;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .small {
+      font-size: 12.5px;
+      color: #333;
+      line-height: 1.35;
+    }
 
     @media (max-width: 980px) {
-      #main { grid-template-columns: 1fr; }
-      aside { height: 420px; border-left: none; border-top: 1px solid #ddd; }
+      #main {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        height: 420px;
+        border-left: none;
+        border-top: 1px solid #ddd;
+      }
     }
+
     .panel-divider {
       margin: 0;
       border: none;
       border-top: 1px solid #ddd;
     }
+
     #ismusPanel {
       padding-top: 8px;
     }
+
+    /* Weather station label */
+    .wx-label {
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      padding: 1px 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .wx-cold {
+      background: rgba(173, 216, 230, 0.92);
+    }
+
+    /* light blue */
+    .wx-warm {
+      background: rgba(255, 182, 193, 0.92);
+    }
+
+    /* light red/pink */
   </style>
 </head>
 
 <body>
-<div id="app">
-  <header>
-    <div class="title">Iceland Path Mapper</div>
-    <div class="hint">.</div>
+  <div id="app">
+    <header>
+      <div class="title">Iceland Path Mapper</div>
+      <div class="hint">.</div>
 
-    <button id="undoBtn" type="button">Undo point</button>
-    <button id="clearPointsBtn" type="button">Clear points</button>
+      <button id="undoBtn" type="button">Undo point</button>
+      <button id="clearPointsBtn" type="button">Clear points</button>
 
-    <label class="toggle">
-      <input id="showSegments" type="checkbox" checked />
-       Distances
-    </label>
-
-    <label class="select">
-      Base map:
-      <select id="baseLayerSelect"></select>
-    </label>
-<label class="toggle">
-  <input id="ornefniToggle" type="checkbox" />
-  Örnefni
-</label>
-<label class="toggle">
-  <input id="ismusToggle" type="checkbox" />
-  Ismus
-</label>
-<label class="toggle">
-  <input id="quakesToggle" type="checkbox" />
-  Earthquakes
-</label>
-
-
-
-<div class="group">
-  <strong style="font-size:14px;">GPS:</strong>
-  <button id="gpsStartBtn" type="button">Start</button>
-  <button id="gpsStopBtn" type="button" disabled>Stop</button>
-
-  <label class="toggle" title="Keep the map centered on your location">
-    <input id="gpsFollowToggle" type="checkbox" checked />
-    Follow
-  </label>
-</div>
-
-    <div class="group">
-      <strong style="font-size:14px;">GPX trails:</strong>
-      <input id="gpxFile" type="file" accept=".gpx,application/gpx+xml,text/xml,application/xml" />
-      <button id="clearTrailsBtn" type="button">Clear</button>
-
-      <label class="toggle" title="When a GPX is loaded, also convert it to editable points (thinned).">
-        <input id="trackToPoints" type="checkbox" />
-        Convert GPX to points
+      <label class="toggle">
+        <input id="showSegments" type="checkbox" checked />
+        Distances
       </label>
-    </div>
 
-    <div style="margin-left:auto; font-variant-numeric: tabular-nums;">
-      Points: <span id="count">0</span> · Manual path: <span id="distKm">0.000</span> km
-    </div>
-  </header>
+      <label class="select">
+        Base map:
+        <select id="baseLayerSelect"></select>
+      </label>
+      <label class="toggle">
+        <input id="ornefniToggle" type="checkbox" />
+        Örnefni
+      </label>
+      <label class="toggle">
+        <input id="ismusToggle" type="checkbox" />
+        Ismus
+      </label>
+      <label class="toggle">
+        <input id="quakesToggle" type="checkbox" />
+        Earthquakes
+      </label>
 
-  <div id="main">
-    <div id="map"></div>
+      <label class="toggle" title="Show live IMO weather stations (latest hourly obs)">
+        <input id="weatherStationsToggle" type="checkbox" />
+        Weather
+      </label>
 
-    <aside>
-    <div class="panel">
-        <div style="font-weight:600; margin-bottom:6px;">Selected trail</div>
-        <canvas id="elevCanvas"></canvas>
-        <div class="small" id="trailStats" style="margin-top:8px;">Load a GPX file to see elevation/time stats.</div>
+      <label class="toggle">
+        <input id="rainToggle" type="checkbox" />
+        Rains
+      </label>
+
+
+
+      <div class="group">
+        <strong style="font-size:14px;">GPS:</strong>
+        <button id="gpsStartBtn" type="button">Start</button>
+        <button id="gpsStopBtn" type="button" disabled>Stop</button>
+
+        <label class="toggle" title="Keep the map centered on your location">
+          <input id="gpsFollowToggle" type="checkbox" checked />
+          Follow
+        </label>
       </div>
 
-      <div class="trails-list" id="trailsList"></div>
+      <div class="group">
+        <strong style="font-size:14px;">GPX trails:</strong>
+        <input id="gpxFile" type="file" accept=".gpx,application/gpx+xml,text/xml,application/xml" />
+        <button id="clearTrailsBtn" type="button">Clear</button>
 
-      <hr class="panel-divider" />
-
-      <div class="panel" id="ismusPanel" style="display:none;">
-        <div style="font-weight:600; margin-bottom:6px;">Ismus</div>
-        <div class="small" id="ismusMeta">Click an Ismus point.</div>
-        <audio id="ismusAudio" controls style="width:100%; margin-top:8px;"></audio>
+        <label class="toggle" title="When a GPX is loaded, also convert it to editable points (thinned).">
+          <input id="trackToPoints" type="checkbox" />
+          Convert GPX to points
+        </label>
       </div>
-      
-      <!-- Status LAST -->
-      <div class="panel">
+
+      <div style="margin-left:auto; font-variant-numeric: tabular-nums;">
+        Points: <span id="count">0</span> · Manual path: <span id="distKm">0.000</span> km
+      </div>
+    </header>
+
+    <div id="main">
+      <div id="map"></div>
+
+      <aside>
+        <div class="panel">
+          <div style="font-weight:600; margin-bottom:6px;">Selected trail</div>
+          <canvas id="elevCanvas"></canvas>
+          <div class="small" id="trailStats" style="margin-top:8px;">Load a GPX file to see elevation/time stats.</div>
+        </div>
+
+        <div class="trails-list" id="trailsList"></div>
+
+        <hr class="panel-divider" />
+
+        <div class="panel" id="ismusPanel" style="display:none;">
+          <div style="font-weight:600; margin-bottom:6px;">Ismus</div>
+          <div class="small" id="ismusMeta">Click an Ismus point.</div>
+          <audio id="ismusAudio" controls style="width:100%; margin-top:8px;"></audio>
+        </div>
+
+        <div class="panel" id="quakesPanel" style="display:none;">
+          <div style="font-weight:600; margin-bottom:6px;">Earthquakes</div>
+
+          <div class="small" style="display:flex; align-items:center; gap:10px;">
+            <span>Window:</span>
+            <input id="quakesHours" type="range" min="6" max="336" step="6" value="48" style="flex:1;" />
+            <span style="font-variant-numeric: tabular-nums;"><b id="quakesHoursLabel">48</b>h</span>
+          </div>
+
+          <div class="small" style="margin-top:6px; color:#444;">
+            Shows earthquakes from the last <span id="quakesHoursLabel2">48</span> hours.
+          </div>
+        </div>
+
+        <!-- Status LAST -->
+        <div class="panel">
           <div class="status" id="status"></div>
-      </div>
-    </aside>
+        </div>
+      </aside>
+    </div>
   </div>
-</div>
 
-<script>
-  // --------------------------
-  // MAP + MANY BASE LAYERS
-  // --------------------------
-  const map = L.map("map").setView([64.95, -19.02], 6);
-
-  // Define base maps here (no API keys).
-  // NOTE: Some providers have usage policies; for heavy use, self-host or use a key-based provider.
-  const BASEMAPS = [
-    
-    {
-      id: "osm",
-      label: "OSM Standard",
-      layer: L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap contributors"
-      })
-    },
-    {
-  id: "lmi_grunnkort_wms",
-  label: "LMÍ WMS: Grunnkort",
-  layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
-    layers: "grunnkort",        // exact layer name
-    format: "image/png",
-    transparent: false,         // base map
-    version: "1.3.0",
-    tiled: true,
-    attribution: "© LMÍ / gis.natt.is (WMS)"
-  })
-},
-        {
-      id: "esri_imagery",
-      label: "Esri World Imagery (satellite)",
-      layer: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 19,
-        attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and others"
-      })
-    },
-
-    {
-  id: "is_nautical",
-  label: "Iceland Nautical Chart",
-  layer: L.tileLayer.wms("https://gis.lmi.is/mapcache/sjokort/wms", {
-    layers: "Sjomaelingar:Sjokort_Sjomaelinga",
-    format: "image/png",
-    transparent: false,
-    version: "1.1.1",
-    attribution: "© Landhelgisgæsla Íslands / Sjómælingar Íslands (WMS via LMÍ) — Not to be used for navigation"
-  })
-},
-   {
-      id: "opentopo",
-      label: "OpenTopoMap (topo)",
-      layer: L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-        maxZoom: 17,
-        attribution: "© OpenStreetMap contributors, SRTM | Map style: OpenTopoMap (CC-BY-SA)"
-      })
-    },
-{
-  id: "herforingjaraad_50k",
-  label: "Herforingjaráðskort",
-  layer: L.tileLayer.wms("https://gis.lmi.is/mapcache/web-mercator/wms", {
-    layers: "LMI_raster:Atlas_50",
-    format: "image/png",
-    transparent: false,
-    version: "1.1.1",
-    attribution: "© LMÍ — Herforingjaráðskort Dana (historical raster)"
-  })
-},
-{
-  id: "lmi_ams_wms",
-  label: "AMS",
-  layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
-    layers: "AMS",              // <-- if your layer name is exactly "AMS"
-    format: "image/png",
-    transparent: false,         // base map => usually false
-    version: "1.3.0",
-    tiled: true,
-    attribution: "© LMÍ / gis.natt.is (WMS)"
-  })
-},
-    {
-      id: "carto_dark",
-      label: "Carto Dark Matter",
-      layer: L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        maxZoom: 20,
-        attribution: "© OpenStreetMap contributors © CARTO"
-      })
-    },
- {
-  id: "lmi_vistgerd_wms",
-  label: "Vistgerð",
-  layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
-    layers: "vistgerd",          // <-- exact layer name
-    format: "image/png",
-    transparent: false,          // base map
-    version: "1.3.0",
-    tiled: true,
-    attribution: "© LMÍ / gis.natt.is (WMS)"
-  })
-},
-    {
-      id: "osm_hot",
-      label: "OSM HOT",
-      layer: L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team"
-      })
-    },
-        {
-      id: "carto_positron",
-      label: "Carto Positron (light)",
-      layer: L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        maxZoom: 20,
-        attribution: "© OpenStreetMap contributors © CARTO"
-      })
-    },
-
-    {
-      id: "esri_natgeo",
-      label: "Esri NatGeo World Map",
-      layer: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 16,
-        attribution: "Tiles © Esri — National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA"
-      })
-    },
-    {
-      id: "esri_gray",
-      label: "Esri World Gray Canvas",
-      layer: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 16,
-        attribution: "Tiles © Esri"
-      })
-    },
-    {
-  id: "lmi_islands_dmd_daylight",
-  label: "LMÍ WMS: Íslands DMD (Daylight)",
-  layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
-    layers: "IslandsDEMDaylight",   // exact layer name
-    format: "image/png",
-    transparent: false,            // base map
-    version: "1.3.0",
-    tiled: true,
-    attribution: "© LMÍ / gis.natt.is (WMS)"
-  })
-},
-{
-  id: "lmi_islands_dem_slope_perc",
-  label: "LMÍ WMS: Íslands DEM – Slope (%)",
-  layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
-    layers: "IslandsDEM_slope_perc",  // exact layer name
-    format: "image/png",
-    transparent: false,               // base map
-    version: "1.3.0",
-    tiled: true,
-    attribution: "© LMÍ / gis.natt.is (WMS)"
-  })
-}
-  ];
-
-  const baseSelect = document.getElementById("baseLayerSelect");
-  let currentBase = null;
-
-  function addBaseOptions() {
-    for (const bm of BASEMAPS) {
-      const opt = document.createElement("option");
-      opt.value = bm.id;
-      opt.textContent = bm.label;
-      baseSelect.appendChild(opt);
-    }
-    // default
-    baseSelect.value = "osm";
-  }
-
-function setBaseLayer(id) {
-  const bm = BASEMAPS.find(x => x.id === id);
-  if (!bm) return;
-
-  if (currentBase) map.removeLayer(currentBase);
-  currentBase = bm.layer;
-  currentBase.addTo(map);
-
-  // Re-apply Örnefni overlay if user has it enabled
-  const ornefniToggle = document.getElementById("ornefniToggle");
-  if (ornefniToggle && ornefniToggle.checked) {
-    // Ensure it's on top
-    ornefniOverlay.addTo(map);
-    if (ornefniOverlay.setZIndex) ornefniOverlay.setZIndex(1000);
-  }
-}
-
-  addBaseOptions();
-  setBaseLayer(baseSelect.value);
-  baseSelect.addEventListener("change", (e) => setBaseLayer(e.target.value));
-  // --------------------------
-  // ÖRNEFNI (place names) OVERLAY (GeoServer WMS)
-  // --------------------------
-  const ornefniOverlay = L.tileLayer.wms("https://gis.natt.is/geoserver/wms", {
-    layers: "Ornefni",           // <-- from your browser capture (case-sensitive)
-    format: "image/png",
-    transparent: true,
-    version: "1.3.0",
-    attribution: "© LMÍ / gis.natt.is — Örnefni"
-  });
-
-  const ornefniToggle = document.getElementById("ornefniToggle");
-  ornefniToggle.addEventListener("change", () => {
-    if (ornefniToggle.checked) {
-      ornefniOverlay.addTo(map);
-      setStatus("Örnefni: ON");
-    } else {
-      map.removeLayer(ornefniOverlay);
-      setStatus("Örnefni: OFF");
-    }
-  });
-
-  // --------------------------
-// ISMUS (new structure: top-level array in ismus.json)
-// --------------------------
-const ismusToggle = document.getElementById("ismusToggle");
-const ismusLayer = L.layerGroup(); // only added when toggled on
-let ismusLoaded = false;
-
-// Right panel elements
-const ismusPanelEl = document.getElementById("ismusPanel");
-const ismusMetaEl  = document.getElementById("ismusMeta");
-const ismusAudioEl = document.getElementById("ismusAudio");
-
-function showIsmusPanel(show) {
-  if (!ismusPanelEl) return;
-  ismusPanelEl.style.display = show ? "" : "none";
-}
-
-function esc(s) {
-  return String(s ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function toNum(x) {
-  if (x == null) return NaN;
-  const n = Number(String(x).trim().replace(",", "."));
-  return Number.isFinite(n) ? n : NaN;
-}
-
-function setAudio(url) {
-  if (!ismusAudioEl) return;
-  const u = String(url ?? "").trim();
-  if (u) {
-    ismusAudioEl.src = u;
-    ismusAudioEl.load();
-  } else {
-    ismusAudioEl.pause();
-    ismusAudioEl.removeAttribute("src");
-    ismusAudioEl.load();
-  }
-}
-
-// Decide what "name" means for the right panel (your requested field)
-// Preference: contents -> stanza[0].first_line -> "Recording <id>"
-function getRecordingName(rec) {
-  const c = String(rec?.contents ?? "").trim();
-  if (c) return c;
-
-  const fl = String(rec?.stanza?.[0]?.first_line ?? "").trim();
-  if (fl) return fl;
-
-  const id = rec?.id != null ? String(rec.id) : "";
-  return id ? `Recording ${id}` : "Recording";
-}
-
-// Get mp3 URL (first file)
-function getMp3Url(rec) {
-  const f0 = rec?.files?.[0];
-  return f0 ? String(f0).trim() : "";
-}
-
-// Get map coordinate for the marker
-// Preference: rec.location.lat/lng -> first source[0].location_objs[0].lat/lng
-function getLatLng(rec) {
-  const lat1 = toNum(rec?.location?.lat);
-  const lng1 = toNum(rec?.location?.lng);
-  if (Number.isFinite(lat1) && Number.isFinite(lng1)) return L.latLng(lat1, lng1);
-
-  const lat2 = toNum(rec?.source?.[0]?.location_objs?.[0]?.lat);
-  const lng2 = toNum(rec?.source?.[0]?.location_objs?.[0]?.lng);
-  if (Number.isFinite(lat2) && Number.isFinite(lng2)) return L.latLng(lat2, lng2);
-
-  return null;
-}
-
-function renderIsmusPanel(rec) {
-  showIsmusPanel(true);
-
-  const name = getRecordingName(rec);
-  const mp3 = getMp3Url(rec);
-
-  // NEW fields requested
-  const sourceName = String(rec?.source?.[0]?.name ?? "").trim();      // source[0].name
-  const locationName = String(rec?.location?.name ?? "").trim();       // location.name
-  const dateOld = String(rec?.date_old ?? "").trim();                  // date_old
-
-  // Build panel HTML:
-  // - song name above player (as before)
-  // - player
-  // - extra fields underneath
-  let html = `<b>${esc(name)}</b>`;
-
-  // Put extra info under the player (but we render the text block now;
-  // the player is a separate <audio> element already in the panel)
-  const lines = [];
-  if (sourceName) lines.push(`Source: <b>${esc(sourceName)}</b>`);
-  if (locationName) lines.push(`Location: <b>${esc(locationName)}</b>`);
-  if (dateOld) lines.push(`Date: <b>${esc(dateOld)}</b>`);
-
-  // We’ll show the lines under the player by putting them after a spacer.
-  // The player itself stays where it is in HTML.
-  if (lines.length) {
-    html += `<div style="margin-top:8px; line-height:1.35;">${lines.join("<br>")}</div>`;
-  }
-
-  if (ismusMetaEl) ismusMetaEl.innerHTML = html;
-
-  // Audio player
-  setAudio(mp3);
-  if (!mp3 && ismusMetaEl) {
-    ismusMetaEl.innerHTML += `<div style="margin-top:8px;"><i>No MP3 URL in files[0].</i></div>`;
-  }
-}
-
-
-async function loadIsmusOnce() {
-  if (ismusLoaded) return;
-
-  setStatus("Loading Ismus…");
-
-  // Since your file is next to the HTML:
-  // If you serve from a subfolder, use "/ismus.json" instead.
-  const res = await fetch("./ismus.json", { cache: "no-store" });
-  if (!res.ok) throw new Error(`Could not load ismus.json (HTTP ${res.status})`);
-
-  const data = await res.json();
-
-  // New structure: top-level array
-  if (!Array.isArray(data)) {
-    throw new Error("ismus.json expected a top-level JSON array: [ { ... }, { ... } ]");
-  }
-
-  ismusLayer.clearLayers();
-
-  let added = 0;
-  for (const rec of data) {
-    const ll = getLatLng(rec);
-    if (!ll) continue;
-
-    const name = getRecordingName(rec);
-
-    const m = L.circleMarker(ll, {
-      radius: 6,
-      weight: 2,
-      opacity: 0.9,
-      fillOpacity: 0.5
-    });
-
-    m.bindPopup(`<b>${esc(name)}</b>`);
-    m.on("click", () => renderIsmusPanel(rec));
-
-    m.addTo(ismusLayer);
-    added++;
-  }
-
-  ismusLoaded = true;
-  setStatus(`Ismus loaded: ${added} points`);
-}
-
-ismusToggle.addEventListener("change", async () => {
-  if (ismusToggle.checked) {
-    try {
-      await loadIsmusOnce();
-      ismusLayer.addTo(map);
-      setStatus("Ismus: ON");
-    } catch (err) {
-      ismusToggle.checked = false;
-      setStatus("Ismus load failed: " + err.message);
-    }
-  } else {
-    map.removeLayer(ismusLayer);
-    setAudio("");
-    showIsmusPanel(false);
-    setStatus("Ismus: OFF");
-  }
-});
-
-// --------------------------
-// EARTHQUAKES (IMO Skjálftalísa API)
-// --------------------------
-const quakesToggle = document.getElementById("quakesToggle");
-const quakesLayer = L.layerGroup();
-let quakeTimer = null;
-
-function pad2(n){ return String(n).padStart(2,"0"); }
-
-// API expects: "yyyy-mm-dd HH:MM:SS" (UTC) :contentReference[oaicite:1]{index=1}
-function formatUtc(dt) {
-  return `${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth()+1)}-${pad2(dt.getUTCDate())} ` +
-         `${pad2(dt.getUTCHours())}:${pad2(dt.getUTCMinutes())}:${pad2(dt.getUTCSeconds())}`;
-}
-
-// colour by depth (km) – simple, readable palette
-function depthColor(depthKm){
-  if (!Number.isFinite(depthKm)) return "#666";
-  if (depthKm < 3) return "#d73027";     // very shallow
-  if (depthKm < 7) return "#fc8d59";
-  if (depthKm < 12) return "#fee08b";
-  if (depthKm < 18) return "#91bfdb";
-  return "#4575b4";                      // deeper
-}
-
-// radius by magnitude
-function magRadius(m){
-  if (!Number.isFinite(m)) return 4;
-  // feels close to Skjálftalísa visually without going huge
-  return Math.max(3, 3 + m * 2.2);
-}
-
-async function fetchRecentQuakes(hoursBack = 48) {
-  // Clear old markers
-  quakesLayer.clearLayers();
-
-  const end = new Date();
-  const start = new Date(end.getTime() - hoursBack * 3600 * 1000);
-
-  const body = {
-    start_time: formatUtc(start),
-    end_time: formatUtc(end),
-    // Ask for what we need
-    fields: ["event_id", "lat", "long", "time", "magnitude", "depth", "magnitude_type"],
-    // Optional: choose preferred magnitude systems if you want
-    // magnitude_preference: ["Mlw","Ml","Autmag"],
-    // event_type: ["qu"],
-    // originating_system: ["SIL picks","SIL aut.mag"],
-    sort: ["time"] // descending
-  };
-
-  // POST /quake/array returns arrays of fields :contentReference[oaicite:2]{index=2}
-  const res = await fetch("https://api.vedur.is/skjalftalisa/v1/quake/array", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-
-  if (!res.ok) throw new Error(`Skjálftalísa API error (HTTP ${res.status})`);
-  const data = await res.json();
-
-  if (!data || !data.data) return;
-
-  const d = data.data;
-  const n = (d.event_id?.length || d.lat?.length || 0);
-
-  for (let i = 0; i < n; i++) {
-    const id = d.event_id?.[i];
-    const lat = d.lat?.[i];
-    const lng = d.long?.[i];
-    const mag = d.magnitude?.[i];
-    const dep = d.depth?.[i];
-    const magType = d.magnitude_type?.[i] || "";
-    const t = d.time?.[i]; // docs show time as integer in this endpoint response example :contentReference[oaicite:3]{index=3}
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-
-    // Attempt to interpret time:
-    // If it's seconds since epoch -> new Date(t*1000)
-    // If it's ms since epoch -> new Date(t)
-    // If unknown -> omit
-    let dtStr = "";
-    if (Number.isFinite(t)) {
-      const ms = (t > 10_000_000_000 ? t : t * 1000);
-      const dt = new Date(ms);
-      if (!isNaN(dt)) dtStr = dt.toUTCString();
-    }
-
-    const marker = L.circleMarker([lat, lng], {
-      radius: magRadius(mag),
-      weight: 1.5,
-      opacity: 0.95,
-      fillOpacity: 0.55,
-      color: depthColor(dep),
-      fillColor: depthColor(dep)
-    });
-
-    const magLabel = Number.isFinite(mag) ? mag.toFixed(1) : "—";
-    const depLabel = Number.isFinite(dep) ? `${dep.toFixed(1)} km` : "—";
-    const idLabel = (id != null) ? String(id) : "";
-
-    marker.bindPopup(
-      `<div style="font-weight:700;margin-bottom:4px;">M ${magLabel} ${magType}</div>` +
-      `<div style="font-size:12.5px;line-height:1.35;">` +
-      (dtStr ? `Time: <b>${dtStr}</b><br>` : "") +
-      `Depth: <b>${depLabel}</b><br>` +
-      (idLabel ? `Event ID: <b>${idLabel}</b>` : "") +
-      `</div>`
-    );
-
-    marker.addTo(quakesLayer);
-  }
-}
-
-async function refreshQuakes() {
-  try {
-    setStatus("Loading earthquakes…");
-    await fetchRecentQuakes(48);
-    setStatus("Earthquakes updated.");
-  } catch (err) {
-    setStatus("Earthquake load failed: " + err.message);
-  }
-}
-
-quakesToggle.addEventListener("change", async () => {
-  if (quakesToggle.checked) {
-    quakesLayer.addTo(map);
-    await refreshQuakes();
-    quakeTimer = setInterval(refreshQuakes, 60_000);
-  } else {
-    if (quakeTimer) { clearInterval(quakeTimer); quakeTimer = null; }
-    map.removeLayer(quakesLayer);
-    setStatus("Earthquakes: OFF");
-  }
-});
-
-
+  <script>
     // --------------------------
-  // GPS (phone location)
-  // --------------------------
-  let gpsWatchId = null;
-  let gpsMarker = null;
-  let gpsAccuracyCircle = null;
+    // MAP + MANY BASE LAYERS
+    // --------------------------
+    const map = L.map("map").setView([64.95, -19.02], 6);
 
-  const gpsStartBtn = document.getElementById("gpsStartBtn");
-  const gpsStopBtn = document.getElementById("gpsStopBtn");
-  const gpsFollowToggle = document.getElementById("gpsFollowToggle");
+    // Define base maps here (no API keys).
+    // NOTE: Some providers have usage policies; for heavy use, self-host or use a key-based provider.
+    const BASEMAPS = [
 
-  function setGpsUI(running) {
-    gpsStartBtn.disabled = running;
-    gpsStopBtn.disabled = !running;
-  }
-
-  function updateGpsDisplay(lat, lng, accuracyMeters) {
-    const latlng = L.latLng(lat, lng);
-
-    if (!gpsMarker) {
-      gpsMarker = L.circleMarker(latlng, {
-        radius: 7,
-        weight: 2,
-        opacity: 0.9,
-        fillOpacity: 0.6
-      }).addTo(map);
-      gpsMarker.bindPopup("Your location");
-    } else {
-      gpsMarker.setLatLng(latlng);
-    }
-
-    if (!gpsAccuracyCircle) {
-      gpsAccuracyCircle = L.circle(latlng, {
-        radius: Math.max(accuracyMeters || 0, 5),
-        weight: 1,
-        opacity: 0.4,
-        fillOpacity: 0.08
-      }).addTo(map);
-    } else {
-      gpsAccuracyCircle.setLatLng(latlng);
-      gpsAccuracyCircle.setRadius(Math.max(accuracyMeters || 0, 5));
-    }
-
-    if (gpsFollowToggle && gpsFollowToggle.checked) {
-      // keep current zoom, just pan smoothly
-      map.panTo(latlng, { animate: true });
-    }
-  }
-
-  function startGps() {
-    if (!navigator.geolocation) {
-      setStatus("GPS not available: this browser doesn't support geolocation.");
-      return;
-    }
-    if (gpsWatchId !== null) return; // already running
-
-    setStatus("Requesting GPS permission…");
-
-    gpsWatchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const { latitude, longitude, accuracy } = pos.coords;
-        updateGpsDisplay(latitude, longitude, accuracy);
-        setStatus(`GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)} (±${Math.round(accuracy)} m)`);
-      },
-      (err) => {
-        // Common cases: permission denied, insecure origin, timeout
-        setStatus(`GPS error: ${err.message}`);
-        stopGps(); // stop if it errors
+      {
+        id: "osm",
+        label: "OSM Standard",
+        layer: L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "© OpenStreetMap contributors"
+        })
       },
       {
-        enableHighAccuracy: true,
-        maximumAge: 2000,  // ms
-        timeout: 15000     // ms
+        id: "lmi_grunnkort_wms",
+        label: "LMÍ WMS: Grunnkort",
+        layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
+          layers: "grunnkort",        // exact layer name
+          format: "image/png",
+          transparent: false,         // base map
+          version: "1.3.0",
+          tiled: true,
+          attribution: "© LMÍ / gis.natt.is (WMS)"
+        })
+      },
+      {
+        id: "esri_imagery",
+        label: "Esri World Imagery (satellite)",
+        layer: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+          maxZoom: 19,
+          attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and others"
+        })
+      },
+
+      {
+        id: "is_nautical",
+        label: "Iceland Nautical Chart",
+        layer: L.tileLayer.wms("https://gis.lmi.is/mapcache/sjokort/wms", {
+          layers: "Sjomaelingar:Sjokort_Sjomaelinga",
+          format: "image/png",
+          transparent: false,
+          version: "1.1.1",
+          attribution: "© Landhelgisgæsla Íslands / Sjómælingar Íslands (WMS via LMÍ) — Not to be used for navigation"
+        })
+      },
+      {
+        id: "opentopo",
+        label: "OpenTopoMap (topo)",
+        layer: L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+          maxZoom: 17,
+          attribution: "© OpenStreetMap contributors, SRTM | Map style: OpenTopoMap (CC-BY-SA)"
+        })
+      },
+      {
+        id: "herforingjaraad_50k",
+        label: "Herforingjaráðskort",
+        layer: L.tileLayer.wms("https://gis.lmi.is/mapcache/web-mercator/wms", {
+          layers: "LMI_raster:Atlas_50",
+          format: "image/png",
+          transparent: false,
+          version: "1.1.1",
+          attribution: "© LMÍ — Herforingjaráðskort Dana (historical raster)"
+        })
+      },
+      {
+        id: "lmi_ams_wms",
+        label: "AMS",
+        layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
+          layers: "AMS",              // <-- if your layer name is exactly "AMS"
+          format: "image/png",
+          transparent: false,         // base map => usually false
+          version: "1.3.0",
+          tiled: true,
+          attribution: "© LMÍ / gis.natt.is (WMS)"
+        })
+      },
+      {
+        id: "carto_dark",
+        label: "Carto Dark Matter",
+        layer: L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+          maxZoom: 20,
+          attribution: "© OpenStreetMap contributors © CARTO"
+        })
+      },
+      {
+        id: "lmi_vistgerd_wms",
+        label: "Vistgerð",
+        layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
+          layers: "vistgerd",          // <-- exact layer name
+          format: "image/png",
+          transparent: false,          // base map
+          version: "1.3.0",
+          tiled: true,
+          attribution: "© LMÍ / gis.natt.is (WMS)"
+        })
+      },
+      {
+        id: "osm_hot",
+        label: "OSM HOT",
+        layer: L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team"
+        })
+      },
+      {
+        id: "carto_positron",
+        label: "Carto Positron (light)",
+        layer: L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+          maxZoom: 20,
+          attribution: "© OpenStreetMap contributors © CARTO"
+        })
+      },
+
+      {
+        id: "esri_natgeo",
+        label: "Esri NatGeo World Map",
+        layer: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}", {
+          maxZoom: 16,
+          attribution: "Tiles © Esri — National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA"
+        })
+      },
+      {
+        id: "esri_gray",
+        label: "Esri World Gray Canvas",
+        layer: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+          maxZoom: 16,
+          attribution: "Tiles © Esri"
+        })
+      },
+      {
+        id: "lmi_islands_dmd_daylight",
+        label: "LMÍ WMS: Íslands DMD (Daylight)",
+        layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
+          layers: "IslandsDEMDaylight",   // exact layer name
+          format: "image/png",
+          transparent: false,            // base map
+          version: "1.3.0",
+          tiled: true,
+          attribution: "© LMÍ / gis.natt.is (WMS)"
+        })
+      },
+      {
+        id: "lmi_islands_dem_slope_perc",
+        label: "LMÍ WMS: Íslands DEM – Slope (%)",
+        layer: L.tileLayer.wms("https://gis.natt.is/mapcache/web-mercator/wms", {
+          layers: "IslandsDEM_slope_perc",  // exact layer name
+          format: "image/png",
+          transparent: false,               // base map
+          version: "1.3.0",
+          tiled: true,
+          attribution: "© LMÍ / gis.natt.is (WMS)"
+        })
       }
-    );
+    ];
 
-    setGpsUI(true);
-  }
+    const baseSelect = document.getElementById("baseLayerSelect");
+    let currentBase = null;
 
-  function stopGps() {
-    if (gpsWatchId !== null) {
-      navigator.geolocation.clearWatch(gpsWatchId);
-      gpsWatchId = null;
+    function addBaseOptions() {
+      for (const bm of BASEMAPS) {
+        const opt = document.createElement("option");
+        opt.value = bm.id;
+        opt.textContent = bm.label;
+        baseSelect.appendChild(opt);
+      }
+      // default
+      baseSelect.value = "osm";
     }
-    setGpsUI(false);
-    setStatus("GPS stopped.");
-  }
 
-  gpsStartBtn.addEventListener("click", startGps);
-  gpsStopBtn.addEventListener("click", stopGps);
+    function setBaseLayer(id) {
+      const bm = BASEMAPS.find(x => x.id === id);
+      if (!bm) return;
 
-  // --------------------------
-  // MANUAL POINT PATH
-  // --------------------------
-  const points = [];
-  const markers = [];
-  const segLabelMarkers = [];
-  const line = L.polyline([], { weight: 4, opacity: 0.9 }).addTo(map);
+      if (currentBase) map.removeLayer(currentBase);
+      currentBase = bm.layer;
+      currentBase.addTo(map);
 
-  const pointIcon = L.divIcon({
-    className: "",
-    html: '<div class="pt-icon"></div>',
-    iconSize: [14, 14],
-    iconAnchor: [7, 7]
-  });
+      // Re-apply Örnefni overlay if user has it enabled
+      const ornefniToggle = document.getElementById("ornefniToggle");
+      if (ornefniToggle && ornefniToggle.checked) {
+        // Ensure it's on top
+        ornefniOverlay.addTo(map);
+        if (ornefniOverlay.setZIndex) ornefniOverlay.setZIndex(1000);
+      }
+    }
 
-  const countEl = document.getElementById("count");
-  const distEl  = document.getElementById("distKm");
-  const statusEl = document.getElementById("status");
-  function setStatus(msg) { statusEl.textContent = msg || ""; }
-
-  function formatKm(m) { return (m / 1000).toFixed(3) + " km"; }
-  function totalMeters(latlngs) {
-    let meters = 0;
-    for (let i = 1; i < latlngs.length; i++) meters += map.distance(latlngs[i - 1], latlngs[i]);
-    return meters;
-  }
-  function midpoint(a, b) { return L.latLng((a.lat + b.lat) / 2, (a.lng + b.lng) / 2); }
-
-  function updatePointStats() {
-    countEl.textContent = String(points.length);
-    distEl.textContent = (totalMeters(points) / 1000).toFixed(3);
-  }
-  function syncPolyline() { line.setLatLngs(points); }
-
-  function relabelPopups() {
-    markers.forEach((mk, i) => {
-      const p = points[i];
-      mk.setPopupContent(`Point ${i + 1}<br>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}`);
+    addBaseOptions();
+    setBaseLayer(baseSelect.value);
+    baseSelect.addEventListener("change", (e) => setBaseLayer(e.target.value));
+    // --------------------------
+    // ÖRNEFNI (place names) OVERLAY (GeoServer WMS)
+    // --------------------------
+    const ornefniOverlay = L.tileLayer.wms("https://gis.natt.is/geoserver/wms", {
+      layers: "Ornefni",           // <-- from your browser capture (case-sensitive)
+      format: "image/png",
+      transparent: true,
+      version: "1.3.0",
+      attribution: "© LMÍ / gis.natt.is — Örnefni"
     });
-  }
 
-  function clearSegmentLabels() {
-    segLabelMarkers.forEach(m => map.removeLayer(m));
-    segLabelMarkers.length = 0;
-  }
-
-  function drawSegmentLabels() {
-    clearSegmentLabels();
-    if (!document.getElementById("showSegments").checked) return;
-    if (points.length < 2) return;
-
-    for (let i = 0; i < points.length - 1; i++) {
-      const a = points[i], b = points[i + 1];
-      const meters = map.distance(a, b);
-      const mid = midpoint(a, b);
-
-      const anchor = L.marker(mid, { interactive: false, opacity: 0 }).addTo(map);
-      anchor.bindTooltip(formatKm(meters), {
-        permanent: true,
-        direction: "center",
-        className: "seg-tooltip",
-        opacity: 1
-      });
-      segLabelMarkers.push(anchor);
-    }
-  }
-
-  function redrawPoints() {
-    syncPolyline();
-    relabelPopups();
-    drawSegmentLabels();
-    updatePointStats();
-  }
-
-  function addPoint(latlng) {
-    points.push(latlng);
-
-    const mk = L.marker(latlng, { draggable: true, icon: pointIcon })
-      .addTo(map)
-      .bindPopup(`Point ${points.length}<br>${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`);
-
-    mk.on("drag", (e) => {
-      const i = markers.indexOf(mk);
-      if (i >= 0) {
-        points[i] = e.target.getLatLng();
-        syncPolyline();
-        drawSegmentLabels();
-        updatePointStats();
-      }
-    });
-    mk.on("dragend", redrawPoints);
-
-    markers.push(mk);
-    redrawPoints();
-  }
-
-  map.on("click", (e) => addPoint(e.latlng));
-
-  document.getElementById("undoBtn").addEventListener("click", () => {
-    if (!points.length) return;
-    points.pop();
-    const mk = markers.pop();
-    if (mk) map.removeLayer(mk);
-    redrawPoints();
-  });
-
-  document.getElementById("clearPointsBtn").addEventListener("click", () => {
-    points.length = 0;
-    markers.forEach(m => map.removeLayer(m));
-    markers.length = 0;
-    clearSegmentLabels();
-    redrawPoints();
-  });
-
-  document.getElementById("showSegments").addEventListener("change", redrawPoints);
-  updatePointStats();
-
-  // --------------------------
-  // MULTI-GPX TRAILS + STATS
-  // --------------------------
-  const trails = [];
-  let selectedTrailId = null;
-
-  const trailsListEl = document.getElementById("trailsList");
-  const trailStatsEl = document.getElementById("trailStats");
-  const elevCanvas = document.getElementById("elevCanvas");
-
-  const elevCtx = elevCanvas.getContext("2d");
-
-  const colors = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"];
-  function nextColor() { return colors[trails.length % colors.length]; }
-
-  function resizeCanvasToCSS() {
-    const rect = elevCanvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    elevCanvas.width = Math.max(300, Math.floor(rect.width * dpr));
-    elevCanvas.height = Math.max(120, Math.floor(rect.height * dpr));
-    elevCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  window.addEventListener("resize", () => { resizeCanvasToCSS(); drawElevationForSelected(); });
-  resizeCanvasToCSS();
-
-  function parseGpx(xmlText) {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, "application/xml");
-    const parseError = xml.querySelector("parsererror");
-    if (parseError) throw new Error("Could not parse GPX (invalid XML).");
-
-    const trkpts = Array.from(xml.getElementsByTagName("trkpt"));
-    const rtepts = Array.from(xml.getElementsByTagName("rtept"));
-    const nodes = trkpts.length ? trkpts : rtepts;
-
-    const latlngs = [];
-    const ele = [];
-    const times = [];
-
-    for (const n of nodes) {
-      const lat = parseFloat(n.getAttribute("lat"));
-      const lon = parseFloat(n.getAttribute("lon"));
-      if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
-
-      latlngs.push(L.latLng(lat, lon));
-
-      const eleEl = n.getElementsByTagName("ele")[0];
-      ele.push(eleEl ? parseFloat(eleEl.textContent) : NaN);
-
-      const tEl = n.getElementsByTagName("time")[0];
-      times.push(tEl ? new Date(tEl.textContent) : null);
-    }
-    return { latlngs, ele, times };
-  }
-
-  function thinLatLngs(latlngs, minMeters = 120) {
-    if (latlngs.length <= 2) return latlngs.slice();
-    const out = [latlngs[0]];
-    let last = latlngs[0];
-    for (let i = 1; i < latlngs.length - 1; i++) {
-      const p = latlngs[i];
-      if (map.distance(last, p) >= minMeters) { out.push(p); last = p; }
-    }
-    out.push(latlngs[latlngs.length - 1]);
-    return out;
-  }
-
-  function computeCumulativeDistance(latlngs) {
-    const cum = new Array(latlngs.length).fill(0);
-    for (let i = 1; i < latlngs.length; i++) cum[i] = cum[i-1] + map.distance(latlngs[i-1], latlngs[i]);
-    return cum;
-  }
-
-  function smoothElevation(elev, windowSize = 7) {
-    const out = elev.slice();
-    const half = Math.floor(windowSize / 2);
-    for (let i = 0; i < elev.length; i++) {
-      let sum = 0, count = 0;
-      for (let j = i - half; j <= i + half; j++) {
-        if (j < 0 || j >= elev.length) continue;
-        const v = elev[j];
-        if (Number.isFinite(v)) { sum += v; count++; }
-      }
-      out[i] = count ? (sum / count) : NaN;
-    }
-    return out;
-  }
-
-  function ascentDescent(elev) {
-    let up = 0, down = 0;
-    let prev = null;
-    for (const v of elev) {
-      if (!Number.isFinite(v)) continue;
-      if (prev !== null) {
-        const d = v - prev;
-        if (d > 0) up += d; else down += -d;
-      }
-      prev = v;
-    }
-    return { up, down };
-  }
-
-  function formatDuration(ms) {
-    if (!Number.isFinite(ms) || ms < 0) return "N/A";
-    const s = Math.floor(ms / 1000);
-    const hh = Math.floor(s / 3600);
-    const mm = Math.floor((s % 3600) / 60);
-    const ss = s % 60;
-    const pad = (x) => String(x).padStart(2, "0");
-    return `${hh}:${pad(mm)}:${pad(ss)}`;
-  }
-
-  function computeTimeStats(latlngs, times) {
-    const validIdx = times.map((t, i) => (t instanceof Date && !isNaN(t)) ? i : -1).filter(i => i >= 0);
-    if (validIdx.length < 2) return null;
-
-    const start = times[validIdx[0]];
-    const end = times[validIdx[validIdx.length - 1]];
-    const totalMs = end - start;
-
-    const SPEED_THRESHOLD = 0.5; // m/s
-    let movingMs = 0, stoppedMs = 0;
-
-    for (let i = 1; i < times.length; i++) {
-      const t1 = times[i-1], t2 = times[i];
-      if (!(t1 instanceof Date) || isNaN(t1) || !(t2 instanceof Date) || isNaN(t2)) continue;
-
-      const dt = t2 - t1;
-      if (dt <= 0) continue;
-
-      const d = map.distance(latlngs[i-1], latlngs[i]);
-      const speed = d / (dt / 1000);
-
-      if (speed >= SPEED_THRESHOLD) movingMs += dt;
-      else stoppedMs += dt;
-    }
-
-    return { start, end, totalMs, movingMs, stoppedMs };
-  }
-
-  function kmh(meters, ms) {
-    if (!Number.isFinite(ms) || ms <= 0) return null;
-    return (meters / 1000) / (ms / 3600000);
-  }
-
-  function buildTrailStats(trail) {
-    const distM = totalMeters(trail.latlngs);
-    const cum = computeCumulativeDistance(trail.latlngs);
-
-    const hasEle = trail.ele.some(v => Number.isFinite(v));
-    let elevInfo = null;
-    if (hasEle) {
-      const sm = smoothElevation(trail.ele, 7);
-      const finite = sm.filter(Number.isFinite);
-      const min = Math.min(...finite);
-      const max = Math.max(...finite);
-      const { up, down } = ascentDescent(sm);
-      elevInfo = { min, max, up, down, smoothed: sm, cum };
-    }
-
-    const timeInfo = computeTimeStats(trail.latlngs, trail.times);
-    let timeDerived = null;
-    if (timeInfo) {
-      timeDerived = {
-        ...timeInfo,
-        avgKmh: kmh(distM, timeInfo.totalMs),
-        movingKmh: kmh(distM, timeInfo.movingMs),
-      };
-    }
-
-    return { distM, elevInfo, timeDerived, cum };
-  }
-
-  function addTrailToMap(trail) {
-    const poly = L.polyline(trail.latlngs, { weight: 4, opacity: 0.9, color: trail.color }).addTo(map);
-    trail.polyline = poly;
-    poly.on("click", () => selectTrail(trail.id));
-  }
-
-  function selectTrail(id) {
-    selectedTrailId = id;
-    renderTrailsList();
-    drawElevationForSelected();
-    renderSelectedTrailStats();
-  }
-
-  function renderTrailsList() {
-    trailsListEl.innerHTML = "";
-    if (!trails.length) { trailsListEl.innerHTML = `<div class="small">No trails loaded yet.</div>`; return; }
-
-    for (const t of trails) {
-      const item = document.createElement("div");
-      item.className = "trail-item" + (t.id === selectedTrailId ? " selected" : "");
-      item.addEventListener("click", () => selectTrail(t.id));
-
-      const distKm = (t.stats.distM / 1000).toFixed(2);
-
-      const title = document.createElement("div");
-      title.className = "trail-title";
-
-      const sw = document.createElement("div");
-      sw.className = "swatch";
-      sw.style.background = t.color;
-
-      const name = document.createElement("div");
-      name.textContent = t.name;
-
-      title.appendChild(sw);
-      title.appendChild(name);
-
-      const meta = document.createElement("div");
-      meta.className = "trail-meta";
-
-      let metaHtml = `Distance: <b>${distKm} km</b>`;
-      if (t.stats.elevInfo) metaHtml += `<br>Ascent: <b>${t.stats.elevInfo.up.toFixed(0)} m</b> · Descent: <b>${t.stats.elevInfo.down.toFixed(0)} m</b>`;
-      else metaHtml += `<br>Elevation: <i>not in GPX</i>`;
-
-      if (t.stats.timeDerived) metaHtml += `<br>Duration: <b>${formatDuration(t.stats.timeDerived.totalMs)}</b> · Moving: <b>${formatDuration(t.stats.timeDerived.movingMs)}</b>`;
-      else metaHtml += `<br>Time: <i>not in GPX</i>`;
-
-      meta.innerHTML = metaHtml;
-
-      item.appendChild(title);
-      item.appendChild(meta);
-      trailsListEl.appendChild(item);
-    }
-  }
-
-  function drawElevationProfile(cumMeters, elevMeters, color) {
-    resizeCanvasToCSS();
-    const w = elevCanvas.getBoundingClientRect().width;
-    const h = elevCanvas.getBoundingClientRect().height;
-
-    elevCtx.clearRect(0, 0, w, h);
-
-    // grid
-    elevCtx.lineWidth = 1;
-    elevCtx.strokeStyle = "rgba(0,0,0,0.08)";
-    for (let i = 1; i <= 4; i++) {
-      const y = (h * i) / 5;
-      elevCtx.beginPath(); elevCtx.moveTo(0, y); elevCtx.lineTo(w, y); elevCtx.stroke();
-    }
-
-    const pairs = [];
-    for (let i = 0; i < elevMeters.length; i++) {
-      const e = elevMeters[i];
-      if (Number.isFinite(e)) pairs.push([cumMeters[i], e]);
-    }
-    if (pairs.length < 2) {
-      elevCtx.fillStyle = "rgba(0,0,0,0.6)";
-      elevCtx.font = "12px system-ui";
-      elevCtx.fillText("No elevation data in this GPX.", 10, 20);
-      return;
-    }
-
-    const xMin = pairs[0][0];
-    const xMax = pairs[pairs.length - 1][0];
-    let yMin = Infinity, yMax = -Infinity;
-    for (const [,y] of pairs) { if (y < yMin) yMin = y; if (y > yMax) yMax = y; }
-    if (yMax - yMin < 1) yMax = yMin + 1;
-
-    const pad = 10, plotW = w - pad*2, plotH = h - pad*2;
-    const xScale = (x) => pad + ((x - xMin) / (xMax - xMin)) * plotW;
-    const yScale = (y) => pad + (1 - ((y - yMin) / (yMax - yMin))) * plotH;
-
-    // area
-    elevCtx.beginPath();
-    elevCtx.moveTo(xScale(pairs[0][0]), yScale(pairs[0][1]));
-    for (let i = 1; i < pairs.length; i++) elevCtx.lineTo(xScale(pairs[i][0]), yScale(pairs[i][1]));
-    elevCtx.lineTo(xScale(xMax), pad + plotH);
-    elevCtx.lineTo(xScale(xMin), pad + plotH);
-    elevCtx.closePath();
-    elevCtx.fillStyle = "rgba(0,0,0,0.06)";
-    elevCtx.fill();
-
-    // line
-    elevCtx.beginPath();
-    elevCtx.moveTo(xScale(pairs[0][0]), yScale(pairs[0][1]));
-    for (let i = 1; i < pairs.length; i++) elevCtx.lineTo(xScale(pairs[i][0]), yScale(pairs[i][1]));
-    elevCtx.strokeStyle = color;
-    elevCtx.lineWidth = 2;
-    elevCtx.stroke();
-
-    // labels
-    elevCtx.fillStyle = "rgba(0,0,0,0.7)";
-    elevCtx.font = "12px system-ui";
-    elevCtx.fillText(`${yMax.toFixed(0)} m`, 10, 14);
-    elevCtx.fillText(`${yMin.toFixed(0)} m`, 10, h - 6);
-    elevCtx.fillText(`${((xMax-xMin)/1000).toFixed(2)} km`, w - 70, h - 6);
-  }
-
-  function drawElevationForSelected() {
-    const t = trails.find(x => x.id === selectedTrailId);
-    if (!t || !t.stats.elevInfo) {
-      resizeCanvasToCSS();
-      const w = elevCanvas.getBoundingClientRect().width;
-      const h = elevCanvas.getBoundingClientRect().height;
-      elevCtx.clearRect(0,0,w,h);
-      elevCtx.fillStyle = "rgba(0,0,0,0.6)";
-      elevCtx.font = "12px system-ui";
-      elevCtx.fillText(t ? "No elevation data in this GPX." : "Select a trail to see its elevation profile.", 10, 20);
-      return;
-    }
-    drawElevationProfile(t.stats.elevInfo.cum, t.stats.elevInfo.smoothed, t.color);
-  }
-
-  function renderSelectedTrailStats() {
-    const t = trails.find(x => x.id === selectedTrailId);
-    if (!t) { trailStatsEl.textContent = "Load a GPX file to see elevation/time stats."; return; }
-
-    const distKm = (t.stats.distM / 1000).toFixed(3);
-    let html = `<b>${t.name}</b><br>Distance: <b>${distKm} km</b>`;
-
-    if (t.stats.elevInfo) {
-      const ei = t.stats.elevInfo;
-      html += `<br>Elevation: min <b>${ei.min.toFixed(0)} m</b> · max <b>${ei.max.toFixed(0)} m</b>`;
-      html += `<br>Ascent: <b>${ei.up.toFixed(0)} m</b> · Descent: <b>${ei.down.toFixed(0)} m</b>`;
-    } else html += `<br>Elevation: <i>not present</i>`;
-
-    if (t.stats.timeDerived) {
-      const ti = t.stats.timeDerived;
-      html += `<br>Start: <b>${ti.start.toLocaleString()}</b>`;
-      html += `<br>End: <b>${ti.end.toLocaleString()}</b>`;
-      html += `<br>Duration: <b>${formatDuration(ti.totalMs)}</b> · Moving: <b>${formatDuration(ti.movingMs)}</b> · Stopped: <b>${formatDuration(ti.stoppedMs)}</b>`;
-      if (ti.avgKmh !== null) html += `<br>Avg speed: <b>${ti.avgKmh.toFixed(2)} km/h</b>`;
-      if (ti.movingKmh !== null) html += ` · Moving speed: <b>${ti.movingKmh.toFixed(2)} km/h</b>`;
-    } else html += `<br>Time: <i>not present</i>`;
-
-    trailStatsEl.innerHTML = html;
-  }
-
-  function fitToTrail(trail) {
-    try { map.fitBounds(trail.polyline.getBounds(), { padding: [20, 20] }); } catch (_) {}
-  }
-
-  function clearAllTrails() {
-    for (const t of trails) if (t.polyline) map.removeLayer(t.polyline);
-    trails.length = 0;
-    selectedTrailId = null;
-    renderTrailsList();
-    drawElevationForSelected();
-    renderSelectedTrailStats();
-    setStatus("All trails cleared.");
-  }
-  document.getElementById("clearTrailsBtn").addEventListener("click", clearAllTrails);
-
-  document.getElementById("gpxFile").addEventListener("change", async (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-
-    try {
-      const text = await file.text();
-      const { latlngs, ele, times } = parseGpx(text);
-
-      if (latlngs.length < 2) { setStatus("GPX loaded, but no usable points found (<trkpt> or <rtept>)."); return; }
-
-      const id = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + "_" + Math.random().toString(16).slice(2);
-      const name = file.name || `Trail ${trails.length + 1}`;
-      const color = nextColor();
-
-      const trail = { id, name, latlngs, ele, times, color, polyline: null, stats: null };
-      trail.stats = buildTrailStats(trail);
-      trails.push(trail);
-
-      
-      addTrailToMap(trail);
-      selectTrail(trail.id);
-      fitToTrail(trail);
-
-      if (document.getElementById("trackToPoints").checked) {
-        const thinned = thinLatLngs(latlngs, 120);
-
-        points.length = 0;
-        markers.forEach(m => map.removeLayer(m));
-        markers.length = 0;
-        clearSegmentLabels();
-
-        for (const ll of thinned) addPoint(ll);
-
-        setStatus(`Loaded “${name}”. Converted to ${thinned.length} editable points.`);
+    const ornefniToggle = document.getElementById("ornefniToggle");
+    ornefniToggle.addEventListener("change", () => {
+      if (ornefniToggle.checked) {
+        ornefniOverlay.addTo(map);
+        setStatus("Örnefni: ON");
       } else {
-        setStatus(`Loaded “${name}”. Trails loaded: ${trails.length}.`);
+        map.removeLayer(ornefniOverlay);
+        setStatus("Örnefni: OFF");
+      }
+    });
+
+    // --------------------------
+    // ISMUS (new structure: top-level array in ismus.json)
+    // --------------------------
+    const ismusToggle = document.getElementById("ismusToggle");
+    const ismusLayer = L.layerGroup(); // only added when toggled on
+    let ismusLoaded = false;
+
+    // Right panel elements
+    const ismusPanelEl = document.getElementById("ismusPanel");
+    const ismusMetaEl = document.getElementById("ismusMeta");
+    const ismusAudioEl = document.getElementById("ismusAudio");
+
+    function showIsmusPanel(show) {
+      if (!ismusPanelEl) return;
+      ismusPanelEl.style.display = show ? "" : "none";
+    }
+
+    function esc(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function toNum(x) {
+      if (x == null) return NaN;
+      const n = Number(String(x).trim().replace(",", "."));
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function setAudio(url) {
+      if (!ismusAudioEl) return;
+      const u = String(url ?? "").trim();
+      if (u) {
+        ismusAudioEl.src = u;
+        ismusAudioEl.load();
+      } else {
+        ismusAudioEl.pause();
+        ismusAudioEl.removeAttribute("src");
+        ismusAudioEl.load();
+      }
+    }
+
+    // Decide what "name" means for the right panel (your requested field)
+    // Preference: contents -> stanza[0].first_line -> "Recording <id>"
+    function getRecordingName(rec) {
+      const c = String(rec?.contents ?? "").trim();
+      if (c) return c;
+
+      const fl = String(rec?.stanza?.[0]?.first_line ?? "").trim();
+      if (fl) return fl;
+
+      const id = rec?.id != null ? String(rec.id) : "";
+      return id ? `Recording ${id}` : "Recording";
+    }
+
+    // Get mp3 URL (first file)
+    function getMp3Url(rec) {
+      const f0 = rec?.files?.[0];
+      return f0 ? String(f0).trim() : "";
+    }
+
+    // Get map coordinate for the marker
+    // Preference: rec.location.lat/lng -> first source[0].location_objs[0].lat/lng
+    function getLatLng(rec) {
+      const lat1 = toNum(rec?.location?.lat);
+      const lng1 = toNum(rec?.location?.lng);
+      if (Number.isFinite(lat1) && Number.isFinite(lng1)) return L.latLng(lat1, lng1);
+
+      const lat2 = toNum(rec?.source?.[0]?.location_objs?.[0]?.lat);
+      const lng2 = toNum(rec?.source?.[0]?.location_objs?.[0]?.lng);
+      if (Number.isFinite(lat2) && Number.isFinite(lng2)) return L.latLng(lat2, lng2);
+
+      return null;
+    }
+
+    function renderIsmusPanel(rec) {
+      showIsmusPanel(true);
+
+      const name = getRecordingName(rec);
+      const mp3 = getMp3Url(rec);
+
+      // NEW fields requested
+      const sourceName = String(rec?.source?.[0]?.name ?? "").trim();      // source[0].name
+      const locationName = String(rec?.location?.name ?? "").trim();       // location.name
+      const dateOld = String(rec?.date_old ?? "").trim();                  // date_old
+
+      // Build panel HTML:
+      // - song name above player (as before)
+      // - player
+      // - extra fields underneath
+      let html = `<b>${esc(name)}</b>`;
+
+      // Put extra info under the player (but we render the text block now;
+      // the player is a separate <audio> element already in the panel)
+      const lines = [];
+      if (sourceName) lines.push(`Source: <b>${esc(sourceName)}</b>`);
+      if (locationName) lines.push(`Location: <b>${esc(locationName)}</b>`);
+      if (dateOld) lines.push(`Date: <b>${esc(dateOld)}</b>`);
+
+      // We’ll show the lines under the player by putting them after a spacer.
+      // The player itself stays where it is in HTML.
+      if (lines.length) {
+        html += `<div style="margin-top:8px; line-height:1.35;">${lines.join("<br>")}</div>`;
       }
 
+      if (ismusMetaEl) ismusMetaEl.innerHTML = html;
+
+      // Audio player
+      setAudio(mp3);
+      if (!mp3 && ismusMetaEl) {
+        ismusMetaEl.innerHTML += `<div style="margin-top:8px;"><i>No MP3 URL in files[0].</i></div>`;
+      }
+    }
+
+
+    async function loadIsmusOnce() {
+      if (ismusLoaded) return;
+
+      setStatus("Loading Ismus…");
+
+      // Since your file is next to the HTML:
+      // If you serve from a subfolder, use "/ismus.json" instead.
+      const res = await fetch("./ismus.json", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Could not load ismus.json (HTTP ${res.status})`);
+
+      const data = await res.json();
+
+      // New structure: top-level array
+      if (!Array.isArray(data)) {
+        throw new Error("ismus.json expected a top-level JSON array: [ { ... }, { ... } ]");
+      }
+
+      ismusLayer.clearLayers();
+
+      let added = 0;
+      for (const rec of data) {
+        const ll = getLatLng(rec);
+        if (!ll) continue;
+
+        const name = getRecordingName(rec);
+
+        const m = L.circleMarker(ll, {
+          radius: 6,
+          weight: 2,
+          opacity: 0.9,
+          fillOpacity: 0.5
+        });
+
+        m.bindPopup(`<b>${esc(name)}</b>`);
+        m.on("click", () => renderIsmusPanel(rec));
+
+        m.addTo(ismusLayer);
+        added++;
+      }
+
+      ismusLoaded = true;
+      setStatus(`Ismus loaded: ${added} points`);
+    }
+
+    ismusToggle.addEventListener("change", async () => {
+      if (ismusToggle.checked) {
+        try {
+          await loadIsmusOnce();
+          ismusLayer.addTo(map);
+          setStatus("Ismus: ON");
+        } catch (err) {
+          ismusToggle.checked = false;
+          setStatus("Ismus load failed: " + err.message);
+        }
+      } else {
+        map.removeLayer(ismusLayer);
+        setAudio("");
+        showIsmusPanel(false);
+        setStatus("Ismus: OFF");
+      }
+    });
+
+    // --------------------------
+    // EARTHQUAKES (IMO Skjálftalísa API)
+    // --------------------------
+    const quakesToggle = document.getElementById("quakesToggle");
+    const quakesLayer = L.layerGroup();
+    let quakeTimer = null;
+    const quakesPanelEl = document.getElementById("quakesPanel");
+    const quakesHoursEl = document.getElementById("quakesHours");
+    const quakesHoursLabelEl = document.getElementById("quakesHoursLabel");
+    const quakesHoursLabel2El = document.getElementById("quakesHoursLabel2");
+
+    let quakesHoursBack = Number(quakesHoursEl?.value || 48);
+
+    function showQuakesPanel(show) {
+      if (!quakesPanelEl) return;
+      quakesPanelEl.style.display = show ? "" : "none";
+    }
+
+    function setQuakesHoursUI(v) {
+      if (quakesHoursLabelEl) quakesHoursLabelEl.textContent = String(v);
+      if (quakesHoursLabel2El) quakesHoursLabel2El.textContent = String(v);
+    }
+    setQuakesHoursUI(quakesHoursBack);
+
+    function pad2(n) { return String(n).padStart(2, "0"); }
+
+    // API expects: "yyyy-mm-dd HH:MM:SS" (UTC) :contentReference[oaicite:1]{index=1}
+    function formatUtc(dt) {
+      return `${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth() + 1)}-${pad2(dt.getUTCDate())} ` +
+        `${pad2(dt.getUTCHours())}:${pad2(dt.getUTCMinutes())}:${pad2(dt.getUTCSeconds())}`;
+    }
+
+    // --- Skjálftalísa exact style mapping (from ArcGIS Drawing Info) --- :contentReference[oaicite:1]{index=1}
+
+    // ArcGIS "Size" values are diameters in pixels; Leaflet needs radius.
+    function magRadiusSkjalftalisa(m) {
+      const mag = Number(m);
+      let size; // diameter
+      if (!Number.isFinite(mag)) size = 5;
+      else if (mag <= -1) size = 2;
+      else if (mag <= 0) size = 5;
+      else if (mag <= 1) size = 8;
+      else if (mag <= 2) size = 11;
+      else if (mag <= 3) size = 14;
+      else if (mag <= 4) size = 17;
+      else if (mag <= 5) size = 20;
+      else if (mag <= 6) size = 23;
+      else size = 26; // >= 6.01 (up to 7+)
+      return size / 2;
+    }
+
+    // Color by "time_elapsed" in hours (0–336), matching the service renderer. :contentReference[oaicite:2]{index=2}
+    function timeColorSkjalftalisa(hours) {
+      const h = Number(hours);
+      if (!Number.isFinite(h)) return [85, 255, 0, 255]; // fallback
+
+      if (h <= 24) return [255, 0, 0, 255];
+      if (h <= 48) return [255, 85, 0, 255];
+      if (h <= 72) return [255, 140, 0, 255];
+      if (h <= 96) return [255, 191, 0, 255];
+      if (h <= 120) return [255, 238, 0, 255];
+      if (h <= 144) return [236, 255, 64, 255];
+      if (h <= 168) return [201, 255, 120, 255];
+      if (h <= 192) return [158, 255, 169, 255];
+      if (h <= 216) return [97, 255, 221, 255];
+      if (h <= 240) return [31, 236, 255, 255];
+      if (h <= 264) return [56, 179, 255, 255];
+      if (h <= 288) return [59, 124, 255, 255];
+      if (h <= 312) return [46, 70, 255, 255];
+      return [0, 0, 255, 255]; // <= 336+ hours
+    }
+
+    function rgbaToCss(rgba) {
+      const [r, g, b, a] = rgba;
+      return `rgba(${r},${g},${b},${(a ?? 255) / 255})`;
+    }
+
+    async function fetchRecentQuakes(hoursBack = 48) {
+      // Clear old markers
+      quakesLayer.clearLayers();
+
+      const end = new Date();
+      const start = new Date(end.getTime() - hoursBack * 3600 * 1000);
+
+      const body = {
+        start_time: formatUtc(start),
+        end_time: formatUtc(end),
+        // Ask for what we need
+        fields: ["event_id", "lat", "long", "time", "magnitude", "depth", "magnitude_type"],
+        // Optional: choose preferred magnitude systems if you want
+        // magnitude_preference: ["Mlw","Ml","Autmag"],
+        // event_type: ["qu"],
+        // originating_system: ["SIL picks","SIL aut.mag"],
+        sort: ["time"] // descending
+      };
+
+      // POST /quake/array returns arrays of fields :contentReference[oaicite:2]{index=2}
+      const res = await fetch("https://api.vedur.is/skjalftalisa/v1/quake/array", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) throw new Error(`Skjálftalísa API error (HTTP ${res.status})`);
+      const data = await res.json();
+
+      if (!data || !data.data) return;
+
+      const d = data.data;
+      const n = (d.event_id?.length || d.lat?.length || 0);
+
+      for (let i = 0; i < n; i++) {
+        const id = d.event_id?.[i];
+        const lat = d.lat?.[i];
+        const lng = d.long?.[i];
+        const mag = d.magnitude?.[i];
+        const dep = d.depth?.[i];
+        const magType = d.magnitude_type?.[i] || "";
+        const t = d.time?.[i]; // docs show time as integer in this endpoint response example :contentReference[oaicite:3]{index=3}
+
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+
+        // Attempt to interpret time:
+        // If it's seconds since epoch -> new Date(t*1000)
+        // If it's ms since epoch -> new Date(t)
+        // If unknown -> omit
+        let dtStr = "";
+        if (Number.isFinite(t)) {
+          const ms = (t > 10_000_000_000 ? t : t * 1000);
+          const dt = new Date(ms);
+          if (!isNaN(dt)) dtStr = dt.toUTCString();
+        }
+
+        // compute time_elapsed hours
+        let hoursElapsed = NaN;
+        if (Number.isFinite(t)) {
+          const ms = (t > 10_000_000_000 ? t : t * 1000);
+          const dt = new Date(ms);
+          if (!isNaN(dt)) hoursElapsed = (Date.now() - dt.getTime()) / 3600000;
+        }
+
+        const fillRgba = timeColorSkjalftalisa(hoursElapsed);
+        const fillCss = rgbaToCss(fillRgba);
+
+        const marker = L.circleMarker([lat, lng], {
+          radius: magRadiusSkjalftalisa(mag),
+          weight: 1,                 // outline width ~1 like service :contentReference[oaicite:3]{index=3}
+          color: "rgba(0,0,0,1)",     // black outline
+          opacity: 1,
+          fillColor: fillCss,
+          fillOpacity: 1
+        });
+
+        const magLabel = Number.isFinite(mag) ? mag.toFixed(1) : "—";
+        const depLabel = Number.isFinite(dep) ? `${dep.toFixed(1)} km` : "—";
+        const idLabel = (id != null) ? String(id) : "";
+
+        marker.bindPopup(
+          `<div style="font-weight:700;margin-bottom:4px;">M ${magLabel} ${magType}</div>` +
+          `<div style="font-size:12.5px;line-height:1.35;">` +
+          (dtStr ? `Time: <b>${dtStr}</b><br>` : "") +
+          `Depth: <b>${depLabel}</b><br>` +
+          (idLabel ? `Event ID: <b>${idLabel}</b>` : "") +
+          `</div>`
+        );
+
+        marker.addTo(quakesLayer);
+      }
+    }
+
+    async function refreshQuakes() {
+      try {
+        setStatus(`Loading earthquakes (${quakesHoursBack}h)…`);
+        await fetchRecentQuakes(quakesHoursBack);
+        setStatus(`Earthquakes updated (${quakesHoursBack}h).`);
+      } catch (err) {
+        setStatus("Earthquake load failed: " + err.message);
+      }
+    }
+    let quakeSliderDebounce = null;
+
+    if (quakesHoursEl) {
+      quakesHoursEl.addEventListener("input", () => {
+        quakesHoursBack = Number(quakesHoursEl.value);
+        setQuakesHoursUI(quakesHoursBack);
+
+        // Only refetch if layer is enabled
+        if (!quakesToggle.checked) return;
+
+        // Debounce so it updates quickly but doesn't hammer the API while dragging
+        if (quakeSliderDebounce) clearTimeout(quakeSliderDebounce);
+        quakeSliderDebounce = setTimeout(() => {
+          refreshQuakes();
+        }, 250);
+      });
+    }
+
+
+    quakesToggle.addEventListener("change", async () => {
+      if (quakesToggle.checked) {
+        quakesLayer.addTo(map);
+        await refreshQuakes();
+        quakeTimer = setInterval(refreshQuakes, 60_000);
+      } else {
+        if (quakeTimer) { clearInterval(quakeTimer); quakeTimer = null; }
+        map.removeLayer(quakesLayer);
+        setStatus("Earthquakes: OFF");
+      }
+    });
+
+    quakesToggle.addEventListener("change", async () => {
+      if (quakesToggle.checked) {
+        showQuakesPanel(true);
+        quakesLayer.addTo(map);
+        await refreshQuakes();
+        quakeTimer = setInterval(refreshQuakes, 60_000);
+      } else {
+        showQuakesPanel(false);
+        if (quakeTimer) { clearInterval(quakeTimer); quakeTimer = null; }
+        map.removeLayer(quakesLayer);
+        setStatus("Earthquakes: OFF");
+      }
+    });
+
+    // --------------------------
+    // RAIN overlay (RainViewer) - minimal toggle
+    // --------------------------
+    const rainToggleEl = document.getElementById("rainToggle");
+    const rainStatusEl = document.getElementById("rainStatus");
+
+    let rainLayer = null;
+    let rainRefreshTimer = null;
+
+    function setRainStatus(msg) {
+      if (rainStatusEl) rainStatusEl.textContent = msg || "";
+    }
+
+    async function getLatestRainviewerFrame() {
+      // RainViewer weather maps index:
+      // https://api.rainviewer.com/public/weather-maps.json
+      const res = await fetch("https://api.rainviewer.com/public/weather-maps.json", { cache: "no-store" });
+      if (!res.ok) throw new Error(`RainViewer HTTP ${res.status}`);
+      const data = await res.json();
+
+      const past = data?.radar?.past ?? [];
+      const nowcast = data?.radar?.nowcast ?? [];
+      const frames = [...past, ...nowcast]
+        .filter(f => f && typeof f.path === "string")
+        .map(f => ({ time: Number(f.time), path: f.path }));
+
+      if (!frames.length) throw new Error("No rain radar frames available.");
+      return frames[frames.length - 1]; // latest
+    }
+
+    function buildRainviewerTileUrl(framePath) {
+      return `https://tilecache.rainviewer.com${framePath}/256/{z}/{x}/{y}/0/0_0.png`;
+    }
+
+    async function enableRain() {
+      try {
+        setRainStatus("Loading…");
+
+        const latest = await getLatestRainviewerFrame();
+        const url = buildRainviewerTileUrl(latest.path);
+
+        // Replace layer
+        if (rainLayer) map.removeLayer(rainLayer);
+
+        rainLayer = L.tileLayer(url, {
+          opacity: 0.7,
+          zIndex: 650
+        }).addTo(map);
+
+        const dt = Number.isFinite(latest.time) ? new Date(latest.time * 1000) : null;
+        setRainStatus(dt && !isNaN(dt) ? `Updated: ${dt.toLocaleString()}` : "On");
+
+        // Refresh the latest frame every 5 minutes while enabled
+        if (rainRefreshTimer) clearInterval(rainRefreshTimer);
+        rainRefreshTimer = setInterval(async () => {
+          if (!rainToggleEl.checked) return;
+          try {
+            const fr = await getLatestRainviewerFrame();
+            const newUrl = buildRainviewerTileUrl(fr.path);
+            if (rainLayer) rainLayer.setUrl(newUrl);
+            const d = Number.isFinite(fr.time) ? new Date(fr.time * 1000) : null;
+            setRainStatus(d && !isNaN(d) ? `Updated: ${d.toLocaleString()}` : "On");
+          } catch (_) {
+            // ignore periodic refresh errors
+          }
+        }, 5 * 60 * 1000);
+
+      } catch (err) {
+        rainToggleEl.checked = false;
+        setRainStatus("Rain failed: " + err.message);
+      }
+    }
+
+    function disableRain() {
+      if (rainRefreshTimer) { clearInterval(rainRefreshTimer); rainRefreshTimer = null; }
+      if (rainLayer) { map.removeLayer(rainLayer); rainLayer = null; }
+      setRainStatus("");
+    }
+
+    rainToggleEl?.addEventListener("change", async () => {
+      if (rainToggleEl.checked) await enableRain();
+      else disableRain();
+    });
+
+    // --------------------------
+    // LIVE WEATHER STATIONS (api.vedur.is)
+    // --------------------------
+    const weatherStationsToggle = document.getElementById("weatherStationsToggle");
+    const wxLayer = L.layerGroup(); // not added until toggled on
+    let wxLoaded = false;
+    let wxRefreshTimer = null;
+
+    // cache stations by id -> { id, name, lat, lon }
+    const wxStations = new Map();
+    // cache markers by id -> Leaflet marker
+    const wxMarkers = new Map();
+    const wxWindArrows = new Map(); // stationId -> polyline arrow
+
+    function pick(obj, keys) {
+      if (!obj || typeof obj !== "object") return undefined;
+      for (const k of keys) {
+        if (k in obj && obj[k] !== null && obj[k] !== "") return obj[k];
+      }
+      return undefined;
+    }
+    function toNum(x) {
+      if (x == null) return NaN;
+      const n = Number(String(x).trim().replace(",", "."));
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(x, suffix = "") {
+      const n = toNum(x);
+      return Number.isFinite(n) ? `${n}${suffix}` : "—";
+    }
+    function degToRad(d) { return (d * Math.PI) / 180; }
+
+    // In meteorology, wind direction is "from" direction.
+    // To draw where it blows TO, add 180°.
+    function windToDirectionDeg(fromDeg) {
+      const d = toNum(fromDeg);
+      if (!Number.isFinite(d)) return NaN;
+      return (d + 180) % 360;
+    }
+
+    // Build a short arrow line + two little "wings"
+    function buildWindArrow(latlng, windFromDeg, speedMs) {
+      const sp = toNum(speedMs);
+      const toDeg = windToDirectionDeg(windFromDeg);
+      if (!Number.isFinite(toDeg) || !Number.isFinite(sp)) return null;
+
+      // scale length by speed, but clamp so it stays readable
+      const len = Math.min(8000, Math.max(800, sp * 500)); // meters
+
+      const head = map.destination
+        ? map.destination(latlng, toDeg, len) // Leaflet doesn't have this by default
+        : null;
+
+      // We’ll do a simple approximation using lat/lng offsets in degrees (fine at Iceland scales for a tiny arrow)
+      // meters per degree lat ~111,320; meters per degree lng scales by cos(lat)
+      const lat = latlng.lat;
+      const metersPerDegLat = 111320;
+      const metersPerDegLng = 111320 * Math.cos(degToRad(lat));
+
+      const dx = Math.sin(degToRad(toDeg)) * len; // east meters
+      const dy = Math.cos(degToRad(toDeg)) * len; // north meters
+
+      const end = L.latLng(lat + (dy / metersPerDegLat), latlng.lng + (dx / metersPerDegLng));
+
+      // arrow wings (short)
+      const wingLen = len * 0.25;
+      const leftDeg = (toDeg + 150) % 360;
+      const rightDeg = (toDeg + 210) % 360;
+
+      function offsetPoint(base, deg, meters) {
+        const ddx = Math.sin(degToRad(deg)) * meters;
+        const ddy = Math.cos(degToRad(deg)) * meters;
+        return L.latLng(base.lat + (ddy / metersPerDegLat), base.lng + (ddx / metersPerDegLng));
+      }
+
+      const left = offsetPoint(end, leftDeg, wingLen);
+      const right = offsetPoint(end, rightDeg, wingLen);
+
+      return { start: latlng, end, left, right };
+    }
+
+    // Tries multiple common field names for AWS observations.
+    function extractWx(obs) {
+      // temperature (°C)
+      const t = pick(obs, ["t", "temp", "temperature", "t2m", "t_2m", "T", "air_temperature"]);
+      // wind speed (m/s)
+      const ws = pick(obs, ["ws", "wind_speed", "wind", "f", "F", "ff", "ff_10m", "windSpeed"]);
+      // wind direction (deg)
+      const wd = pick(obs, ["wd", "wind_direction", "d", "D", "dd", "dd_10m", "windDirection"]);
+      // precipitation last hour / interval (mm)
+      const pr = pick(obs, ["r", "precip", "precipitation", "rr", "rr_1h", "r1h", "precip_1h", "rain"]);
+
+      // time / timestamp
+      const ts = pick(obs, ["time", "timestamp", "timi", "date", "datetime", "created", "valid"]);
+
+      return { t, ws, wd, pr, ts };
+    }
+
+
+
+    function buildWxPopup(st, wx) {
+      const name = st?.name ? String(st.name) : `Station ${st?.id ?? ""}`;
+      const lat = st?.lat, lng = st?.lng;
+
+      const tStr = fmt(wx.t, "°C");
+      const wsStr = fmt(wx.ws, " m/s");
+      const wdStr = fmt(wx.wd, "°");
+      const prStr = fmt(wx.pr, " mm");
+      const timeStr = wx.ts ? String(wx.ts) : "—";
+
+      return `
+    <div style="font-weight:600;margin-bottom:4px;">${name}</div>
+    <div style="font-size:12px;line-height:1.35;color:#222;">
+      Temp: <b>${tStr}</b><br>
+      Wind: <b>${wsStr}</b> @ <b>${wdStr}</b><br>
+      Precip: <b>${prStr}</b><br>
+      Time: <span style="color:#555;">${timeStr}</span><br>
+      <span style="color:#555;">${Number.isFinite(lat) ? lat.toFixed(5) : ""}${Number.isFinite(lng) ? ", " + lng.toFixed(5) : ""}</span>
+    </div>
+  `;
+    }
+
+    function makeWxLabel(tVal) {
+      const t = toNum(tVal);
+      if (!Number.isFinite(t)) return null;
+
+      const cls = (t < 0) ? "wx-label wx-cold" : "wx-label wx-warm";
+      return `<div class="${cls}">${t.toFixed(0)}°</div>`;
+    }
+
+
+    async function loadStationsOnce() {
+      if (wxLoaded) return;
+
+      setStatus("Loading weather stations…");
+
+      // Stations metadata
+      // (We request active stations; you can remove active=true if you want all)
+      const stationsRes = await fetch("https://api.vedur.is/weather/stations?active=true", { cache: "no-store" });
+      if (!stationsRes.ok) throw new Error(`Stations HTTP ${stationsRes.status}`);
+
+      const stations = await stationsRes.json();
+      if (!Array.isArray(stations)) throw new Error("Stations response not an array");
+
+      wxStations.clear();
+
+      for (const s of stations) {
+        // In IMO station list, id is often "id" and coordinates are typically "lat" and "lon"
+        // Sometimes it's "lon" not "lng".
+        const id = toNum(pick(s, ["id", "station", "station_id"]));
+        const name = pick(s, ["name", "short_name", "station_name"]) || `Station ${id}`;
+
+        const lat = toNum(pick(s, ["lat", "latitude"]));
+        const lng = toNum(pick(s, ["lon", "lng", "longitude"]));
+
+        if (!Number.isFinite(id)) continue;
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+
+        wxStations.set(id, { id, name, lat, lng });
+      }
+
+      console.log("WX stations parsed:", wxStations.size);
+
+
+      wxLoaded = true;
+      setStatus(`Weather stations loaded: ${wxStations.size}`);
+    }
+
+    async function refreshWxObservations() {
+      if (!wxLoaded) return;
+
+      const obsRes = await fetch(
+        "https://api.vedur.is/weather/observations/aws/hour/latest?parameters=basic",
+        { cache: "no-store" }
+      );
+      if (!obsRes.ok) throw new Error(`Observations HTTP ${obsRes.status}`);
+
+      const raw = await obsRes.json();
+
+      // Some APIs return {data:[...]} instead of [...]
+      const obsArr = Array.isArray(raw)
+        ? raw
+        : Array.isArray(raw?.data)
+          ? raw.data
+          : Array.isArray(raw?.observations)
+            ? raw.observations
+            : [];
+
+      // --- debug: show what we actually got
+      console.log("WX raw observations type:", Array.isArray(raw) ? "array" : typeof raw, raw);
+      console.log("WX obsArr length:", obsArr.length);
+      console.log("WX obs sample keys:", obsArr[0] ? Object.keys(obsArr[0]) : "(none)");
+
+      function getObsStationId(o) {
+        // Try many possible locations/keys
+        const sid =
+          toNum(pick(o, ["station_id", "stationId", "station", "id", "stid", "sid"])) ||
+          toNum(pick(o?.station, ["id", "station_id", "stationId"])) ||
+          NaN;
+
+        return Number.isFinite(sid) ? sid : NaN;
+      }
+
+      function getObsLatLng(o) {
+        const lat = toNum(pick(o, ["lat", "latitude", "y"]));
+        const lng = toNum(pick(o, ["lon", "lng", "longitude", "x"]));
+        if (Number.isFinite(lat) && Number.isFinite(lng)) return L.latLng(lat, lng);
+
+        const lat2 = toNum(pick(o?.station, ["lat", "latitude", "y"]));
+        const lng2 = toNum(pick(o?.station, ["lon", "lng", "longitude", "x"]));
+        if (Number.isFinite(lat2) && Number.isFinite(lng2)) return L.latLng(lat2, lng2);
+
+        return null;
+      }
+
+      // Build lookup: sid -> obs
+      const obsById = new Map();
+      let obsWithId = 0;
+      let obsWithCoords = 0;
+
+      for (const o of obsArr) {
+        const sid = getObsStationId(o);
+        if (Number.isFinite(sid)) {
+          obsById.set(sid, o);
+          obsWithId++;
+        }
+        if (getObsLatLng(o)) obsWithCoords++;
+      }
+
+      // DEBUG stations
+      console.log("WX stations parsed:", wxStations.size);
+      const st0 = wxStations.values().next().value;
+      console.log("WX station sample:", st0);
+
+      let created = 0, updated = 0, matched = 0;
+
+      // Preferred path: join stations (from /stations) with obs (by station id)
+      for (const [sid, st] of wxStations.entries()) {
+        const obs = obsById.get(sid);
+        if (!obs) continue;
+
+        matched++;
+        const wx = extractWx(obs);
+
+
+        // --- wind arrow ---
+        const windGeom = buildWindArrow(L.latLng(st.lat, st.lng), wx.wd ?? wx.d, wx.ws ?? wx.f);
+
+        const existingArrow = wxWindArrows.get(sid);
+        if (windGeom) {
+          const pts = [windGeom.start, windGeom.end, windGeom.left, windGeom.end, windGeom.right];
+
+          if (!existingArrow) {
+            const arr = L.polyline(pts, {
+              weight: 2,
+              opacity: 0.9,
+              // no explicit color (uses default), but you can set if you want
+            }).addTo(wxLayer);
+            wxWindArrows.set(sid, arr);
+          } else {
+            existingArrow.setLatLngs(pts);
+          }
+        } else {
+          // remove arrow if no wind data
+          if (existingArrow) {
+            wxLayer.removeLayer(existingArrow);
+            wxWindArrows.delete(sid);
+          }
+        }
+
+        let mk = wxMarkers.get(sid);
+        const labelHtml = makeWxLabel(wx.t);
+
+        if (!mk) {
+          mk = L.circleMarker([st.lat, st.lng], {
+            radius: 5,
+            weight: 2,
+            opacity: 0.9,
+            fillOpacity: 0.35
+          });
+
+          mk.bindPopup(buildWxPopup(st, wx));
+          if (labelHtml) {
+            mk.bindTooltip(labelHtml, {
+              permanent: true,
+              direction: "top",
+              offset: [0, -6],
+              opacity: 1
+            });
+          }
+
+          mk.addTo(wxLayer);
+          wxMarkers.set(sid, mk);
+          created++;
+        } else {
+          mk.setLatLng([st.lat, st.lng]);
+          mk.setPopupContent(buildWxPopup(st, wx));
+
+          if (labelHtml) {
+            mk.unbindTooltip();
+            mk.bindTooltip(labelHtml, {
+              permanent: true,
+              direction: "top",
+              offset: [0, -6],
+              opacity: 1
+            });
+          } else {
+            mk.unbindTooltip();
+          }
+          updated++;
+        }
+      }
+
+      // Fallback: if NOTHING matched, plot observations directly if they include coordinates
+      if (matched === 0 && obsWithCoords > 0) {
+        // remove only our previous wxMarkers (don’t nuke whole layer)
+        for (const mk of wxMarkers.values()) wxLayer.removeLayer(mk);
+        wxMarkers.clear();
+
+        let direct = 0;
+        for (const o of obsArr) {
+          const ll = getObsLatLng(o);
+          if (!ll) continue;
+
+          const wx = extractWx(o);
+
+          const stLike = {
+            id: getObsStationId(o) || "",
+            name: String(pick(o, ["name"]) || pick(o?.station, ["name"]) || "Weather station"),
+            lat: ll.lat,
+            lng: ll.lng
+          };
+
+          const mk = L.circleMarker(ll, {
+            radius: 5,
+            weight: 2,
+            opacity: 0.9,
+            fillOpacity: 0.35
+          });
+
+          const labelHtml = makeWxLabel(wx.t);
+          mk.bindPopup(buildWxPopup(stLike, wx));
+          if (labelHtml) {
+            mk.bindTooltip(labelHtml, {
+              permanent: true,
+              direction: "top",
+              offset: [0, -6],
+              opacity: 1
+            });
+          }
+
+          mk.addTo(wxLayer);
+          direct++;
+        }
+
+        setStatus(`WX: matched 0, direct-plotted ${direct}. (obs: ${obsArr.length})`);
+        console.log("WX direct plotted:", direct);
+        console.log("WX markers in layer:", wxLayer.getLayers().length);
+        return;
+      }
+
+      setStatus(
+        `WX: stations ${wxStations.size}, obs ${obsArr.length}, obsWithId ${obsWithId}, matched ${matched}, new/updated ${created}/${updated}`
+      );
+      console.log("WX markers in layer:", wxLayer.getLayers().length);
+    }
+
+
+
+    function startWxAutoRefresh() {
+      stopWxAutoRefresh();
+      wxRefreshTimer = setInterval(() => {
+        // only refresh while layer is enabled
+        if (weatherStationsToggle.checked) {
+          refreshWxObservations().catch(err => setStatus("Weather refresh failed: " + err.message));
+        }
+      }, 5 * 60 * 1000);
+    }
+    function stopWxAutoRefresh() {
+      if (wxRefreshTimer) clearInterval(wxRefreshTimer);
+      wxRefreshTimer = null;
+    }
+
+    function fitToWxStations() {
+      const latlngs = [];
+      for (const st of wxStations.values()) latlngs.push([st.lat, st.lng]);
+      if (latlngs.length) map.fitBounds(latlngs, { padding: [20, 20] });
+    }
+
+    weatherStationsToggle.addEventListener("change", async () => {
+      if (weatherStationsToggle.checked) {
+        try {
+          wxLayer.addTo(map);
+          L.circleMarker([64.95, -19.02], { radius: 10, weight: 3, fillOpacity: 0.4 })
+            .addTo(wxLayer)
+            .bindPopup("WX test marker");
+
+          await loadStationsOnce();
+          fitToWxStations();          // <-- ADD THIS LINE
+
+          await refreshWxObservations();
+
+          startWxAutoRefresh();
+          setStatus("Weather stations: ON");
+        } catch (err) {
+          weatherStationsToggle.checked = false;
+          stopWxAutoRefresh();
+          map.removeLayer(wxLayer);
+          setStatus("Weather stations failed: " + err.message);
+        }
+      } else {
+        map.removeLayer(wxLayer);
+        stopWxAutoRefresh();
+        setStatus("Weather stations: OFF");
+      }
+      console.log("WX markers currently in layer:", wxLayer.getLayers().length);
+      console.log("STATIONS raw sample:", stations?.[0], "keys:", stations?.[0] ? Object.keys(stations[0]) : null);
+      setStatus(`WX markers: ${wxLayer.getLayers().length} (stations: ${wxStations.size}, obs: ${obsArr.length})`);
+
+    });
+
+    // --------------------------
+    // GPS (phone location)
+    // --------------------------
+    let gpsWatchId = null;
+    let gpsMarker = null;
+    let gpsAccuracyCircle = null;
+
+    const gpsStartBtn = document.getElementById("gpsStartBtn");
+    const gpsStopBtn = document.getElementById("gpsStopBtn");
+    const gpsFollowToggle = document.getElementById("gpsFollowToggle");
+
+    function setGpsUI(running) {
+      gpsStartBtn.disabled = running;
+      gpsStopBtn.disabled = !running;
+    }
+
+    function updateGpsDisplay(lat, lng, accuracyMeters) {
+      const latlng = L.latLng(lat, lng);
+
+      if (!gpsMarker) {
+        gpsMarker = L.circleMarker(latlng, {
+          radius: 7,
+          weight: 2,
+          opacity: 0.9,
+          fillOpacity: 0.6
+        }).addTo(map);
+        gpsMarker.bindPopup("Your location");
+      } else {
+        gpsMarker.setLatLng(latlng);
+      }
+
+      if (!gpsAccuracyCircle) {
+        gpsAccuracyCircle = L.circle(latlng, {
+          radius: Math.max(accuracyMeters || 0, 5),
+          weight: 1,
+          opacity: 0.4,
+          fillOpacity: 0.08
+        }).addTo(map);
+      } else {
+        gpsAccuracyCircle.setLatLng(latlng);
+        gpsAccuracyCircle.setRadius(Math.max(accuracyMeters || 0, 5));
+      }
+
+      if (gpsFollowToggle && gpsFollowToggle.checked) {
+        // keep current zoom, just pan smoothly
+        map.panTo(latlng, { animate: true });
+      }
+    }
+
+    function startGps() {
+      if (!navigator.geolocation) {
+        setStatus("GPS not available: this browser doesn't support geolocation.");
+        return;
+      }
+      if (gpsWatchId !== null) return; // already running
+
+      setStatus("Requesting GPS permission…");
+
+      gpsWatchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude, accuracy } = pos.coords;
+          updateGpsDisplay(latitude, longitude, accuracy);
+          setStatus(`GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)} (±${Math.round(accuracy)} m)`);
+        },
+        (err) => {
+          // Common cases: permission denied, insecure origin, timeout
+          setStatus(`GPS error: ${err.message}`);
+          stopGps(); // stop if it errors
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 2000,  // ms
+          timeout: 15000     // ms
+        }
+      );
+
+      setGpsUI(true);
+    }
+
+    function stopGps() {
+      if (gpsWatchId !== null) {
+        navigator.geolocation.clearWatch(gpsWatchId);
+        gpsWatchId = null;
+      }
+      setGpsUI(false);
+      setStatus("GPS stopped.");
+    }
+
+    gpsStartBtn.addEventListener("click", startGps);
+    gpsStopBtn.addEventListener("click", stopGps);
+
+    // --------------------------
+    // MANUAL POINT PATH
+    // --------------------------
+    const points = [];
+    const markers = [];
+    const segLabelMarkers = [];
+    const line = L.polyline([], { weight: 4, opacity: 0.9 }).addTo(map);
+
+    const pointIcon = L.divIcon({
+      className: "",
+      html: '<div class="pt-icon"></div>',
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
+    });
+
+    const countEl = document.getElementById("count");
+    const distEl = document.getElementById("distKm");
+    const statusEl = document.getElementById("status");
+    function setStatus(msg) { statusEl.textContent = msg || ""; }
+
+    function formatKm(m) { return (m / 1000).toFixed(3) + " km"; }
+    function totalMeters(latlngs) {
+      let meters = 0;
+      for (let i = 1; i < latlngs.length; i++) meters += map.distance(latlngs[i - 1], latlngs[i]);
+      return meters;
+    }
+    function midpoint(a, b) { return L.latLng((a.lat + b.lat) / 2, (a.lng + b.lng) / 2); }
+
+    function updatePointStats() {
+      countEl.textContent = String(points.length);
+      distEl.textContent = (totalMeters(points) / 1000).toFixed(3);
+    }
+    function syncPolyline() { line.setLatLngs(points); }
+
+    function relabelPopups() {
+      markers.forEach((mk, i) => {
+        const p = points[i];
+        mk.setPopupContent(`Point ${i + 1}<br>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}`);
+      });
+    }
+
+    function clearSegmentLabels() {
+      segLabelMarkers.forEach(m => map.removeLayer(m));
+      segLabelMarkers.length = 0;
+    }
+
+    function drawSegmentLabels() {
+      clearSegmentLabels();
+      if (!document.getElementById("showSegments").checked) return;
+      if (points.length < 2) return;
+
+      for (let i = 0; i < points.length - 1; i++) {
+        const a = points[i], b = points[i + 1];
+        const meters = map.distance(a, b);
+        const mid = midpoint(a, b);
+
+        const anchor = L.marker(mid, { interactive: false, opacity: 0 }).addTo(map);
+        anchor.bindTooltip(formatKm(meters), {
+          permanent: true,
+          direction: "center",
+          className: "seg-tooltip",
+          opacity: 1
+        });
+        segLabelMarkers.push(anchor);
+      }
+    }
+
+    function redrawPoints() {
+      syncPolyline();
+      relabelPopups();
+      drawSegmentLabels();
+      updatePointStats();
+    }
+
+    function addPoint(latlng) {
+      points.push(latlng);
+
+      const mk = L.marker(latlng, { draggable: true, icon: pointIcon })
+        .addTo(map)
+        .bindPopup(`Point ${points.length}<br>${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`);
+
+      mk.on("drag", (e) => {
+        const i = markers.indexOf(mk);
+        if (i >= 0) {
+          points[i] = e.target.getLatLng();
+          syncPolyline();
+          drawSegmentLabels();
+          updatePointStats();
+        }
+      });
+      mk.on("dragend", redrawPoints);
+
+      markers.push(mk);
+      redrawPoints();
+    }
+
+    map.on("click", (e) => addPoint(e.latlng));
+
+    document.getElementById("undoBtn").addEventListener("click", () => {
+      if (!points.length) return;
+      points.pop();
+      const mk = markers.pop();
+      if (mk) map.removeLayer(mk);
+      redrawPoints();
+    });
+
+    document.getElementById("clearPointsBtn").addEventListener("click", () => {
+      points.length = 0;
+      markers.forEach(m => map.removeLayer(m));
+      markers.length = 0;
+      clearSegmentLabels();
+      redrawPoints();
+    });
+
+    document.getElementById("showSegments").addEventListener("change", redrawPoints);
+    updatePointStats();
+
+    // --------------------------
+    // MULTI-GPX TRAILS + STATS
+    // --------------------------
+    const trails = [];
+    let selectedTrailId = null;
+
+    const trailsListEl = document.getElementById("trailsList");
+    const trailStatsEl = document.getElementById("trailStats");
+    const elevCanvas = document.getElementById("elevCanvas");
+
+    const elevCtx = elevCanvas.getContext("2d");
+
+    const colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
+    function nextColor() { return colors[trails.length % colors.length]; }
+
+    function resizeCanvasToCSS() {
+      const rect = elevCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      elevCanvas.width = Math.max(300, Math.floor(rect.width * dpr));
+      elevCanvas.height = Math.max(120, Math.floor(rect.height * dpr));
+      elevCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener("resize", () => { resizeCanvasToCSS(); drawElevationForSelected(); });
+    resizeCanvasToCSS();
+
+    function parseGpx(xmlText) {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(xmlText, "application/xml");
+      const parseError = xml.querySelector("parsererror");
+      if (parseError) throw new Error("Could not parse GPX (invalid XML).");
+
+      const trkpts = Array.from(xml.getElementsByTagName("trkpt"));
+      const rtepts = Array.from(xml.getElementsByTagName("rtept"));
+      const nodes = trkpts.length ? trkpts : rtepts;
+
+      const latlngs = [];
+      const ele = [];
+      const times = [];
+
+      for (const n of nodes) {
+        const lat = parseFloat(n.getAttribute("lat"));
+        const lon = parseFloat(n.getAttribute("lon"));
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+
+        latlngs.push(L.latLng(lat, lon));
+
+        const eleEl = n.getElementsByTagName("ele")[0];
+        ele.push(eleEl ? parseFloat(eleEl.textContent) : NaN);
+
+        const tEl = n.getElementsByTagName("time")[0];
+        times.push(tEl ? new Date(tEl.textContent) : null);
+      }
+      return { latlngs, ele, times };
+    }
+
+    function thinLatLngs(latlngs, minMeters = 120) {
+      if (latlngs.length <= 2) return latlngs.slice();
+      const out = [latlngs[0]];
+      let last = latlngs[0];
+      for (let i = 1; i < latlngs.length - 1; i++) {
+        const p = latlngs[i];
+        if (map.distance(last, p) >= minMeters) { out.push(p); last = p; }
+      }
+      out.push(latlngs[latlngs.length - 1]);
+      return out;
+    }
+
+    function computeCumulativeDistance(latlngs) {
+      const cum = new Array(latlngs.length).fill(0);
+      for (let i = 1; i < latlngs.length; i++) cum[i] = cum[i - 1] + map.distance(latlngs[i - 1], latlngs[i]);
+      return cum;
+    }
+
+    function smoothElevation(elev, windowSize = 7) {
+      const out = elev.slice();
+      const half = Math.floor(windowSize / 2);
+      for (let i = 0; i < elev.length; i++) {
+        let sum = 0, count = 0;
+        for (let j = i - half; j <= i + half; j++) {
+          if (j < 0 || j >= elev.length) continue;
+          const v = elev[j];
+          if (Number.isFinite(v)) { sum += v; count++; }
+        }
+        out[i] = count ? (sum / count) : NaN;
+      }
+      return out;
+    }
+
+    function ascentDescent(elev) {
+      let up = 0, down = 0;
+      let prev = null;
+      for (const v of elev) {
+        if (!Number.isFinite(v)) continue;
+        if (prev !== null) {
+          const d = v - prev;
+          if (d > 0) up += d; else down += -d;
+        }
+        prev = v;
+      }
+      return { up, down };
+    }
+
+    function formatDuration(ms) {
+      if (!Number.isFinite(ms) || ms < 0) return "N/A";
+      const s = Math.floor(ms / 1000);
+      const hh = Math.floor(s / 3600);
+      const mm = Math.floor((s % 3600) / 60);
+      const ss = s % 60;
+      const pad = (x) => String(x).padStart(2, "0");
+      return `${hh}:${pad(mm)}:${pad(ss)}`;
+    }
+
+    function computeTimeStats(latlngs, times) {
+      const validIdx = times.map((t, i) => (t instanceof Date && !isNaN(t)) ? i : -1).filter(i => i >= 0);
+      if (validIdx.length < 2) return null;
+
+      const start = times[validIdx[0]];
+      const end = times[validIdx[validIdx.length - 1]];
+      const totalMs = end - start;
+
+      const SPEED_THRESHOLD = 0.5; // m/s
+      let movingMs = 0, stoppedMs = 0;
+
+      for (let i = 1; i < times.length; i++) {
+        const t1 = times[i - 1], t2 = times[i];
+        if (!(t1 instanceof Date) || isNaN(t1) || !(t2 instanceof Date) || isNaN(t2)) continue;
+
+        const dt = t2 - t1;
+        if (dt <= 0) continue;
+
+        const d = map.distance(latlngs[i - 1], latlngs[i]);
+        const speed = d / (dt / 1000);
+
+        if (speed >= SPEED_THRESHOLD) movingMs += dt;
+        else stoppedMs += dt;
+      }
+
+      return { start, end, totalMs, movingMs, stoppedMs };
+    }
+
+    function kmh(meters, ms) {
+      if (!Number.isFinite(ms) || ms <= 0) return null;
+      return (meters / 1000) / (ms / 3600000);
+    }
+
+    function buildTrailStats(trail) {
+      const distM = totalMeters(trail.latlngs);
+      const cum = computeCumulativeDistance(trail.latlngs);
+
+      const hasEle = trail.ele.some(v => Number.isFinite(v));
+      let elevInfo = null;
+      if (hasEle) {
+        const sm = smoothElevation(trail.ele, 7);
+        const finite = sm.filter(Number.isFinite);
+        const min = Math.min(...finite);
+        const max = Math.max(...finite);
+        const { up, down } = ascentDescent(sm);
+        elevInfo = { min, max, up, down, smoothed: sm, cum };
+      }
+
+      const timeInfo = computeTimeStats(trail.latlngs, trail.times);
+      let timeDerived = null;
+      if (timeInfo) {
+        timeDerived = {
+          ...timeInfo,
+          avgKmh: kmh(distM, timeInfo.totalMs),
+          movingKmh: kmh(distM, timeInfo.movingMs),
+        };
+      }
+
+      return { distM, elevInfo, timeDerived, cum };
+    }
+
+    function addTrailToMap(trail) {
+      const poly = L.polyline(trail.latlngs, { weight: 4, opacity: 0.9, color: trail.color }).addTo(map);
+      trail.polyline = poly;
+      poly.on("click", () => selectTrail(trail.id));
+    }
+
+    function selectTrail(id) {
+      selectedTrailId = id;
       renderTrailsList();
       drawElevationForSelected();
       renderSelectedTrailStats();
-
-      e.target.value = "";
-    } catch (err) {
-      setStatus("GPX load failed: " + err.message);
     }
-  });
 
-  // initial sidebar
-  renderTrailsList();
-</script>
+    function renderTrailsList() {
+      trailsListEl.innerHTML = "";
+      if (!trails.length) { trailsListEl.innerHTML = `<div class="small">No trails loaded yet.</div>`; return; }
+
+      for (const t of trails) {
+        const item = document.createElement("div");
+        item.className = "trail-item" + (t.id === selectedTrailId ? " selected" : "");
+        item.addEventListener("click", () => selectTrail(t.id));
+
+        const distKm = (t.stats.distM / 1000).toFixed(2);
+
+        const title = document.createElement("div");
+        title.className = "trail-title";
+
+        const sw = document.createElement("div");
+        sw.className = "swatch";
+        sw.style.background = t.color;
+
+        const name = document.createElement("div");
+        name.textContent = t.name;
+
+        title.appendChild(sw);
+        title.appendChild(name);
+
+        const meta = document.createElement("div");
+        meta.className = "trail-meta";
+
+        let metaHtml = `Distance: <b>${distKm} km</b>`;
+        if (t.stats.elevInfo) metaHtml += `<br>Ascent: <b>${t.stats.elevInfo.up.toFixed(0)} m</b> · Descent: <b>${t.stats.elevInfo.down.toFixed(0)} m</b>`;
+        else metaHtml += `<br>Elevation: <i>not in GPX</i>`;
+
+        if (t.stats.timeDerived) metaHtml += `<br>Duration: <b>${formatDuration(t.stats.timeDerived.totalMs)}</b> · Moving: <b>${formatDuration(t.stats.timeDerived.movingMs)}</b>`;
+        else metaHtml += `<br>Time: <i>not in GPX</i>`;
+
+        meta.innerHTML = metaHtml;
+
+        item.appendChild(title);
+        item.appendChild(meta);
+        trailsListEl.appendChild(item);
+      }
+    }
+
+    function drawElevationProfile(cumMeters, elevMeters, color) {
+      resizeCanvasToCSS();
+      const w = elevCanvas.getBoundingClientRect().width;
+      const h = elevCanvas.getBoundingClientRect().height;
+
+      elevCtx.clearRect(0, 0, w, h);
+
+      // grid
+      elevCtx.lineWidth = 1;
+      elevCtx.strokeStyle = "rgba(0,0,0,0.08)";
+      for (let i = 1; i <= 4; i++) {
+        const y = (h * i) / 5;
+        elevCtx.beginPath(); elevCtx.moveTo(0, y); elevCtx.lineTo(w, y); elevCtx.stroke();
+      }
+
+      const pairs = [];
+      for (let i = 0; i < elevMeters.length; i++) {
+        const e = elevMeters[i];
+        if (Number.isFinite(e)) pairs.push([cumMeters[i], e]);
+      }
+      if (pairs.length < 2) {
+        elevCtx.fillStyle = "rgba(0,0,0,0.6)";
+        elevCtx.font = "12px system-ui";
+        elevCtx.fillText("No elevation data in this GPX.", 10, 20);
+        return;
+      }
+
+      const xMin = pairs[0][0];
+      const xMax = pairs[pairs.length - 1][0];
+      let yMin = Infinity, yMax = -Infinity;
+      for (const [, y] of pairs) { if (y < yMin) yMin = y; if (y > yMax) yMax = y; }
+      if (yMax - yMin < 1) yMax = yMin + 1;
+
+      const pad = 10, plotW = w - pad * 2, plotH = h - pad * 2;
+      const xScale = (x) => pad + ((x - xMin) / (xMax - xMin)) * plotW;
+      const yScale = (y) => pad + (1 - ((y - yMin) / (yMax - yMin))) * plotH;
+
+      // area
+      elevCtx.beginPath();
+      elevCtx.moveTo(xScale(pairs[0][0]), yScale(pairs[0][1]));
+      for (let i = 1; i < pairs.length; i++) elevCtx.lineTo(xScale(pairs[i][0]), yScale(pairs[i][1]));
+      elevCtx.lineTo(xScale(xMax), pad + plotH);
+      elevCtx.lineTo(xScale(xMin), pad + plotH);
+      elevCtx.closePath();
+      elevCtx.fillStyle = "rgba(0,0,0,0.06)";
+      elevCtx.fill();
+
+      // line
+      elevCtx.beginPath();
+      elevCtx.moveTo(xScale(pairs[0][0]), yScale(pairs[0][1]));
+      for (let i = 1; i < pairs.length; i++) elevCtx.lineTo(xScale(pairs[i][0]), yScale(pairs[i][1]));
+      elevCtx.strokeStyle = color;
+      elevCtx.lineWidth = 2;
+      elevCtx.stroke();
+
+      // labels
+      elevCtx.fillStyle = "rgba(0,0,0,0.7)";
+      elevCtx.font = "12px system-ui";
+      elevCtx.fillText(`${yMax.toFixed(0)} m`, 10, 14);
+      elevCtx.fillText(`${yMin.toFixed(0)} m`, 10, h - 6);
+      elevCtx.fillText(`${((xMax - xMin) / 1000).toFixed(2)} km`, w - 70, h - 6);
+    }
+
+    function drawElevationForSelected() {
+      const t = trails.find(x => x.id === selectedTrailId);
+      if (!t || !t.stats.elevInfo) {
+        resizeCanvasToCSS();
+        const w = elevCanvas.getBoundingClientRect().width;
+        const h = elevCanvas.getBoundingClientRect().height;
+        elevCtx.clearRect(0, 0, w, h);
+        elevCtx.fillStyle = "rgba(0,0,0,0.6)";
+        elevCtx.font = "12px system-ui";
+        elevCtx.fillText(t ? "No elevation data in this GPX." : "Select a trail to see its elevation profile.", 10, 20);
+        return;
+      }
+      drawElevationProfile(t.stats.elevInfo.cum, t.stats.elevInfo.smoothed, t.color);
+    }
+
+    function renderSelectedTrailStats() {
+      const t = trails.find(x => x.id === selectedTrailId);
+      if (!t) { trailStatsEl.textContent = "Load a GPX file to see elevation/time stats."; return; }
+
+      const distKm = (t.stats.distM / 1000).toFixed(3);
+      let html = `<b>${t.name}</b><br>Distance: <b>${distKm} km</b>`;
+
+      if (t.stats.elevInfo) {
+        const ei = t.stats.elevInfo;
+        html += `<br>Elevation: min <b>${ei.min.toFixed(0)} m</b> · max <b>${ei.max.toFixed(0)} m</b>`;
+        html += `<br>Ascent: <b>${ei.up.toFixed(0)} m</b> · Descent: <b>${ei.down.toFixed(0)} m</b>`;
+      } else html += `<br>Elevation: <i>not present</i>`;
+
+      if (t.stats.timeDerived) {
+        const ti = t.stats.timeDerived;
+        html += `<br>Start: <b>${ti.start.toLocaleString()}</b>`;
+        html += `<br>End: <b>${ti.end.toLocaleString()}</b>`;
+        html += `<br>Duration: <b>${formatDuration(ti.totalMs)}</b> · Moving: <b>${formatDuration(ti.movingMs)}</b> · Stopped: <b>${formatDuration(ti.stoppedMs)}</b>`;
+        if (ti.avgKmh !== null) html += `<br>Avg speed: <b>${ti.avgKmh.toFixed(2)} km/h</b>`;
+        if (ti.movingKmh !== null) html += ` · Moving speed: <b>${ti.movingKmh.toFixed(2)} km/h</b>`;
+      } else html += `<br>Time: <i>not present</i>`;
+
+      trailStatsEl.innerHTML = html;
+    }
+
+    function fitToTrail(trail) {
+      try { map.fitBounds(trail.polyline.getBounds(), { padding: [20, 20] }); } catch (_) { }
+    }
+
+    function clearAllTrails() {
+      for (const t of trails) if (t.polyline) map.removeLayer(t.polyline);
+      trails.length = 0;
+      selectedTrailId = null;
+      renderTrailsList();
+      drawElevationForSelected();
+      renderSelectedTrailStats();
+      setStatus("All trails cleared.");
+    }
+    document.getElementById("clearTrailsBtn").addEventListener("click", clearAllTrails);
+
+    document.getElementById("gpxFile").addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const { latlngs, ele, times } = parseGpx(text);
+
+        if (latlngs.length < 2) { setStatus("GPX loaded, but no usable points found (<trkpt> or <rtept>)."); return; }
+
+        const id = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + "_" + Math.random().toString(16).slice(2);
+        const name = file.name || `Trail ${trails.length + 1}`;
+        const color = nextColor();
+
+        const trail = { id, name, latlngs, ele, times, color, polyline: null, stats: null };
+        trail.stats = buildTrailStats(trail);
+        trails.push(trail);
+
+
+        addTrailToMap(trail);
+        selectTrail(trail.id);
+        fitToTrail(trail);
+
+        if (document.getElementById("trackToPoints").checked) {
+          const thinned = thinLatLngs(latlngs, 120);
+
+          points.length = 0;
+          markers.forEach(m => map.removeLayer(m));
+          markers.length = 0;
+          clearSegmentLabels();
+
+          for (const ll of thinned) addPoint(ll);
+
+          setStatus(`Loaded “${name}”. Converted to ${thinned.length} editable points.`);
+        } else {
+          setStatus(`Loaded “${name}”. Trails loaded: ${trails.length}.`);
+        }
+
+        renderTrailsList();
+        drawElevationForSelected();
+        renderSelectedTrailStats();
+
+        e.target.value = "";
+      } catch (err) {
+        setStatus("GPX load failed: " + err.message);
+      }
+    });
+
+    // initial sidebar
+    renderTrailsList();
+  </script>
 </body>
+
 </html>
