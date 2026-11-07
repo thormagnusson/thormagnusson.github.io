@@ -697,7 +697,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
   .res:hover{background:var(--hover)}
   .res .nm{flex:1;min-width:0}
   .res small{color:var(--muted)}
-  .res .sw{width:11px;height:11px;border-radius:50%;flex:none;align-self:center;border:1px solid var(--line)}
+  .res .sw{width:11px;height:11px;border-radius:3px;flex:none;align-self:center;border:1px solid var(--line)}
+  .res input{margin:0;align-self:center;accent-color:var(--accent);cursor:pointer}
   .res.sel{background:#f3ead6}
   #map{flex:1}
   .leaflet-popup-content{font-family:Georgia,serif;font-size:14px;line-height:1.45;width:330px!important;max-height:340px;overflow:auto}
@@ -833,19 +834,19 @@ function visibleLinks(p) { return p.l.filter(l => on[l[1]]); }
 
 function drawPeople(t) {
   const hits = PE.map((p, i) => [p, i]).filter(([p, i]) => t ? p.n.toLowerCase().includes(t) : (sel.has(i) || visibleLinks(p).length));
-  hits.sort((a, b) => (sel.has(b[1]) - sel.has(a[1])) || (t ? b[0].l.length - a[0].l.length : visibleLinks(b[0]).length - visibleLinks(a[0]).length));
+  hits.sort((a, b) => (t ? b[0].l.length - a[0].l.length : visibleLinks(b[0]).length - visibleLinks(a[0]).length));
   const pc = bar.querySelector('#pcount'); if (pc) pc.textContent = `${PE.filter(p => visibleLinks(p).length).length} manns`;
-  lists.innerHTML = `<div class="head">Fólk í völdum heimildum</div><div class="note">Veldu manneskju til að sjá staðina sem hún tengist, í þeirri röð sem textinn nefnir þá. Listinn sýnir fólk úr sögum sem hakað er við; leitin nær yfir allar sögurnar.</div>`;
+  lists.innerHTML = `<div class="head">Fólk í völdum heimildum</div><div class="note">Hakaðu við eina eða fleiri manneskjur til að sjá staðina sem þær tengjast, í þeirri röð sem textinn nefnir þá. Listinn sýnir fólk úr sögum sem hakað er við; leitin nær yfir allar sögurnar.</div>`;
   if (!hits.length) lists.innerHTML += '<div class="res"><small>Enginn fannst. Hakaðu við sögur á Staðir-flipanum.</small></div>';
   hits.slice(0, 300).forEach(([p, i]) => {
-    const d = document.createElement('div'); d.className = 'res' + (sel.has(i) ? ' sel' : '');
+    const d = document.createElement('label'); d.className = 'res' + (sel.has(i) ? ' sel' : '');
     const ss = personSagas(p).map(si => S[si].t.replace(/ saga.*$/, '').replace('Landnámabók', 'Landnáma'));
     const nPl = new Set((t ? p.l : visibleLinks(p)).map(l => l[0])).size;
-    d.innerHTML = `<span class="sw" style="background:${sel.has(i) ? sel.get(i).color : 'transparent'}"></span><span class="nm">${esc(p.n)} <small>· ${esc(ss.slice(0, 2).join(', '))}${ss.length > 2 ? ' …' : ''}</small></span><small>${nPl}</small>`;
-    d.onclick = () => selectPerson(i);
+    d.innerHTML = `<input type="checkbox" id="p${i}" ${sel.has(i) ? 'checked' : ''}><span class="sw" style="background:${sel.has(i) ? sel.get(i).color : 'transparent'};border-color:${sel.has(i) ? sel.get(i).color : 'var(--line)'}"></span><span class="nm">${esc(p.n)} <small>· ${esc(ss.slice(0, 2).join(', '))}${ss.length > 2 ? ' …' : ''}</small></span><small>${nPl}</small>`;
+    d.querySelector('input').onchange = () => selectPerson(i);
     lists.appendChild(d);
   });
-  if (hits.length > 300) lists.innerHTML += `<div class="note">… og ${hits.length - 300} til viðbótar. Notaðu leitina.</div>`;
+  if (hits.length > 300) lists.insertAdjacentHTML('beforeend', `<div class="note">… og ${hits.length - 300} til viðbótar. Notaðu leitina.</div>`);
 }
 
 function selectPerson(i, fromPopup) {
@@ -856,8 +857,10 @@ function selectPerson(i, fromPopup) {
     PE[i].l.forEach(l => on[l[1]] = true);   // make sure its sagas are shown
   }
   if (fromPopup && tab !== 'people') setTab('people');
+  const top = lists.scrollTop;
   drawRoutes(); update(); refreshList();
-  if (sel.has(i)) fitPerson(i);
+  lists.scrollTop = top;
+  if (sel.has(i) && sel.size === 1) fitPerson(i);
 }
 
 function drawRoutes() {
@@ -964,7 +967,7 @@ function drawCult(t) {
     };
     lists.appendChild(d);
   });
-  if (hits.length > 300) lists.innerHTML += `<div class="note">… og ${hits.length - 300} til viðbótar. Notaðu leitina eða flokkana.</div>`;
+  if (hits.length > 300) lists.insertAdjacentHTML('beforeend', `<div class="note">… og ${hits.length - 300} til viðbótar. Notaðu leitina eða flokkana.</div>`);
 }
 
 // ---------- shared
@@ -998,7 +1001,7 @@ function refreshList() {
 }
 
 function setTab(t) {
-  tab = t;
+  tab = t; map.closePopup();
   document.getElementById('tPlaces').setAttribute('aria-selected', t === 'places');
   document.getElementById('tPeople').setAttribute('aria-selected', t === 'people');
   document.getElementById('tCult').setAttribute('aria-selected', t === 'cult');
