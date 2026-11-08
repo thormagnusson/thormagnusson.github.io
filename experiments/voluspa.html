@@ -1,0 +1,1021 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Völuspá</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans+SC:wght@500;700&display=swap">
+<style>
+/* Layout: two-column reading desk. Verse (the manuscript side) left, three-part commentary right; a 66-tick rail of the poem's eight movements on top; prev/next bar fixed below. */
+:root{
+  --bg:#E8EBE5;          /* lichen grey */
+  --panel:#F4F6F1;
+  --ink:#1B231F;
+  --muted:#5A675F;
+  --rule:#C9D1C8;
+  --gold:#8C6619;        /* gullnar töflur */
+  --gold-soft:#E7D8AE;
+  --tick:#B9C3B9;
+  --f-verse:"Alegreya", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-body:"Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --f-label:"Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111613;--panel:#18201C;--ink:#E4E3D6;--muted:#97A39B;--rule:#2B3530;--gold:#D6B160;--gold-soft:#3A3220;--tick:#34403A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111613;--panel:#18201C;--ink:#E4E3D6;--muted:#97A39B;--rule:#2B3530;--gold:#D6B160;--gold-soft:#3A3220;--tick:#34403A;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:0 96px}
+.wrap{max-width:1240px;margin:0 auto}
+
+header.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-block:22px 10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font-family:var(--f-verse);font-style:italic;font-weight:500;font-size:2.4rem;line-height:1;margin:0;letter-spacing:.005em}
+.brand span{font-family:var(--f-label);font-size:.9rem;letter-spacing:.08em;color:var(--muted)}
+.ghost{font:500 .95rem var(--f-label);letter-spacing:.06em;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.ghost:hover{border-color:var(--gold);color:var(--gold)}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* rail */
+.rail{display:flex;gap:10px;align-items:flex-end;padding-block:6px 4px;overflow-x:auto;scrollbar-width:thin}
+.part{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+.part .ticks{display:flex;gap:3px}
+.tick{width:9px;height:22px;border:0;padding:0;border-radius:2px;background:var(--tick);cursor:pointer;transition:background .15s,height .15s}
+.tick.ref{height:14px}
+.tick:hover{background:var(--muted)}
+.tick.on{background:var(--gold);height:28px}
+.part .pl{font:500 .72rem var(--f-label);letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.part.cur .pl{color:var(--gold)}
+
+/* about */
+#about{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:18px 22px;margin-block:12px;max-width:72ch}
+#about h2{font-family:var(--f-verse);font-weight:500;margin:0 0 6px;font-size:1.3rem}
+#about p{margin:.4em 0}
+
+/* desk */
+.desk{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;margin-top:22px;align-items:start}
+.verse{position:sticky;top:16px;min-width:0}
+.eyebrow{font:500 .8rem var(--f-label);letter-spacing:.1em;color:var(--muted)}
+.num{font-family:var(--f-verse);font-weight:700;color:var(--gold);font-size:4.2rem;line-height:.9;font-variant-numeric:oldstyle-nums;margin:6px 0 2px}
+.vtitle{font-family:var(--f-verse);font-weight:500;font-size:1.45rem;margin:0 0 20px;text-wrap:balance}
+.lines{font-family:var(--f-verse);font-size:1.3rem;line-height:1.55;border-left:2px solid var(--gold-soft);padding-left:20px}
+.ll{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:1.6em}
+.ll .b{color:var(--ink)}
+.ll.single{grid-template-columns:1fr}
+.refr{font-style:italic;color:var(--gold);margin-top:.35em}
+.meta{margin-top:18px;font:500 .78rem var(--f-label);letter-spacing:.08em;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+.badge{border:1px solid var(--rule);border-radius:999px;padding:1px 9px}
+
+/* commentary */
+.comm{min-width:0;background:var(--panel);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--rule);overflow-x:auto}
+.tab{flex:1 1 0;min-width:max-content;background:none;border:0;border-bottom:3px solid transparent;padding:14px 18px 11px;cursor:pointer;color:var(--muted);font:700 .92rem var(--f-label);letter-spacing:.07em;text-align:left;display:flex;align-items:baseline;gap:8px}
+.tab small{font:400 .82rem var(--f-body);letter-spacing:0;color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
+.tab:hover{color:var(--ink)}
+.panel{padding:24px 28px 30px}
+.panel p.lead{font-size:1.08rem;max-width:68ch;margin:0}
+.items{display:flex;flex-direction:column;gap:20px;margin:0;padding:0;list-style:none}
+.items li{max-width:70ch}
+.src{font-family:var(--f-verse);font-weight:700;font-size:1.06rem;display:block;margin-bottom:2px}
+.items p{margin:0}
+.chip{display:inline-block;font:700 .72rem var(--f-label);letter-spacing:.09em;color:var(--gold);border:1px solid currentColor;border-radius:3px;padding:0 6px;margin-right:8px;vertical-align:2px}
+.hint{font-size:.88rem;color:var(--muted);margin:22px 0 0}
+
+/* bottom nav */
+nav.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px))}
+nav.bar .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nb{display:flex;align-items:center;gap:10px;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:6px;padding:8px 14px;cursor:pointer;min-width:0;font-family:var(--f-body);font-size:.95rem}
+.nb:hover:not(:disabled){border-color:var(--gold)}
+.nb:disabled{opacity:.35;cursor:default}
+.nb .arr{font-family:var(--f-verse);font-size:1.3rem;color:var(--gold);line-height:1}
+.nb .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:26ch}
+.count{font:500 .9rem var(--f-label);letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.fade{animation:fade .28s ease}
+@keyframes fade{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fade{animation:none}.tick{transition:none}}
+
+@media (max-width:860px){
+  .desk{grid-template-columns:1fr;gap:24px}
+  .verse{position:static}
+  .num{font-size:3.2rem}
+  .panel{padding:20px 18px 24px}
+  .nb .t{display:none}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .brand h1{font-size:2rem}
+  .lines{font-size:1.15rem;padding-left:14px}
+  .ll{grid-template-columns:1fr}
+  .ll .b{padding-left:1.4em}
+  .tab{padding:12px 12px 9px;font-size:.84rem}
+  .tab small{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>Völuspá</h1><span>Spá völvunnar · 66 erindi með skýringum</span></div>
+    <button class="ghost" id="aboutBtn" aria-expanded="false" aria-controls="about">Um kvæðið</button>
+  </header>
+  <section id="about" hidden>
+    <h2>Um kvæðið og skýringarnar</h2>
+    <p>Völuspá er varðveitt í Konungsbók Eddukvæða (GKS 2365 4to, skrifuð um 1270) og Hauksbók (AM 544 4to, um 1300–1310), og Snorri Sturluson vitnar mikið í hana í Gylfaginningu. Flestir telja hana ortu um árið 1000, á tíma kristnitökunnar. Handritin tvö eru ekki samhljóða um röð og fjölda erinda, og hér er fylgt þeim texta og þeirri tölusetningu sem lagt var upp með.</p>
+    <p>Hverju erindi fylgja þrjár skýringar: <b>Skýring</b> endursegir erindið á nútímamáli, <b>Norrænar heimildir</b> rekja tengsl við aðrar norrænar sagnir (Snorra-Eddu, önnur Eddukvæði, sögur og Saxo), og <b>Samanburður</b> bendir á hliðstæður í grískum, rómverskum, indverskum, persneskum, egypskum, keltneskum og öðrum goðsögum. Samanburðurinn sýnir skyldleika og samsvörun; hann fullyrðir ekki alltaf beinan skyldleika.</p>
+    <p>Örvatakkar flétta milli erinda; tölurnar 1, 2 og 3 skipta um flipa.</p>
+  </section>
+  <div class="rail" id="rail" aria-label="Erindi kvæðisins"></div>
+
+  <main class="desk">
+    <article class="verse" id="verse" aria-live="polite"></article>
+    <section class="comm">
+      <div class="tabs" role="tablist" aria-label="Skýringar">
+        <button class="tab" role="tab" id="t0" aria-controls="panel" data-i="0">Skýring</button>
+        <button class="tab" role="tab" id="t1" aria-controls="panel" data-i="1">Norrænar heimildir <small id="c1"></small></button>
+        <button class="tab" role="tab" id="t2" aria-controls="panel" data-i="2">Samanburður <small id="c2"></small></button>
+      </div>
+      <div class="panel" id="panel" role="tabpanel" tabindex="0"></div>
+    </section>
+  </main>
+</div>
+
+<nav class="bar" aria-label="Fletta erindum">
+  <div class="in">
+    <button class="nb" id="prev"><span class="arr">←</span><span class="t" id="prevT"></span></button>
+    <span class="count" id="count"></span>
+    <button class="nb" id="next"><span class="t" id="nextT"></span><span class="arr">→</span></button>
+  </div>
+</nav>
+
+<script>
+const VERSES = {"1": ["Hljóðs bið ek allar", "helgar kindir,", "meiri ok minni", "mögu Heimdallar;", "viltu at ek, Valföðr,", "vel fyr telja", "forn spjöll fira,", "þau er fremst of man."], "2": ["Ek man jötna", "ár of borna,", "þá er forðum mik", "fædda höfðu;", "níu man ek heima,", "níu íviðjur,", "mjötvið mæran", "fyr mold neðan."], "3": ["Ár var alda,", "þat er ekki var,", "var-a sandr né sær", "né svalar unnir;", "jörð fannsk æva", "né upphiminn,", "gap var ginnunga", "en gras hvergi."], "4": ["Áðr Burs synir", "bjöðum of yppðu,", "þeir er Miðgarð", "mæran skópu;", "sól skein sunnan", "á salar steina,", "þá var grund gróin", "grænum lauki."], "5": ["Sól varp sunnan,", "sinni mána,", "hendi inni hægri", "um himinjöður;", "sól þat né vissi,", "hvar hon sali átti,", "máni þat né vissi,", "hvat hann megins átti,", "stjörnur þat né vissu", "hvar þær staði áttu."], "6": ["Þá gengu regin öll", "á rökstóla,", "ginnheilög goð,", "ok um þat gættusk;", "nótt ok niðjum", "nöfn of gáfu,", "morgin hétu", "ok miðjan dag,", "undorn ok aftan,", "árum at telja."], "7": ["Hittusk æsir", "á Iðavelli,", "þeir er hörg ok hof", "hátimbruðu;", "afla lögðu,", "auð smíðuðu,", "tangir skópu", "ok tól gerðu."], "8": ["Tefldu í túni,", "teitir váru,", "var þeim vettergis", "vant ór gulli,", "uns þrjár kvámu", "þursa meyjar", "ámáttkar mjök", "ór Jötunheimum."], "9": ["Þá gengu regin öll", "á rökstóla,", "ginnheilög goð,", "ok um þat gættusk,", "hverir skyldi dverga", "dróttir skepja", "ór Brimis blóði", "ok ór Bláins leggjum."], "10": ["Þar var Móðsognir", "mæztr of orðinn", "dverga allra,", "en Durinn annarr;", "þeir mannlíkun", "mörg of gerðu", "dvergar í jörðu,", "sem Durinn sagði."], "11": ["Nýi, Niði,", "Norðri, Suðri,", "Austri, Vestri,", "Alþjófr, Dvalinn,", "Nár ok Náinn", "Nípingr, Dáinn", "Bívurr, Bávurr,", "Bömburr, Nóri,", "Ánn ok Ánarr,", "Óinn, Mjöðvitnir."], "12": ["Veggr ok Gandalfr,", "Vindalfr, Þorinn,", "Þrár ok Þráinn,", "Þekkr, Litr ok Vitr,", "Nýr ok Nýráðr,", "nú hefi ek dverga,", "Reginn ok Ráðsviðr,", "rétt of talða."], "13": ["Fíli, Kíli,", "Fundinn, Náli,", "Hefti, Víli,", "Hannar, Svíurr,", "Billingr, Brúni,", "Bíldr ok Buri,", "Frár, Hornbori,", "Frægr ok Lóni,", "Aurvangr, Jari,", "Eikinskjaldi."], "14": ["Mál er dverga", "í Dvalins liði", "ljóna kindum", "til Lofars telja,", "þeir er sóttu", "frá salar steini", "Aurvanga sjöt", "til Jöruvalla."], "15": ["Þar var Draupnir", "ok Dolgþrasir,", "Hár, Haugspori,", "Hlévangr, Glóinn,", "Dóri, Óri", "Dúfr, Andvari", "Skirfir, Virfir,", "Skáfiðr, Ái."], "16": ["Alfr ok Yngvi,", "Eikinskjaldi,", "Fjalarr ok Frosti,", "Finnr ok Ginnarr;", "þat mun æ uppi", "meðan öld lifir,", "langniðja tal", "Lofars hafat."], "17": ["Unz þrír kvámu", "ór því liði", "öflgir ok ástkir", "æsir at húsi,", "fundu á landi", "lítt megandi", "Ask ok Emblu", "örlöglausa."], "18": ["Önd þau né áttu,", "óð þau né höfðu,", "lá né læti", "né litu góða;", "önd gaf Óðinn,", "óð gaf Hænir,", "lá gaf Lóðurr", "ok litu góða."], "19": ["Ask veit ek standa,", "heitir Yggdrasill,", "hár baðmr, ausinn", "hvíta auri;", "þaðan koma döggvar,", "þærs í dala falla,", "stendr æ yfir grænn", "Urðarbrunni."], "20": ["Þaðan koma meyjar", "margs vitandi", "þrjár ór þeim sæ,", "er und þolli stendr;", "Urð hétu eina,", "aðra Verðandi,", "- skáru á skíði, -", "Skuld ina þriðju;", "þær lög lögðu,", "þær líf kuru", "alda börnum,", "örlög seggja."], "21": ["Þat man hon folkvíg", "fyrst í heimi,", "er Gullveigu", "geirum studdu", "ok í höll Hárs", "hana brenndu,", "þrisvar brenndu,", "þrisvar borna,", "oft, ósjaldan,", "þó hon enn lifir."], "22": ["Heiði hana hétu", "hvars til húsa kom,", "völu velspáa,", "vitti hon ganda;", "seið hon, hvars hon kunni,", "seið hon hug leikinn,", "æ var hon angan", "illrar brúðar."], "23": ["Þá gengu regin öll", "á rökstóla,", "ginnheilög goð,", "ok um þat gættusk,", "hvárt skyldu æsir", "afráð gjalda", "eða skyldu goðin öll", "gildi eiga."], "24": ["Fleygði Óðinn", "ok í folk of skaut,", "þat var enn folkvíg", "fyrst í heimi;", "brotinn var borðveggr", "borgar ása,", "knáttu vanir vígspá", "völlu sporna."], "25": ["Þá gengu regin öll", "á rökstóla,", "ginnheilög goð,", "ok um þat gættusk,", "hverjir hefði loft allt", "lævi blandit", "eða ætt jötuns", "Óðs mey gefna."], "26": ["Þórr einn þar vá", "þrunginn móði,", "- hann sjaldan sitr -", "er hann slíkt of fregn -:", "á gengusk eiðar,", "orð ok særi,", "mál öll meginlig,", "er á meðal fóru."], "27": ["Veit hon Heimdallar", "hljóð of folgit", "und heiðvönum", "helgum baðmi,", "á sér hon ausask", "aurgum forsi", "af veði Valföðrs.", "Vituð ér enn - eða hvat?"], "28": ["Ein sat hon úti,", "þá er inn aldni kom", "yggjungr ása", "ok í augu leit.", "Hvers fregnið mik?", "Hví freistið mín?", "Allt veit ek, Óðinn,", "hvar þú auga falt,", "í inum mæra", "Mímisbrunni.", "Drekkr mjöð Mímir", "morgun hverjan", "af veði Valföðrs.", "Vituð ér enn - eða hvat?"], "29": ["Valði henni Herföðr", "hringa ok men,", "fekk spjöll spaklig", "ok spá ganda,", "sá hon vítt ok of vítt", "of veröld hverja."], "30": ["Sá hon valkyrjur", "vítt of komnar,", "görvar at ríða", "til Goðþjóðar;", "Skuld helt skildi,", "en Skögul önnur,", "Gunnr, Hildr, Göndul", "ok Geirskögul.", "Nú eru talðar", "nönnur Herjans,", "görvar at ríða", "grund valkyrjur."], "31": ["Ek sá Baldri,", "blóðgum tívur,", "Óðins barni,", "örlög folgin;", "stóð of vaxinn", "völlum hæri", "mjór ok mjök fagr", "mistilteinn."], "32": ["Varð af þeim meiði,", "er mær sýndisk,", "harmflaug hættlig,", "Höðr nam skjóta;", "Baldrs bróðir var", "of borinn snemma,", "sá nam Óðins sonr", "einnættr vega."], "33": ["Þó hann æva hendr", "né höfuð kembði,", "áðr á bál of bar", "Baldrs andskota;", "en Frigg of grét", "í Fensölum", "vá Valhallar.", "Vituð ér enn - eða hvat?"], "34": ["Þá kná Váli", "vígbönd snúa,", "heldr váru harðgör", "höft ór þörmum."], "35": ["Haft sá hon liggja", "und Hveralundi,", "lægjarns líki", "Loka áþekkjan;", "þar sitr Sigyn", "þeygi of sínum", "ver vel glýjuð.", "Vituð ér enn - eða hvat?"], "36": ["Á fellur austan", "um eitrdala", "söxum ok sverðum,", "Slíðr heitir sú."], "37": ["Stóð fyr norðan", "á Niðavöllum", "salr ór gulli", "Sindra ættar;", "en annarr stóð", "á Ókólni", "bjórsalr jötuns,", "en sá Brimir heitir."], "38": ["Sal sá hon standa", "sólu fjarri", "Náströndu á,", "norðr horfa dyrr;", "falla eitrdropar", "inn um ljóra,", "sá er undinn salr", "orma hryggjum."], "39": ["Sá hon þar vaða", "þunga strauma", "menn meinsvara", "ok morðvarga", "ok þann er annars glepr", "eyrarúnu;", "þar saug Niðhöggr", "nái framgengna,", "sleit vargr vera.", "Vituð ér enn - eða hvat?"], "40": ["Austr sat in aldna", "í Járnviði", "ok fæddi þar", "Fenris kindir;", "verðr af þeim öllum", "einna nokkurr", "tungls tjúgari", "í trölls hami."], "41": ["Fyllisk fjörvi", "feigra manna,", "rýðr ragna sjöt", "rauðum dreyra;", "svört verða sólskin", "um sumur eftir,", "veðr öll válynd.", "Vituð ér enn - eða hvat?"], "42": ["Sat þar á haugi", "ok sló hörpu", "gýgjar hirðir,", "glaðr Eggþér;", "gól of hánum", "í galgviði", "fagrrauðr hani,", "sá er Fjalarr heitir."], "43": ["Gól of ásum", "Gullinkambi,", "sá vekr hölða", "at Herjaföðrs;", "en annarr gelr", "fyr jörð neðan", "sótrauðr hani", "at sölum Heljar."], "44": ["Geyr nú Garmr mjök", "fyr Gnipahelli,", "festr mun slitna,", "en freki renna;", "fjölð veit ek fræða,", "fram sé ek lengra", "um ragna rök", "römm sigtíva."], "45": ["Bræðr munu berjask", "ok at bönum verðask,", "munu systrungar", "sifjum spilla;", "hart er í heimi,", "hórdómr mikill,", "skeggöld, skalmöld,", "skildir ro klofnir,", "vindöld, vargöld,", "áðr veröld steypisk;", "mun engi maðr", "öðrum þyrma."], "46": ["Leika Míms synir,", "en mjötuðr kyndisk", "at inu galla", "Gjallarhorni;", "hátt blæss Heimdallr,", "horn er á lofti,", "mælir Óðinn", "við Míms höfuð."], "47": ["Skelfr Yggdrasils", "askr standandi,", "ymr it aldna tré,", "en jötunn losnar;", "hræðask allir", "á helvegum", "áðr Surtar þann", "sefi of gleypir."], "48": ["Hvat er með ásum?", "Hvat er með alfum?", "Gnýr allr Jötunheimr,", "æsir ro á þingi,", "stynja dvergar", "fyr steindurum,", "veggbergs vísir.", "Vituð ér enn - eða hvat?"], "49": ["Geyr nú Garmr mjök", "fyr Gnipahelli,", "festr mun slitna", "en freki renna;", "fjölð veit ek fræða,", "fram sé ek lengra", "um ragna rök", "römm sigtíva."], "50": ["Hrymr ekr austan,", "hefisk lind fyrir,", "snýsk Jörmungandr", "í jötunmóði;", "ormr knýr unnir,", "en ari hlakkar,", "slítr nái niðfölr,", "Naglfar losnar."], "51": ["Kjóll ferr austan,", "koma munu Múspells", "of lög lýðir,", "en Loki stýrir;", "fara fíflmegir", "með freka allir,", "þeim er bróðir", "Býleists í för."], "52": ["Surtr ferr sunnan", "með sviga lævi,", "skínn af sverði", "sól valtíva;", "grjótbjörg gnata,", "en gífr rata,", "troða halir helveg,", "en himinn klofnar."], "53": ["Þá kemr Hlínar", "harmr annarr fram,", "er Óðinn ferr", "við ulf vega,", "en bani Belja", "bjartr at Surti;", "þá mun Friggjar", "falla angan."], "54": ["Geyr nú Garmr mjök", "fyr Gnipahelli,", "festr mun slitna,", "en freki renna;", "fjölð veit ek fræða,", "fram sé ek lengra", "um ragna rök", "römm sigtíva."], "55": ["Þá kemr inn mikli", "mögr Sigföður,", "Víðarr, vega", "at valdýri.", "Lætr hann megi Hveðrungs", "mundum standa", "hjör til hjarta,", "þá er hefnt föður."], "56": ["Þá kemr inn mæri", "mögr Hlóðynjar,", "gengr Óðins sonr", "við orm vega,", "drepr af móði", "Miðgarðs véurr,", "munu halir allir", "heimstöð ryðja;", "gengr fet níu", "Fjörgynjar burr", "neppr frá naðri", "níðs ókvíðnum."], "57": ["Sól tér sortna,", "sígr fold í mar,", "hverfa af himni", "heiðar stjörnur;", "geisar eimi", "ok aldrnari,", "leikr hár hiti", "við himin sjalfan."], "58": ["Geyr nú Garmr mjök", "fyr Gnipahelli,", "festr mun slitna", "en freki renna;", "fjölð veit ek fræða", "fram sé ek lengra", "um ragna rök", "römm sigtíva."], "59": ["Sér hon upp koma", "öðru sinni", "jörð ór ægi", "iðjagræna;", "falla forsar,", "flýgr örn yfir,", "sá er á fjalli", "fiska veiðir."], "60": ["Finnask æsir", "á Iðavelli", "ok um moldþinur", "máttkan dæma", "ok minnask þar", "á megindóma", "ok á Fimbultýs", "fornar rúnir."], "61": ["Þar munu eftir", "undrsamligar", "gullnar töflur", "í grasi finnask,", "þærs í árdaga", "áttar höfðu."], "62": ["Munu ósánir", "akrar vaxa,", "böls mun alls batna,", "Baldr mun koma;", "búa þeir Höðr ok Baldr", "Hrofts sigtoftir,", "vé valtíva.", "Vituð ér enn - eða hvat?"], "63": ["Þá kná Hænir", "hlautvið kjósa", "ok burir byggja", "bræðra tveggja", "vindheim víðan.", "Vituð ér enn - eða hvat?"], "64": ["Sal sér hon standa", "sólu fegra,", "gulli þakðan", "á Gimléi;", "þar skulu dyggvar", "dróttir byggja", "ok um aldrdaga", "ynðis njóta."], "65": ["Þá kemr inn ríki", "at regindómi", "öflugr ofan,", "sá er öllu ræðr."], "66": ["Þar kemr inn dimmi", "dreki fljúgandi,", "naðr fránn, neðan", "frá Niðafjöllum;", "berr sér í fjöðrum,", "- flýgr völl yfir, -", "Niðhöggr nái.", "Nú mun hon sökkvask."]};
+const D = {};
+
+D[1] = {t:"Völvan biður sér hljóðs",
+s:"Völvan hefur mál sitt á því að biðja um þögn og athygli: allar helgar verur, bæði æðri og lægri afkomendur Heimdallar, það er mannkynið allt. Síðan ávarpar hún Óðin (Valföður, föður hinna föllnu) og segir að hann vilji að hún segi vel frá fornum sögnum lifandi vera, þeim elstu sem hún man. Kvæðið er því frá upphafi rammað inn sem samtal völvu og Óðins: hann hefur kallað hana fram og hún svarar. „Forn spjöll fira“ merkir fornar fregnir af mönnum; „fremst“ merkir hér það sem lengst er aftur í tímann.",
+no:[
+["Rígsþula","Heimdallur fer um jörðina undir nafninu Rígur og getur af sér þrjár stéttir: Þræl, Karl og Jarl. Þess vegna eru „meiri ok minni mögu Heimdallar“ allar stéttir manna, háar og lágar."],
+["Hyndluljóð og Gylfaginning","Heimdallur er sonur níu mæðra, vörður goðanna við Bifröst, heyrir gras gróa og á Gjallarhorn. Hann kemur aftur fyrir í 27. og 46. erindi."],
+["Baldrs draumar","Óðinn ríður til Heljar og vekur látna völvu upp úr gröf sinni til að spyrja um örlög Baldurs. Margir telja að Völuspá byggi á svipaðri hugmynd: völvan er dauð eða úr annarri veröld og talar að beiðni Óðins (sbr. lokaorðin í 66. erindi)."],
+["Grímnismál","Valföður er eitt af tugum nafna Óðins sem talin eru upp í Grímnismálum. Hinir föllnu, valurinn, fara til hans í Valhöll."]],
+c:[
+["Grísk","Pýþía og Sibyllur","Spákona Apollons í Delfí mælti í leiðslu, og Sibyllurnar spáðu um endalok og ný tímaskeið. Sibyllubækurnar (Oracula Sibyllina) segja frá heimsendi og sumir fræðimenn telja að skáld Völuspár hafi þekkt slíkar hugmyndir í gegnum kristna lærdóma."],
+["Indversk","Purusha-sukta (Rigveda 10.90)","Stéttirnar fjórar (varna) spretta af líkama frummannsins Purusha. Rígsþula og „mögu Heimdallar“ tjá sömu hugsun: samfélagsstéttir eiga sér guðlegan uppruna."],
+["Grísk","Ákall í upphafi söguljóðs","Hómer og Hesíódos hefja kvæði sín á því að ákalla Múserna um vitneskju. Völuspá snýr þessu við: hér er það guðinn sem leitar til spákonunnar."]]};
+
+D[2] = {t:"Völvan man jötnana",
+s:"Völvan kynnir sig. Hún man eftir jötnunum sem fæddust í árdaga og ólu hana upp. Hún man níu heima og níu íviðjur (orðið er óljóst og hefur verið túlkað sem tröllkonur, viðir eða rætur), og hinn mikla mjötvið undir moldinni. Mjötviður merkir líklega „mælitré“, tréð sem markar heiminn, þ.e. Yggdrasill, sem hér er enn í fræi eða rótum undir jörðu. Aldur völvunnar er vald hennar: hún er eldri en goðin og sér því það sem þau sjá ekki.",
+no:[
+["Vafþrúðnismál 43","Jötunninn Vafþrúðnir segist hafa komið í níu heima allt niður í Niflhel. Spekin um upphafið býr hjá jötnum, eins og hjá völvunni sem jötnar fóstruðu."],
+["Snorra-Edda","Heimarnir níu eru oft taldir Ásgarður, Vanaheimur, Álfheimur, Miðgarður, Jötunheimur, Múspellsheimur, Niflheimur, Svartálfaheimur og Hel. Sú upptalning er þó samantekt síðari fræðimanna; heimildirnar sjálfar telja ekki upp níu heima."],
+["Hyndluljóð og þulur","Íviðja er tröllkona í þulum, „sú sem býr í viðnum“. Hyndla er sjálf gýgur sem Freyja vekur til að rekja ættir, hliðstæða við völvuna."]],
+c:[
+["Indversk","Lokas","Hindúar og búddistar telja marga heima (oft þrjá, sjö eða fjórtán) sem raðast upp og niður eftir ás heimsins."],
+["Grísk","Talan níu","Níu Músur eru dætur Seifs og Mnemosyne (minnisins). Hesíódos segir að steðji falli níu daga frá himni til jarðar og níu daga frá jörð til Tartarosar (Goðakyn 722–725). Níu er tala heimsins og fjarlægðar."],
+["Síberísk","Heimstré samana","Í samanískum hefðum Síberíu hefur heimstréð sjö eða níu hæðir sem töframaðurinn klifrar í leiðslu til að ná til annarra heima."]]};
+
+D[3] = {t:"Ginnungagap",
+s:"Í árdaga var ekkert til: hvorki sandur, sjór né svalar öldur. Jörð var ekki til né himinn uppi, aðeins Ginnungagap og gras hvergi. Ginnungagap merkir líklega „hið mikla tóm“ eða „hið töfrum fyllta gap“. Í tilvitnun Snorra hljóðar önnur ljóðlínan „þar er Ýmir byggði“, og þá er upphafið ekki algert tóm heldur tími frumjötunsins.",
+no:[
+["Gylfaginning 4–6","Niflheimur er í norðri (frost) og Múspellsheimur í suðri (eldur). Hrímið bráðnar í Ginnungagapi og úr því verður Ýmir og kýrin Auðhumla, sem sleikir Búra fram úr saltsteinum."],
+["Vafþrúðnismál 21 og 31","Heimurinn er gerður úr líkama Ýmis. Eitur sem draup úr Élivágum varð að jötni."],
+["Grímnismál 40–41","Úr holdi Ýmis var jörð gerð, úr blóði sær, úr beinum björg og úr hausnum himinn."]],
+c:[
+["Germönsk","Wessobrunn-bænin","Fornháþýskt kvæði frá um 800 hefst á orðunum „ero ni was noh ûfhimil“, jörð var ekki né upphiminn. Orðalagið er nánast hið sama og í Völuspá og sýnir að formúlan er sameiginleg germönsk arfleifð."],
+["Indversk","Nasadiya-sukta (Rigveda 10.129)","„Þá var hvorki hið óverandi né hið verandi; hvorki loft né himinn handan þess.“ Sama neitandi upptalning á því sem ekki var til."],
+["Grísk","Kaos","Fyrst var Kaos hjá Hesíódosi (Goðakyn 116). Orðið merkir bókstaflega „gap“, af sögninni chainein, að gapa. Ginnungagap og Kaos eru sama hugmyndin: upphafið er opið gin."],
+["Biblíuleg","1. Mósebók 1:2","Jörðin var „tohu va-bohu“, auð og tóm, og myrkur grúfði yfir djúpinu."],
+["Kínversk / Babýlonsk","Heimur úr líkama frumveru","Í Kína verður heimurinn til úr líkama risans Pangu. Í Babýlon klýfur Marduk sjávargyðjuna Tiamat og gerir himin og jörð úr líkama hennar (Enuma Elish). Báðar sögur eru hliðstæður við Ými."]]};
+
+D[4] = {t:"Burs synir lyfta löndum",
+s:"Áður en (eða: þar til) synir Burs lyftu löndunum (bjöð merkir land eða grunn), þeir sem sköpuðu hinn mæra Miðgarð. Sólin skein úr suðri á steina salarins, þ.e. jörðina, og þá varð grundin gróin grænum lauk (gróðri). Burs synir eru Óðinn og bræður hans. Hér virðist jörðin lyftast úr sjó, fremur en að vera gerð úr líkama jötuns eins og hjá Snorra.",
+no:[
+["Gylfaginning 6–8","Burr (Borr) sonur Búra kvænist Bestlu jötnadóttur. Synir þeirra eru Óðinn, Vili og Vé. Þeir drepa Ými og gera heiminn úr honum, og Miðgarð gera þeir úr brám hans til varnar gegn jötnum."],
+["Lokasenna 26","Loki brigslar Frigg um að hafa legið með Vilja og Vé, bræðrum Óðins. Það sýnir að bræðurnir voru þekktir í goðsögnum utan sköpunarsögunnar."],
+["Rúnaristur","„Laukaz“ er algengt töfraorð á brakteötum og rúnasteinum. Laukurinn var tákn gróðurs, frjósemi og heilla."]],
+c:[
+["Indversk","Varaha","Vishnu bregður sér í gölt, kafar niður í frumhafið og lyftir jörðinni upp á tönnum sér. Þetta er sama „jarðlyftingin“ úr hafi."],
+["Síberísk / norður-amerísk","Jarðkafarinn","Í fjölmörgum sköpunarsögum Síberíu og Norður-Ameríku kafar dýr eftir leðju á hafsbotni sem verður að landi."],
+["Biblíuleg","1. Mósebók 1:9–12","Guð lætur þurrlendið koma í ljós úr vötnunum og jörðina bera gras og jurtir. Sama röð og í Völuspá: land úr sæ, síðan gróður."],
+["Babýlonsk","Enuma Elish","Marduk skapar skipulegan heim eftir að hafa sigrað frumóreiðuna, eins og Óðinn og bræður hans eftir fall Ýmis."]]};
+
+D[5] = {t:"Himintunglin rata ekki",
+s:"Sólin, förunautur mánans, kastaði hægri hendi sinni um himinjaðarinn. Hún vissi ekki hvar hún átti sali, máninn vissi ekki hvert afl hans var og stjörnurnar vissu ekki hvar þær áttu stað. Himintunglin eru til en óskipuð; heimurinn hefur ekki enn fengið reglu. Myndin af sól sem teygir hönd um himinjaðar kann að vísa til miðnætursólar á norðurslóðum, sem rennur lágt með sjóndeildarhring og sest ekki.",
+no:[
+["Vafþrúðnismál 23","Máni og Sól eru börn Mundilfara og fara um himin hvern dag til að telja árin."],
+["Gylfaginning 11","Mundilfari nefndi börn sín Mána og Sól. Goðin reiddust drambsemi hans og settu börnin til að aka himintunglunum. Hestar sólar heita Árvakur og Alsviður."],
+["Grímnismál 39","Úlfarnir Sköll og Hati elta sól og mána. Það er fyrirboði um 40. erindi, þar sem úlfur gleypir tunglið."]],
+c:[
+["Japönsk","Amaterasu og Tsukuyomi","Í norrænu er sólin kvenkyns og máninn karlkyns, öfugt við gríska og rómverska hefð. Sama skipan er í Japan: sólgyðjan Amaterasu og mánaguðinn Tsukuyomi. Í litháískri trú eru Saulė (sól) og Mėnulis (máni) einnig kona og karl."],
+["Grísk","Helíos og Selene","Helíos ekur sólvagni yfir himin dag hvern og systir hans Selene ekur mánavagni um nóttina."],
+["Indversk","Surya og Chandra","Surya ekur vagni sem sjö hestar draga; Chandra (Soma) er máninn."],
+["Biblíuleg","1. Mósebók 1:14–18","Guð setur ljósin á festinguna „til að greina tíðir, daga og ár“. Hið sama gerist í næsta erindi Völuspár."]]};
+
+D[6] = {t:"Goðin gefa tímanum nöfn",
+s:"Þá gengu öll regin (goðin, valdaöflin) á rökstóla, dómstóla sína, hin ginnheilögu goð, og réðu ráðum sínum. Þau gáfu nótt og niðjum (tunglkvartilum, nið og nýju) nöfn, nefndu morgun og miðjan dag, undorn (miðjan morgun eða síðdegi) og aftan, til að telja árin. Goðin skapa tímann með því að nefna hann. Fyrstu fjórar ljóðlínurnar eru stef sem kemur aftur í 9., 23. og 25. erindi, í hvert sinn sem goðin standa frammi fyrir vanda.",
+no:[
+["Vafþrúðnismál 24–25","Dellingur er faðir Dags og Nörvi faðir Nætur. Goðin skópu ný og nið til að telja árin."],
+["Gylfaginning 10","Nótt ekur hestinum Hrímfaxa og dögg fellur af méli hans. Dagur ekur Skinfaxa sem lýsir loft og jörð af faxinu."],
+["Grímnismál 29","Æsir ganga daglega til dóms við Urðarbrunn. Goðin halda þing eins og menn, og rökstólar eru dómstólar þeirra."]],
+c:[
+["Grísk","Nyx og Hemera","Hjá Hesíódosi fæðir Nyx (Nótt) Hemeru (Dag) og Eþer (Goðakyn 124). Nóttin er móðir dagsins, eins og í norrænni hefð þar sem Dagur er sonur Nætur."],
+["Indversk","Ushas og Ratri","Í Rigveda eru Ushas (dögun) og Ratri (nótt) systur. Guðirnir halda uppi rta, heimsreglunni sem tíminn fylgir."],
+["Biblíuleg","1. Mósebók 1:5","„Guð kallaði ljósið dag og myrkrið nótt.“ Að gefa nafn er að skapa."],
+["Grísk","Þing goðanna","Í 8. bók Ilíonskviðu kallar Seifur goðin til fundar á Ólympsfjalli. Guðir sem ráðgast á þingi eru sameiginlegt minni."]]};
+
+D[7] = {t:"Æsir á Iðavelli",
+s:"Æsir hittust á Iðavelli, þar sem þeir reistu hörg og hof hátimbruð. Þeir lögðu afla (smiðjur), smíðuðu auð (dýrgripi), sköpuðu tangir og gerðu verkfæri. Þetta er menningarskeið goðanna: þau reisa helgistaði og stunda handverk. Iðavöllur merkir ef til vill „völlur sífelldrar hreyfingar“ eða „endurnýjunar“; hann birtist aftur í 60. erindi eftir ragnarök.",
+no:[
+["Gylfaginning 14","Iðavöllur er í miðjum Ásgarði. Þar reistu goðin Glaðsheim með tólf hásætum og Vingólf handa gyðjunum, og allt var gert úr gulli."],
+["Hyndluljóð 10","Óttar hefur reist Freyju hörg úr steinum og rjóðrað hann í nautablóði. Hörgur var steinaltari undir berum himni, hof timburhús."],
+["Skáldskaparmál","Dvergarnir smíða goðunum dýrgripi: Mjölni, Draupni, Gullinbursta, Skíðblaðni og Gungni. Smíði er heilög iðja í norrænum heimi."]],
+c:[
+["Grísk","Hefaistos","Smiður guðanna smíðar herklæði Akkilesar og hásæti Ólympsgoða."],
+["Indversk","Tvashtr","Smiður guðanna í Rigveda smíðar vajra, eldingarvopn Indra, rétt eins og dvergar smíða Mjölni handa Þór."],
+["Úgarítísk","Kothar-wa-Khasis","Smiður og húsasmiður guðanna í Kanaan reisir höll Baals."],
+["Indversk / grísk","Goðafjallið","Merufjall og Ólympsfjall eru miðja heimsins og samkomustaður guðanna, eins og Iðavöllur."]]};
+
+D[8] = {t:"Gullöldin og þursameyjarnar",
+s:"Goðin tefldu í túni og voru glöð; þeim skorti ekkert úr gulli. Svo var þar til þrjár þursameyjar, afar máttugar, komu úr Jötunheimum. Hér endar gullöldin. Ekki er sagt hverjar þær eru: sumir telja þær vera nornirnar þrjár (sbr. 20. erindi), aðrir jötnameyjar sem vöktu girnd og ófrið meðal goða. Koma þeirra táknar að tími, örlög eða ágirnd rjúfa sæluna.",
+no:[
+["Tafl og 61. erindi","Hnefatafl var algengt borðspil á víkingaöld. Í 61. erindi finnast „gullnar töflur“ goðanna aftur í grasinu. Erindin tvö mynda ramma um alla söguna."],
+["Grottasöngr","Jötnameyjarnar Fenja og Menja mala gull og frið fyrir Fróða konung. Þegar hann leyfir þeim ekki hvíld mala þær her gegn honum og Fróðafriður endar. Jötnameyjar binda enda á gullöld."],
+["Gylfaginning 14","Þetta tímabil var kallað gullaldur, og það spilltist við komu kvennanna."],
+["Skírnismál og Skáldskaparmál","Goðin girnast jötnakonur, s.s. Gerði og Skaða. Girndin dregur goðin inn í samninga og skuldir sem koma þeim í koll."]],
+c:[
+["Grísk","Gullkynslóðin og Pandóra","Hesíódos (Verk og dagar 109–126) segir að gullkynslóðin hafi lifað eins og guðir, án erfiðis. Pandóra, fyrsta konan, opnar krukkuna og hleypir böli inn í heiminn: kona sem kemur að utan bindur enda á sæluna."],
+["Indversk","Teningar og tímaskeið","Heiti tímaskeiða hindúa (yuga) eru dregin af teningaköstum: Krita (besta kastið), Treta, Dvapara og Kali (versta kastið). Teningar og heimsaldir eru tengd, rétt eins og töfl goðanna í 8. og 61. erindi."],
+["Grísk","Moirai","Ef þursameyjarnar eru nornir eru Moirai, þrjár örlagadætur Nætur hjá Hesíódosi, nærtækasta hliðstæðan."],
+["Rómversk","Saturnia regna","Rómverjar sögðu að á tíma Satúrnusar hefði ríkt gullöld í Latíum, áður en ágirnd og stríð komu til (Virgill, Óvidíus)."]]};
+
+D[9] = {t:"Dvergarnir skapaðir",
+s:"Aftur ganga goðin á rökstóla og ræða hver skuli skapa drótt (fylkingu) dverga úr blóði Brimis og leggjum (beinum) Bláins. Brimir og Bláinn eru líklega heiti á Ými: Brimir „hinn brimandi“ og Bláinn „hinn blái“ eða „dökki“. Dvergarnir verða þá til úr líkama frumjötunsins, eins og heimurinn sjálfur.",
+no:[
+["Gylfaginning 14","Dvergar kviknuðu sem maðkar í holdi Ýmis og fengu mannsvit og mannslíki að boði goðanna. Þeir búa í jörðu og steinum."],
+["37. erindi","Brimir kemur aftur sem nafn á bjórsalnum á Ókólni. Í Sigrdrífumálum 14 er Brimir heiti á sverði."],
+["Alvíssmál","Dvergurinn Alvís er spekingur sem býr undir steinum. Þór tefur hann með spurningum þar til sólin rís og hann verður að steini."]],
+c:[
+["Grísk","Kýklópar og Telkínar","Kýklóparnir, synir Úranosar og Gaiu, smíða þrumufleyg Seifs. Telkínar og Daktýlar voru smiðaþjóðir sem sprottu af jörðu."],
+["Indversk","Ribhus","Þrír smiðir í Rigveda smíða vagna og hesta handa guðunum og fá ódauðleika að launum. Þeir minna á dverga sem smíða goðunum gripi."],
+["Babýlonsk","Menn úr blóði guðs","Í Enuma Elish skapar Ea mennina úr blóði hins fallna guðs Kingu. Verur úr blóði og líkama frumveru eru algengt minni."]]};
+
+D[10] = {t:"Mótsognir og Durinn",
+s:"Mótsognir varð æðstur allra dverga og Durinn annar. Þeir gerðu mörg mannlíkön (mannamyndir) í jörðu, eins og Durinn mælti fyrir um. Nafnið Mótsognir tengist líklega mætti eða reiði („sá sem sýgur mátt“); Durinn gæti merkt „sá sem dottar“ eða „dyravörður“. Óljóst er hvort mannlíkönin eru dvergarnir sjálfir eða frumgerðir manna, og sumir lesa erindið sem fyrirboða 17. erindis.",
+no:[
+["Gylfaginning 14","Snorri vitnar í erindið og ritar nafnið Móðsognir."],
+["Hervarar saga","Dvergarnir Dvalinn og Durinn (eða Dulinn) smíða sverðið Tyrfing, sem bítur hvað sem það snertir en ber bölvun."],
+["Tolkien","J.R.R. Tolkien, prófessor í fornensku og norrænu, sótti nafn Durins, ættföður dverga í Hobbitanum og Hringadróttinssögu, beint í þetta erindi."]],
+c:[
+["Grísk","Prómeþeifur","Prómeþeifur mótar menn úr leir (Pausanías, Óvidíus). Mannlíkön úr jörð."],
+["Egypsk","Khnum","Hrútguðinn Khnum mótar menn á leirkerasmiðshjóli."],
+["Biblíuleg","1. Mósebók 2:7","Guð myndaði manninn af leiri jarðar."],
+["Gyðingleg","Gólem","Leirmynd sem lifnar við galdur er síðari hliðstæða við mannlíkön dverganna."]]};
+
+D[11] = {t:"Dvergatal hefst",
+s:"Hér hefst Dvergatal, nafnaþula sem nær yfir 11.–16. erindi. Fyrstu nöfnin eru Nýi og Niði (vaxandi og minnkandi tungl), síðan Norðri, Suðri, Austri og Vestri (áttirnar fjórar), Alþjófur, Dvalinn, Nár og Náinn (náinn, lík), Nípingur, Dáinn (hinn dauði), Bívur, Bávur, Bömbur, Nóri, Ánn, Ánarr, Óinn og Mjöðvitnir (mjaðarúlfur). Nöfnin vísa til tungls, átta, dauða og handverks. Margir fræðimenn telja Dvergatalið síðari innskot í kvæðið, en það er í báðum handritum.",
+no:[
+["Gylfaginning 8","Austri, Vestri, Norðri og Suðri halda uppi himninum, sem er hauskúpa Ýmis, á hornunum fjórum."],
+["Dáinn og Dvalinn","Báðir eru einnig hirtir sem bíta Yggdrasil (Grímnismál 33). Í Hávamálum 143 ristir Dáinn rúnir fyrir álfa og Dvalinn fyrir dverga. Í Alvíssmálum heitir sólin „leika Dvalins“, því dvergar verða að steini í sólskini."],
+["Nár og Náinn","Nöfn sem tengja dverga við hina dauðu. Dvergar búa í jörðu, eins og hinir látnu."],
+["Mjöðvitnir","Nafnið tengist skáldamiðinum, sbr. dvergana Fjalar og Galar sem drápu Kvasi (Skáldskaparmál)."]],
+c:[
+["Indversk","Lokapala","Verndarar höfuðáttanna (dikpala) í hindúisma, t.d. Indra í austri og Yama í suðri. Fjórir dvergar sem halda himninum uppi á höfuðáttunum fjórum eru sama hugsun."],
+["Grísk","Atlas","Títaninn Atlas heldur himinhvelfingunni uppi við vesturenda heimsins."],
+["Egypsk / maja","Fjórir burðarmenn","Fjórir synir Hórusar gæta höfuðáttanna. Hjá Maja-fólkinu halda fjórir Bacab-guðir himninum uppi, einn í hverju horni."],
+["Nútíma","Hobbitinn","Tolkien tók nöfnin Bifur, Bofur, Bombur, Nori, Óin og Dwalin úr þessu erindi í Hobbitann (1937)."]]};
+
+D[12] = {t:"Dvergatal, framhald",
+s:"Áfram er talið: Veggur, Gandálfur (sprota-álfur, töfraálfur), Vindálfur, Þorinn (hinn djarfi), Þrár og Þráinn, Þekkur, Litur og Vitur, Nýr og Nýráður, Reginn og Ráðsviður. Völvan segist nú hafa talið dvergana rétt. Nöfn eins og Vitur, Ráðsviður og Nýráður lýsa dvergum sem vitrum og ráðagóðum.",
+no:[
+["Reginsmál og Fáfnismál","Reginn er dvergslegur smiður, bróðir Fáfnis og fóstri Sigurðar Fáfnisbana. Hann smíðar sverðið Gram og hvetur Sigurð til að drepa Fáfni."],
+["Gandálfur","„Gandur“ er töfrasproti eða andi. Sama orð kemur fyrir í 22. erindi: „vitti hon ganda“."],
+["Gylfaginning 49","Dvergurinn Litur hljóp fyrir fætur Þórs við bálför Baldurs, og Þór spyrnti honum á bálið."]],
+c:[
+["Germönsk","Þiðreks saga og Wagner","Í Þiðreks sögu er fóstri Sigurðar smiðurinn Mímir, og Reginn bróðir hans verður að dreka. Hjá Wagner heitir smiðurinn Mime."],
+["Nútíma","Gandalf og Thorin","Tolkien sótti Gandalf, Thorin, Thráin og Dáin hingað. Gandálfur í Völuspá er dvergur, en nafnið, sprota-álfur, hæfði töframanni."],
+["Grísk","Skrár í söguljóðum","Skipaskráin í 2. bók Ilíonskviðu og ættartölur Hesíódosar varðveita hefð í minnisformi, eins og Dvergatalið."]]};
+
+D[13] = {t:"Dvergatal, framhald",
+s:"Talið heldur áfram: Fíli, Kíli, Fundinn (hinn fundni), Náli, Hefti, Víli, Hannar (hagleiksmaður), Svíur, Billingur, Brúni, Bíldur (blóðtökuhnífur) og Buri, Frár (hinn fljóti), Hornbori, Frægur, Lóni, Aurvangur (leirvangur), Jari og Eikinskjaldi (sá með eikarskjöldinn). Mörg nöfnin lýsa handverki og efni: Hannar, Bíldur og Aurvangur.",
+no:[
+["Hávamál 96–102","Óðinn segir frá „Billings mey“ sem hann reyndi að tæla. Hún lofaði honum að koma um nóttina, en þegar hann kom var aðeins hundur bundinn við rúm hennar."],
+["16. erindi","Eikinskjaldi kemur aftur í 16. erindi og virðist vera ættfaðir dvergaflokks."],
+["14. erindi","Aurvangur tengist „Aurvanga sjöt“ í næsta erindi, bústöðum dverga á leirvöllum."]],
+c:[
+["Nútíma","Fíli, Kíli og Thorin Oakenshield","Tolkien tók Fíla og Kíla óbreytta, og Eikinskjaldi varð að viðurnefni Thorins: Oakenshield."],
+["Írsk","Síðir í haugum","Í írskri hefð búa síðir (aos sí) í haugum og hæðum, líkt og dvergar í steinum."],
+["Grísk","Daktýlar á Ídafjalli","„Fingurnir“ voru hagleiksverur, málmsmiðir og töframenn sem spruttu af jörðu."]]};
+
+D[14] = {t:"Lið Dvalins",
+s:"Nú er tími til að telja dvergana í liði Dvalins fram til Lofars fyrir „ljóna kindum“, þ.e. mannkyninu. Þeir fóru frá „salar steini“ (bergsal eða jörðu) til Aurvanga sjöt (bústaða á leirvöllum) og til Jöruvalla. Hér er því sagt frá ferð eða landnámi dverganna, eins konar ættartala og flutningssaga í senn.",
+no:[
+["Gylfaginning 14","Snorri vitnar í þetta erindi og segir að dvergarnir hafi farið „frá Svarins haugi til Aurvanga á Jöruvöllu“."],
+["Dvalinn","Dvalinn kemur víða fyrir: í Hávamálum, Grímnismálum og Alvíssmálum (sjá 11. erindi). Lofar er annars óþekktur."],
+["Ynglinga saga 12","Sveigðir konungur gengur inn í stein á eftir dvergi og kemur aldrei aftur. Dvergar búa í steinum og leiða menn burt."]],
+c:[
+["Biblíuleg","Ættartölur og flutningar","Ættartölur 1. Mósebókar og Exodus-sagan: þjóð sem fer úr einu landi í annað og ættin er rakin."],
+["Grísk","Skipaskráin","Í 2. bók Ilíonskviðu er hver herdeild Grikkja talin upp með uppruna sínum."],
+["Írsk","Lebor Gabála Érenn","Landnámssaga Írlands segir frá öldum innflytjenda, m.a. Tuatha Dé Danann, sem síðar fóru inn í haugana og urðu að huldufólki."]]};
+
+D[15] = {t:"Draupnir og Andvari",
+s:"Þar voru Draupnir (sá sem drýpur), Dolgþrasir (sá sem þráir bardaga), Hár, Haugspori (haugatroðari), Hlévangur, Glóinn (sá glóandi), Dóri, Óri, Dúfur, Andvari (varkár andi), Skirfir, Virfir, Skáfiður og Ái (langafi). Draupnir og Andvari eru nöfn sem vísa í frægar sögur um gull.",
+no:[
+["Skáldskaparmál 35","Draupnir er hringur Óðins sem dvergarnir Brokkur og Sindri smíðuðu. Af honum drjúpa átta jafnhöfgir hringar níundu hverja nótt. Óðinn lagði hann á bálköst Baldurs."],
+["Reginsmál og Skáldskaparmál","Loki veiðir dverginn Andvara, sem býr í fossi í geddulíki, og tekur af honum gullið og hringinn Andvaranaut. Andvari leggur bölvun á hringinn. Hún fylgir Hreiðmari, Fáfni, Sigurði og Niflungum."],
+["Haugspori","Nafnið tengir dverga við grafhauga og hina dauðu."]],
+c:[
+["Germönsk","Niflungahringurinn","Í Niflungaljóðum og óperum Wagners smíðar dvergurinn Alberich hringinn úr Rínargullinu og bölvar honum. Þetta er sama saga og um Andvara."],
+["Grísk","Bölvað gull","Hálsmen Harmóníu, smíðað af Hefaistosi, færði hverjum eiganda sínum ógæfu. Mídas konungur fékk þá gjöf að allt yrði að gulli og svalt næstum í hel."],
+["Indversk","Kubera","Konungur yaksha-veranna gætir fjársjóða jarðar. Yöksur búa í fjöllum og tengjast gulli og gimsteinum."]]};
+
+D[16] = {t:"Langniðja tal Lofars",
+s:"Dvergatalinu lýkur: Álfur og Yngvi, Eikinskjaldi, Fjalar og Frosti, Finnur og Ginnar. Völvan segir að þetta tal langfeðga Lofars muni ávallt haldast uppi meðan menn lifa. Lokaorðin gera Dvergatalið að minnisvarða: að muna nöfnin er að halda heiminum við.",
+no:[
+["Yngvi","Yngvi er heiti Freys (Yngvi-Freyr), ættföður Ynglinga í Ynglinga sögu. Óvænt er að finna það í dvergatali."],
+["Skáldskaparmál 57","Dvergarnir Fjalar og Galar drápu Kvasi og blönduðu blóði hans við hunang; þannig varð skáldamjöðurinn til. Fjalar er einnig nafn hanans í 42. erindi."],
+["Hávamál 76","„Deyr fé, deyja frændr ... en orðstírr deyr aldregi hveim er sér góðan getr.“ Sama hugsun um eilífa minningu."]],
+c:[
+["Grísk / indversk","Ófyrnanleg frægð","„Kleos aphthiton“ (frægð sem ekki fyrnist) í Ilíonskviðu 9.413 og „śravas akṣitam“ í Rigveda eru skyldar indóevrópskar formúlur. „Þat mun æ uppi meðan öld lifir“ tjáir sömu hugmynd."],
+["Rómversk","Hóratíus","„Exegi monumentum aere perennius“: ég hef reist minnisvarða varanlegri en eir (Óður 3.30). Orðin sjálf sem minnisvarði."]]};
+D[17] = {t:"Askur og Embla",
+s:"Þar til þrír æsir komu úr því liði (hópi goðanna), öflugir og ástríkir, að húsi (eða á ströndina). Þeir fundu á landi tvö máttvana tré, Ask og Emblu, örlöglaus. Askur er tréð askur, og Embla er líklega álmur eða vafningsviður. Þau eru til en eiga sér ekki örlög, þ.e. hvorki líf né sögu.",
+no:[
+["Gylfaginning 9","Synir Bors (Óðinn, Vili og Vé) gengu með sjávarströnd og fundu tvö tré. Þeir sköpuðu úr þeim manninn og konuna, Ask og Emblu, og frá þeim er mannkynið komið."],
+["Hávamál 49–50","Óðinn gefur fötin sín tveimur trémönnum og þeir verða „rekkar“; einnig er líkt við fura sem hrörnar og hlýtur hvorki börk né barr. Maðurinn sem tré er gamalt minni."],
+["Rígsþula","Heimdallur (Rígur) kemur til húsa þriggja hjóna og gerir þau að ættforeldrum stéttanna. Æsir sem koma „at húsi“ minna á þetta."]],
+c:[
+["Persnesk","Mashya og Mashyane","Í Bundahishn vaxa fyrstu hjónin upp sem rabarbarajurt af sæði frummannsins Gayomart. Fyrstu menn sem jurtir."],
+["Grísk","Eirkynslóðin úr öskum","Hesíódos (Verk og dagar 145) segir að eirkynslóðin hafi verið sköpuð úr asktrjám (meliai). Askur!"],
+["Mesóamerísk","Trémenn Popol Vuh","Guðir Maja-fólksins reyna að skapa menn úr tré. Trémennirnir hafa hvorki sál né skilning, eins og Askur og Embla áður en þau fá önd og óð."],
+["Grísk","Deukalíon og Pyrrha","Eftir flóðið kasta hjónin steinum aftur fyrir sig, og steinarnir verða að mönnum."]]};
+
+D[18] = {t:"Önd, óður, lá og litur",
+s:"Önd (lífsanda) áttu þau ekki, óð (vit, skilning og ákafa) höfðu þau ekki, hvorki lá (blóð, líkamsvessa) né læti (hreyfingu, rödd) né góðan lit (heilbrigt útlit). Óðinn gaf önd, Hænir gaf óð, Lóðurr gaf lá og góðan lit. Hver gjöf er hluti mannsins: andi, hugur og líkami.",
+no:[
+["Gylfaginning 9","Fyrsti sonur Bors gaf önd og líf, annar vit og hræringu, þriðji ásjónu, mál, heyrn og sjón."],
+["Ynglinga saga 4","Hænir var sendur til Vana sem gísl en reyndist ráðlaus án Mímis. Hann kemur aftur í 63. erindi eftir ragnarök."],
+["Lóðurr","Lóðurr er aðeins nefndur hér og í kenningunni „Lóðurs vinr“ um Óðin. Margir telja Lóður vera Loka, því Óðinn, Hænir og Loki ferðast saman í Haustlöng og Reginsmálum. Aðrir telja hann Vé eða Vilja."]],
+c:[
+["Biblíuleg","1. Mósebók 2:7","Guð blés lífsanda í nasir mannsins og hann varð lifandi sál. Önd sem gjöf Óðins er sama hugmynd."],
+["Grísk","Prómeþeifur og Aþena","Í sumum gerðum mótar Prómeþeifur manninn og Aþena blæs í hann lífi. Eiginleikar mannsins koma frá ólíkum guðum."],
+["Indversk","Prana og manas","Í Upanishöðum er maðurinn greindur í lífsanda (prana), hug (manas), mál og skynfæri. Skipting í anda, hug og líkama er gömul indóevrópsk hugmynd."],
+["Egypsk","Ka og ba","Egyptar greindu manninn í ka (lífskraft), ba (persónu) og líkama."]]};
+
+D[19] = {t:"Yggdrasill",
+s:"Völvan veit af aski sem stendur og heitir Yggdrasill, hátt tré, ausið hvítum auri (leir eða leðju). Þaðan koma döggvarnar sem falla í dalina. Hann stendur ætíð grænn yfir Urðarbrunni. Yggdrasill merkir líklega „hestur Yggs“ (Yggur er Óðinn): gálgi var kallaður hestur hins hengda, og Óðinn hékk á trénu. Tréð er ás heimsins og tengir alla heima.",
+no:[
+["Grímnismál 29–35, 44","Þrjár rætur Yggdrasils liggja til Heljar, hrímþursa og manna. Örn situr í krónunni, íkorninn Ratatoskur hleypur upp og niður, fjórir hirtir bíta barrið og Níðhöggur nagar rótina neðan frá. Askurinn þjáist meira en menn vita."],
+["Gylfaginning 16","Nornirnar ausa tréð hvítum leir úr Urðarbrunni svo limar þess fúni ekki. Döggin sem fellur af því heitir hunangsfall og af henni nærast býflugur."],
+["Hávamál 138","Óðinn hékk á „vindgameiði“ níu nætur, særður geiri og gefinn sjálfum sér, til að nema rúnir."],
+["Adam frá Brimum","Um 1075 lýsir Adam sígrænu tré við hofið í Uppsölum og brunni þar sem fórnir voru færðar. Raunveruleg hliðstæða: sígrænt tré yfir brunni."]],
+c:[
+["Indversk","Ashvattha","Heimstréð í Katha Upanishad og Bhagavad Gítu (15. kafla) er eilíft fíkjutré með rætur uppi og greinar niðri."],
+["Persnesk","Gaokerena","Hvíta haoma-tréð stendur í hafinu Vourukasha og ber lífsins safa. Hjá því vex tré allra fræja."],
+["Biblíuleg","Lífsins tré","Lífsins tré í Eden (1. Mós. 2:9) og í Opinberunarbókinni (22:2), þar sem það stendur við fljót lífsvatnsins."],
+["Germönsk / síberísk","Irminsúl og samanatré","Irminsúl var helgisúla Saxa sem Karlamagnús lét fella árið 772. Í samanisma Síberíu er heimstréð leið töframannsins milli heima."]]};
+
+D[20] = {t:"Nornirnar þrjár",
+s:"Frá trénu koma meyjar margs vitandi, þrjár, úr þeim sæ (brunni) sem stendur undir þolli (trénu). Ein hét Urður, önnur Verðandi, þriðja Skuld; þær skáru á skíði (ristu rúnir á kefli). Þær lögðu lög, kusu börnum manna líf og ákváðu örlög þeirra. Nöfnin eru oft túlkuð sem fortíð (Urður, af sögninni að verða: það sem varð), nútíð (Verðandi: það sem er að verða) og framtíð (Skuld: það sem skal verða, eða skuld). Urður ein er þó nefnd í flestum heimildum, og Verðandi og Skuld gætu verið síðari viðbót.",
+no:[
+["Gylfaginning 15","Nornirnar búa við Urðarbrunn og skapa mönnum aldur. Til eru einnig aðrar nornir, góðar og illar, af ætt ása, álfa og dverga (sbr. Fáfnismál 12–13)."],
+["Helgakviða Hundingsbana I 2–4","Nornir koma um nótt við fæðingu Helga og spinna örlagaþræði hans um allan heim."],
+["30. erindi","Skuld er einnig nafn valkyrju. Mörkin milli norna og valkyrja eru óljós."],
+["Fornenska: wyrd","Fornenska orðið wyrd er skylt Urði. Í Bjólfskviðu segir að örlögin fari ætíð sem þau eigi að fara. Úr þessu orði koma „weird sisters“, nornirnar í Macbeth Shakespeares."]],
+c:[
+["Grísk","Moirai","Klóþó spinnur lífsþráðinn, Lakesis mælir hann og Atropos klippir hann. Þrjár örlaganornir sem ráða lífi manna."],
+["Rómversk","Parcae","Nona, Decima og Morta eru rómverskar hliðstæður Moira."],
+["Hittítísk","Gulšeš","Örlagagyðjur Hittíta. Nafnið er dregið af sögn sem merkir að rista eða skrá, nákvæmlega eins og „skáru á skíði“."],
+["Slavnesk","Sudice","Í slavneskri hefð vitja Sudice eða Rozhanitsy nýfæddra barna á þriðju nótt og ákveða örlög þeirra."],
+["Babýlonsk","Örlagatöflurnar","Í Enuma Elish ræður sá heiminum sem hefur örlagatöflurnar (tup šīmāti). Örlögin eru skráð."]]};
+
+D[21] = {t:"Gullveig brennd",
+s:"Völvan, sem nú talar um sig í þriðju persónu, man fyrsta stríðið í heimi, þegar goðin studdu (stungu) Gullveigu geirum og brenndu hana í höll Hárs (Óðins). Þrisvar brenndu þau hana, þrisvar fæddist hún aftur, oft og iðulega, og samt lifir hún enn. Gullveig merkir líklega „gullkraftur“ eða „gulldrykkur“. Margir túlka söguna sem hreinsun gulls í eldi: gullið verður hreinna við hverja brennslu og eyðist ekki. Gullveig er oft talin vera Freyja eða tengd Vönum, og árásin á hana kveikir stríð Ása og Vana.",
+no:[
+["Ynglinga saga 4","Stríði Ása og Vana lýkur með friði og gíslaskiptum. Njörður, Freyr og Kvasir fara til Ása, Hænir og Mímir til Vana. Freyja kenndi Ásum seið."],
+["Gylfaginning 35","Freyja grætur rauðu gulli eftir Óði manni sínum, og dætur hennar heita Hnoss og Gersemi. Freyja og gull eru nátengd."],
+["Grímnismál 46","Hár (hinn hái) er heiti Óðins. Í Gylfaginningu svara Hár, Jafnhár og Þriði spurningum Gylfa."]],
+c:[
+["Rómversk","Tarpeia","Georges Dumézil benti á að stríð Ása og Vana samsvari stríði Rómverja og Sabína. Tarpeia sveik Róm fyrir gull Sabína og var kramin undir skjöldum. Gull kveikir stríð sem endar með sameiningu tveggja þjóða."],
+["Grísk","Títanastríðið","Fyrsta stríð guða var háð milli Ólympsgoða og Títana (Goðakyn 617–720)."],
+["Grísk","Fönixinn","Fuglinn brennur og rís upp úr öskunni, eins og Gullveig sem fæðist aftur eftir hvern bruna."],
+["Indversk","Ashvin-tvíburarnir","Dumézil benti líka á að í Mahabharata neitar Indra Ashvin-tvíburunum, guðum frjósemi og heilsu, um soma-drykkinn þar til friður er saminn. Sbr. Vani."]]};
+
+D[22] = {t:"Heiður völva",
+s:"Heiði hétu menn hana hvar sem hún kom til húsa, hina velspáu völvu; hún vitti ganda (fór með töfrasprota eða anda). Hún framdi seið hvar sem hún kunni, seið „hug leikinn“ (með hug í leiðslu) og var ætíð yndi illrar brúðar (illra kvenna). Gullveig er hér orðin Heiður, farandspákona sem býður seið. Margir telja að völvan sem mælir kvæðið sé sjálf Heiður og tali hér um sjálfa sig.",
+no:[
+["Ynglinga saga 4 og 7","Freyja kenndi Ásum seið. Óðinn framdi seið, en honum fylgdi ergi, svo karlmönnum þótti hann skammarlegur."],
+["Eiríks saga rauða 4","Lýsing Þorbjargar lítilvölvu á Grænlandi, með staf, hænsnfjaðrahatt og varðlokkum, er besta lýsing sem til er á seiðkonu að störfum."],
+["Hyndluljóð 33","„Eru völur allar frá Viðólfi.“ Völvur eru ættaðar frá jötni."],
+["Lokasenna 24","Loki brigslar Óðni um að hafa „síða“, framið seið, í Sámsey."]],
+c:[
+["Síberísk","Samanismi","Seiður líkist samanisma Síberíu og Sama: leiðsla, söngur og andaferðir til að afla vitneskju."],
+["Grísk","Kirke og Medea","Farandkonur með jurtagaldur og spádómsgáfu, sem bæði hjálpa og ógna."],
+["Grísk","Hekate","Gyðja galdra, nætur og krossgatna."],
+["Biblíuleg","Galdrakonan í Endór","Sál konungur leitar til spákonu (1. Samúelsbók 28), þótt hann hafi sjálfur bannað galdra."]]};
+
+D[23] = {t:"Afráð eða gildi",
+s:"Goðin ganga aftur á rökstóla og ræða hvort Æsir skuli gjalda afráð (greiða skatt eða bætur) eða hvort öll goðin skuli eiga gildi (hlut í fórnum og veislum, þ.e. að Vanir verði jafnir Ásum). Spurningin snýst um vald og hlutdeild: eiga Æsir að ráða einir eða deila helgihaldinu með Vönum?",
+no:[
+["Ynglinga saga 4","Niðurstaðan varð friður og þjóðirnar skiptust á gíslum. Njörður og Freyr urðu blótgoðar meðal Ása og Freyja blótgyðja."],
+["Skáldskaparmál 57","Við friðargerðina hræktu goðin í ker, og úr hrákanum varð Kvasir, vitrastur allra. Dvergar drápu hann, og úr blóði hans varð skáldamjöðurinn."]],
+c:[
+["Indversk","Mada og Kvasir","Dumézil benti á afar nákvæma hliðstæðu í Mahabharata. Indra neitar Ashvin-tvíburunum um soma. Spekingurinn Chyavana skapar ófreskjuna Mada (vímu) til að neyða Indra til sátta. Eftir friðinn er Mada skipt í fernt: drykk, konur, teninga og veiðar. Bæði Mada og Kvasir verða til við sátt guða og tengjast vímu."],
+["Rómversk","Rómverjar og Sabínar","Eftir stríðið sættust þjóðirnar og runnu saman. Sabínakonungurinn Títus Tatíus deildi völdum með Rómúlusi."],
+["Indóevrópsk","Þrískipting Dumézils","Dumézil taldi goðaheim indóevrópskra þjóða skiptast í þrennt: drottinvald og galdur (Óðinn, Júpíter, Varuna), hernað (Þór, Mars, Indra) og frjósemi (Vanir, Quirinus, Ashvin-tvíburar). Stríð Ása og Vana sameinar fyrstu tvö sviðin við hið þriðja."]]};
+
+D[24] = {t:"Spjót Óðins",
+s:"Óðinn fleygði spjóti og skaut því yfir herinn; þetta var enn fyrsta stríð í heimi. Borgarveggur Ása var brotinn og Vanir gátu troðið vellina með vígspá (bardagagaldri). Að skjóta spjóti yfir óvinaherinn helgaði hann Óðni: allir sem féllu tilheyrðu guðinum. Í þessu stríði virðast Vanir hafa yfirhöndina.",
+no:[
+["Eyrbyggja saga 44","Steinþór á Eyri skýtur spjóti yfir flokk óvina sinna „at fornum sið“ til heilla."],
+["Styrbjarnar þáttur","Eiríkur sigursæli heitir á Óðin og kastar sprota yfir her Styrbjarnar með orðunum „Óðinn á yðr alla“."],
+["Hávamál 138 og Skáldskaparmál","Óðinn er „geiri undaðr“ og spjótið er helgitákn hans. Spjót hans, Gungnir, smíðuðu synir Ívalda."]],
+c:[
+["Rómversk","Fetíalar","Rómverskir prestar, fetiales, sögðu stríð á hendur óvinum með því að kasta spjóti inn á land þeirra. Mjög nákvæm hliðstæða við spjótkast Óðins."],
+["Grísk","Varnarveggurinn","Í Ilíonskviðu brjóta Trójumenn varnarvegg Grikkja, og eftir stríðið jafnar Póseidon hann við jörðu."],
+["Indversk","Purandara","Indra brýtur virki óvina sinna og er kallaður purandara, „virkjabrjótur“."]]};
+
+D[25] = {t:"Hver blandaði loftið lævi?",
+s:"Goðin ganga enn á rökstóla og ræða hver hefði blandað allt loftið lævi (svikum, eitri) eða gefið ætt jötuns mey Óðs, þ.e. Freyju. Hér er vísað til sögunnar um jötuninn sem byggði borgarvegginn umhverfis Ásgarð og krafðist Freyju, sólar og mána að launum. Að gefa sól og mána væri að „blanda loftið lævi“, því himinninn myrkvaðist.",
+no:[
+["Gylfaginning 42","Smiður býðst til að reisa borg á þremur misserum fyrir Freyju, sól og mána. Loki ræður goðunum að samþykkja. Hesturinn Svaðilfari dregur grjótið. Þegar verkinu er nær lokið breytir Loki sér í meri og lokkar Svaðilfara burt. Síðar fæðir Loki Sleipni, áttfættan hest Óðins."],
+["Óðs mær","Freyja er gift Óði (Gylfaginning 35, Hyndluljóð 47). Sumir telja Óð vera Óðin sjálfan."],
+["Þrymskviða","Freyja er ítrekað eftirsótt brúður jötna. Þrymur krefst hennar fyrir Mjölni."]],
+c:[
+["Grísk","Laómedon","Póseidon og Apollon reistu múra Tróju fyrir Laómedon konung, sem sveik þá um launin. Póseidon sendi sæskrímsli til hefnda. Sviknir múrsmiðir guðanna eru sama minni."],
+["Íslensk þjóðsaga","Sæmundur fróði og Kölski","Í ótal sögnum smíðar kölski eða tröll kirkju eða brú gegn sálu manns og er svikið á síðustu stundu. Íslenskar sagnir af Sæmundi fróða, sem leikur á kölska, eru af sama toga."],
+["Grísk","Svik Prómeþeifs","Prómeþeifur blekkir Seif við fórnina í Mekone (Goðakyn 535 o.áfr.). Svikin leiða af sér nýja ógn og refsingu."]]};
+
+D[26] = {t:"Eiðar rofnir",
+s:"Þór einn vó þar (barðist), þrunginn reiði; hann situr sjaldan þegar hann fréttir slíkt. Þá gengu á bak eiðar, orð og særi, öll hin máttugu heit sem gengið höfðu á milli. Þór drepur smiðinn, og með því rjúfa goðin samninginn og eiðana. Eiðrofið er ein af rótum ragnaraka: goðin sjálf hafa brotið lögin sem halda heiminum saman.",
+no:[
+["Gylfaginning 42","Þegar smiðurinn sér að hann lýkur ekki verkinu verður hann jötunmóður. Þá kemur Þór heim úr austurvegi og lýstur hann með Mjölni."],
+["Hárbarðsljóð og Hymiskviða","Þór er jafnan „í austurvegi að berja tröll“. Hann er verndari goða og manna gegn jötnum."],
+["39. erindi","Í Náströndum vaða „menn meinsvara“, eiðrofar, þunga strauma. Goðin hafa sjálf framið sama brot."]],
+c:[
+["Indversk","Indra og Namuchi","Indra lofar asúrunni Namuchi að drepa hann hvorki að degi né nóttu, með hvorki þurru né votu. Hann drepur hann þó í ljósaskiptum með froðu og ber síðan sekt eiðrofa (Shatapatha Brahmana). Dumézil fjallaði um sambærileg brot stríðsguðsins."],
+["Grísk","Eiðar við Styx","Guð sem rauf eið svarinn við Styx lá án anda í heilt ár (Goðakyn 793–806). Eiðar guðanna eru heilagir."],
+["Grísk","Herakles","Herakles drepur oft í bræði, eins og Þór. Báðir eru sterkir verndarar sem leysa vanda með afli."]]};
+
+D[27] = {t:"Hljóð Heimdallar",
+s:"Völvan veit að hljóð Heimdallar er falið undir heiðvönum, helgum baðmi (Yggdrasli). Hún sér streyma aurgan foss af veði Valföðurs (Óðins). Síðan spyr hún: „Vituð ér enn, eða hvat?“, vitið þið nóg, eða viljið þið meira? „Hljóð Heimdallar“ er annaðhvort Gjallarhorn eða heyrn hans, sem kann að hafa verið lögð að veði í brunninum eins og auga Óðins. Veð Valföðurs er auga Óðins.",
+no:[
+["Gylfaginning 15","Mímisbrunnur er undir þeirri rót Yggdrasils sem liggur til hrímþursa; þar er spekt og mannvit fólgið. Mímir drekkur úr brunninum af Gjallarhorni. Óðinn lagði auga sitt að veði fyrir einn drykk."],
+["Gylfaginning 27","Heimdallur heyrir gras gróa á jörðu og ull vaxa á sauðum."],
+["Stefið","„Vituð ér enn, eða hvat?“ kemur hér fyrst fyrir og síðan margsinnis. Völvan ögrar Óðni og áheyrendum: hún veit meira en þeir."]],
+c:[
+["Írsk","Brunnur Segais","Níu heslitré hanga yfir brunni viskunnar; hnetur falla í vatnið og laxinn sem étur þær verður vitur. Fionn mac Cumhaill brennir þumal sinn á laxi viskunnar og öðlast alla vitneskju."],
+["Grísk","Lind Mnemosyne","Orfeifsplötur, gullþynnur í gröfum, leiðbeina hinum látnu að drekka af lind minnisins (Mnemosyne) en ekki gleymskunnar (Lethe)."],
+["Egypsk","Auga Hórusar","Hórus missir auga í baráttu við Set og gefur það Ósírisi. Augað (wedjat) verður tákn heilunar og máttar. Fórnað auga sem uppspretta máttar."],
+["Biblíuleg","Lúðurinn","Horn sem geymt er til endalokanna minnir á lúður erkiengilsins (1. Þessaloníkubréf 4:16)."]]};
+
+D[28] = {t:"Völvan og Óðinn",
+s:"Ein sat hún úti þegar hinn aldni yggjungur ása (hinn ógurlegi, Óðinn) kom og leit í augu hennar. „Hvers spyrjið þið mig? Hví freistið þið mín?“ spyr hún. „Allt veit ég, Óðinn, hvar þú faldir auga þitt: í hinum mæra Mímisbrunni. Mímir drekkur mjöð hvern morgun af veði Valföðurs.“ Hér kemur rammi kvæðisins í ljós: Óðinn hefur leitað til völvunnar, og hún sannar spádómsgáfu sína með því að segja honum hans eigið leyndarmál. Útiseta var spáathöfn þar sem setið var úti um nætur til að vekja upp anda og afla vitneskju.",
+no:[
+["Baldrs draumar","Óðinn ríður til Heljar undir nafninu Vegtamur og vekur upp völvu. Hún segist tala nauðug og rekur hann burt þegar hún þekkir hann."],
+["Vafþrúðnismál og Grímnismál","Óðinn ferðast dulbúinn í leit að vitneskju, og þekkingarkeppni er hans aðferð."],
+["Grágás","Kristinn réttur bannaði „útisetu at vekja tröll upp“."],
+["Ynglinga saga 4 og 7","Óðinn tók höfuð Mímis, smurði það jurtum og kvað galdra yfir, svo það talaði við hann og sagði honum mörg leynd tíðindi."]],
+c:[
+["Grísk","Ódysseifur og Teiresías","Í 11. bók Ódysseifskviðu kallar Ódysseifur fram skugga hinna dauðu og spyr spámanninn Teiresías um framtíðina. Teiresías var blindur en sá allt, líkt og eineygður Óðinn."],
+["Rómversk","Merkúríus","Tacitus segir að Germanir dýrki mest Merkúríus (Germania 9). Rómverjar tengdu Óðin við Merkúríus, sem fylgir sálum, er guð mælsku, kænsku og ferða. Þess vegna heitir miðvikudagur Wednesday (Wodens dagur) á ensku en mercredi (dagur Merkúríusar) á frönsku."],
+["Indversk","Varuna og Rudra","Dumézil líkti Óðni við Varuna, hinn dularfulla og ógnvekjandi drottinvaldsguð sem bindur og veit allt. Óðinn minnir einnig á Rudru, hinn villta ráfandi guð utan samfélagsins."],
+["Biblíuleg","Sál og galdrakonan","Konungur leitar til spákonu sem vekur upp hinn látna Samúel og spáir fyrir um fall hans (1. Samúelsbók 28)."]]};
+
+D[29] = {t:"Óðinn borgar spádóminn",
+s:"Herföður (Óðinn) valdi henni hringa og hálsmen að launum og fékk í staðinn spakleg tíðindi og spá ganda (spádóma töfrasprotanna eða andanna). Hún sá vítt og víðar yfir hverja veröld. Óðinn kaupir spádóminn, og völvan fær laun eins og farandspákonur fengu.",
+no:[
+["Eiríks saga rauða 4","Þorbjörg lítilvölva fær bestu viðtökur og gjafir á bænum fyrir að spá."],
+["Draupnir","Hringir eru tákn hins örláta höfðingja. Draupnir (sjá 15. erindi) er hringur Óðins."],
+["22. erindi","„Vitti hon ganda“: sama orð, gandur, um töfra völvunnar."]],
+c:[
+["Grísk","Delfí","Þeir sem spurðu véfréttina færðu gjafir og fórnir, og fjárhirslur borgríkjanna í Delfí voru fullar af gulli."],
+["Rómversk","Sibyllan í Cumae","Sibyllan bauð Tarquiniusi konungi níu spádómsbækur. Hann neitaði, hún brenndi þrjár og síðan þrjár til viðbótar, uns hann keypti þær þrjár sem eftir voru á upphaflega verðinu. Spádómur sem dýrkeypt vara."]]};
+
+D[30] = {t:"Valkyrjurnar",
+s:"Völvan sá valkyrjur komnar víða að, búnar að ríða til Goðþjóðar (goðanna, eða Gotanna). Skuld hélt skildi, Skögul önnur, Gunnur, Hildur, Göndul og Geirskögul. Nú eru taldar nönnur (konur) Herjans (Óðins), búnar að ríða um grund. Valkyrjur kjósa valinn, þá sem falla í orrustu, og færa þá Óðni í Valhöll. Koma þeirra boðar stríð og er undanfari Baldursdauðans.",
+no:[
+["Grímnismál 36","Valkyrjur bera einherjum öl í Valhöll. Þar eru nefndar Hrist, Mist, Skeggjöld, Skögul, Hildur, Þrúður o.fl."],
+["Hákonarmál","Í kvæði Eyvindar skáldaspillis sendir Óðinn Göndul og Skögul til að sækja Hákon góða í orrustu."],
+["Darraðarljóð (Njáls saga)","Valkyrjur vefa örlög orrustunnar við Clontarf á vef þar sem mannahöfuð eru kljásteinar og þarmar uppistaða."],
+["Hjaðningavíg (Skáldskaparmál)","Hildur vekur hina föllnu upp á hverri nóttu svo að þeir berjist að nýju allt til ragnaraka."]],
+c:[
+["Írsk","Morrígan og Badb","Stríðsgyðjur Íra birtast sem krákur yfir vígvellinum og spá um hverjir falla. Mjög nákvæm hliðstæða."],
+["Grísk","Kerar","Keres, dætur Nætur, sveima yfir vígvellinum og sækja hina deyjandi."],
+["Indversk","Apsörur","Apsörur sækja hetjur sem falla í bardaga og bera þær til himnaríkis Indra (Svarga), hliðstæðu Valhallar."],
+["Persnesk","Fravashis","Verndarandar í Avesta eru sagðir koma fljúgandi eins og herskáir vængjaðir fuglar til að hjálpa í orrustum."]]};
+
+D[31] = {t:"Mistilteinninn",
+s:"Völvan sá örlög Baldurs falin, hins blóðuga goðs (tívurs), barns Óðins. Upp af völlunum stóð vaxinn, mjór og mjög fagur, mistilteinn. Nú beinir kvæðið sjónum að mesta harmleik goðanna. Mistilteinn er sníkjujurt sem vex á trjám en ekki upp úr jörðu, svo lýsingin „völlum hæri“ (hærri en vellirnir) er sérkennileg. Sumir telja að skáldið hafi ekki þekkt jurtina, sem óx ekki á Íslandi.",
+no:[
+["Gylfaginning 49","Baldur dreymir illa. Frigg tekur eið af öllum hlutum að granda honum ekki, nema mistilteini sem henni þótti of ungur. Goðin skemmta sér við að skjóta á Baldur. Loki nær í mistilteininn og fær Höð blinda til að skjóta."],
+["Baldrs draumar","Óðinn ríður til Heljar og fær að vita hjá völvu að Höður muni bana Baldri og að Rindur ali Vála sem hefni hans."],
+["Saxo Grammaticus","Í 3. bók Gesta Danorum er önnur gerð: Hotherus (Höður) og Balderus berjast um Nönnu, og Hotherus drepur hann með töfrasverði."],
+["Húsdrápa","Úlfur Uggason lýsir útför Baldurs í kvæði frá um 985, sem sýnir að sagan var þekkt á Íslandi á tíma Völuspár."]],
+c:[
+["Rómversk / keltnesk","Drúídar og mistilteinn","Pliníus eldri (Náttúrusaga 16.249–251) segir að drúídar hafi skorið mistiltein af eik með gullnum sigð. James Frazer byggði frægt rit sitt, The Golden Bough, að miklu leyti á Baldri og mistilteininum."],
+["Rómversk","Gullgreinin","Í 6. bók Eneasarkviðu verður Eneas að brjóta gullna grein af tré til að komast lifandi í undirheima. Virgill líkir greininni við mistiltein."],
+["Egypsk","Ósíris","Hinn góði guð er drepinn með svikum af bróður sínum Set, og Ísis syrgir hann. Ein algengasta hliðstæða Baldurs."],
+["Mið-austurlensk / grísk","Adónis, Attis, Tammúz","Ungir fagrir guðir sem deyja og eru syrgðir í helgisiðum."]]};
+
+D[32] = {t:"Höður skýtur",
+s:"Af þeirri grein, sem virtist mjó, varð hættuleg harmflaug (sorgarör); Höður skaut. Bróðir Baldurs var fæddur snemma; sá sonur Óðins tók að vega eins nætur gamall. Höður er blindur bróðir Baldurs sem drepur hann óafvitandi. Hinn bróðirinn, Váli, fæðist til þess eins að hefna Baldurs og drepur Höð einnættur.",
+no:[
+["Gylfaginning 49","Loki fær Höð mistilteininn og vísar honum hvert hann skuli skjóta. Baldur fellur dauður, og það var mesta óhapp sem unnið hefur verið með goðum og mönnum."],
+["Baldrs draumar 11","Rindur ber Vála í vestursölum, „sá mun Óðins sonr einnættr vega“. Nær sama orðalag og í Völuspá."],
+["Gylfaginning 30","Váli er sonur Óðins og Rindar, djarfur í orrustum og góð skytta."]],
+c:[
+["Persnesk","Isfandiyar","Í Konungabók Ferdowsis (Shahnameh) er Isfandiyar ósæranlegur nema á augum. Rostam drepur hann með ör úr tamariskugrein sem fuglinn Simurgh vísar honum á. Ómerkileg grein er eina vopnið sem bítur."],
+["Grísk","Akkiles","Akkiles var ósæranlegur nema á hælnum. París skaut hann með ör sem Apollon stýrði, eins og Loki stýrir Höð."],
+["Indversk","Dauði Krishna","Veiðimaðurinn Jara skýtur ör í il Krishna og heldur að hann sé dádýr. Guð deyr fyrir óviljaverki."],
+["Germönsk","Siegfried","Í Niflungaljóðum fellur lindilauf á herðar Siegfrieds þegar hann baðar sig í drekablóði, og þar er hann særanlegur. Hagen drepur hann með svikum."],
+["Grísk / indversk","Undrabörn","Hermes stelur nautum Apollons á fæðingardegi sínum, Herakles kyrkir höggorma í vöggunni og Krishna drepur ófreskjur sem ungbarn. Váli er einnættur hefnari."]]};
+
+D[33] = {t:"Frigg grætur",
+s:"Váli þvoði hvorki hendur sínar né greiddi höfuð sitt fyrr en hann hafði borið andskota Baldurs (Höð) á bál. En Frigg grét í Fensölum vá (ógæfu) Valhallar. Váli hefur strengt þess heit að hirða ekki útlit sitt fyrr en hefndin er fullnægð. Frigg, móðir Baldurs, syrgir í sölum sínum.",
+no:[
+["Gylfaginning 49","Frigg sendir Hermóð til Heljar að endurheimta Baldur. Hel lofar að sleppa honum ef allir hlutir gráta hann. Allt grætur nema gýgurin Þökk, sem var Loki í dulargervi, og því kemst Baldur ekki aftur."],
+["Bálför Baldurs","Lík Baldurs er brennt á skipinu Hringhorna. Nanna kona hans springur af harmi og Óðinn leggur Draupni á bálið. Í Vafþrúðnismálum 54 spyr Óðinn hvað hann hafi hvíslað í eyra sonar síns, gáta sem enginn getur svarað."],
+["Fensalir","Nafnið merkir líklega „mýrarsalir“ og kann að tengjast fórnum í mýrum."]],
+c:[
+["Rómversk","Heit Katta","Tacitus (Germania 31) segir að ungir menn af þjóð Katta hafi látið hár og skegg vaxa og ekki skorið það fyrr en þeir felldu óvin. Heit Vála er gamall germanskur siður."],
+["Egypsk","Ísis","Ísis grætur Ósíris og leitar líks hans um allan heim."],
+["Grísk","Demetra og Afródíta","Demetra syrgir Persefónu svo að jörðin skrælnar, og Afródíta grætur Adónis."],
+["Mesópótamísk / biblíuleg","Grátið fyrir Tammúz","Esekíel 8:14 segir frá konum sem gráta Tammúz í hliði musterisins. Inanna syrgir Dúmúzí. Grátur heimsins vegna deyjandi guðs."]]};
+
+D[34] = {t:"Fjötrar úr þörmum",
+s:"Þá sneri Váli vígböndum (fjötrum); harðgerðir voru þeir fjötrar úr þörmum. Erindið er aðeins varðveitt í Hauksbók og virðist óheilt. Hér er Loki fjötraður í refsingarskyni fyrir þátt sinn í dauða Baldurs. Váli gæti hér verið Váli Óðinsson eða Váli Lokason, sem Snorri segir að goðin hafi breytt í varg.",
+no:[
+["Lokasenna (lokaprósi) og Gylfaginning 50","Æsir taka Loka og syni hans Vála og Nara (Narfa). Vála breyta þeir í varg sem rífur bróður sinn í sundur. Með þörmum Narfa binda þeir Loka á þrjá eggjasteina, og þarmarnir verða að járni."],
+["Gylfaginning 50","Skaði festir eiturorm yfir höfði Loka svo að eitrið drjúpi í andlit honum."]],
+c:[
+["Grísk","Prómeþeifur fjötraður","Prómeþeifur er hlekkjaður við Kákasusfjöll, og örn étur lifur hans dag hvern (Goðakyn 521 o.áfr.; Fjötraður Prómeþeifur eftir Eskýlos)."],
+["Georgísk","Amirani","Georgíska hetjan Amirani er hlekkjuð í helli í Kákasus fyrir að ögra guði. Hundur hans sleikir hlekkina svo að þeir þynnast, en þeir eru endurnýjaðir. Bundinn bíður hann endalokanna."],
+["Armensk","Artavazd","Artavazd er hlekkjaður í helli á Ararat og hundar naga fjötra hans. Ef hann losnar mun heimurinn farast."]]};
+
+D[35] = {t:"Loki bundinn og Sigyn",
+s:"Völvan sá bandingja liggja undir Hveralundi, líkan hinum lævísa Loka. Þar situr Sigyn, kona hans, og er ekki glöð vegna manns síns. Hveralundur er „lundur hveranna“, og staðsetningin minnir á íslenskt landslag með heitum uppsprettum og jarðhita. Sigyn er trygg eiginkona sem yfirgefur ekki bandingjann.",
+no:[
+["Gylfaginning 50","Sigyn heldur mundlaug undir eitrinu sem drýpur úr orminum. Þegar hún fer að hella úr lauginni drýpur eitrið á Loka, hann kippist við og þá verða landskjálftar."],
+["Lokasenna","Loki ásakar öll goðin í veislu Ægis og er síðan bundinn."],
+["Gylfaginning 34","Loki er sonur Fárbauta og Laufeyjar og faðir Fenris, Miðgarðsorms og Heljar með Angurboðu. Hann liggur bundinn til ragnaraka og losnar þá (sbr. 47. og 51. erindi)."]],
+c:[
+["Grísk","Týfon undir Etnu","Seifur gróf Týfon undir Etnu á Sikiley, og eldgos og jarðskjálftar stafa af umbrotum hans (Pindar, Eskýlos). Nær sama skýring á jarðskjálftum og hjá Snorra."],
+["Persnesk","Azhi Dahaka","Drekinn Azhi Dahaka (Zahhak í Konungabók Ferdowsis) er hlekkjaður í helli undir Damavand-fjalli. Hann losnar við endalok heimsins og verður þá drepinn. Bundin ill vera sem losnar fyrir heimsendi."],
+["Biblíuleg","Satan bundinn","Opinberunarbókin 20:1–3: Satan er bundinn í undirdjúpinu í þúsund ár og verður síðan leystur um skamma stund."],
+["Indversk","Savitri","Trygga eiginkonan Savitri fylgir manni sínum þegar Yama, guð dauðans, sækir hann, og vinnur hann aftur með visku sinni. Tákn tryggðar eins og Sigyn."],
+["Grísk / egypsk","Bragðarefurinn","Set, sem drepur Ósíris, Hermes, Prómeþeifur og hinn írski Bricriu bera allir einkenni Loka: kænsku, ögrun og tvíræða stöðu milli guða og óvina þeirra."]]};
+D[36] = {t:"Áin Slíður",
+s:"Á fellur úr austri um eiturdali með söxum og sverðum; hún heitir Slíður. Nú lýsir völvan undirheimum. Í ánni rennur ekki vatn heldur vopn, mynd af kvöl og hættu. Slíður merkir líklega „hin hættulega“ eða „hin sára“.",
+no:[
+["Grímnismál 28","Slíð er talin meðal ánna sem falla frá Hvergelmi og renna um heima goða og manna niður til Heljar."],
+["Gylfaginning 4","Hvergelmir er brunnur í Niflheimi og þaðan falla ár, þar á meðal Slíður."],
+["Saxo Grammaticus","Í 1. bók Gesta Danorum er Haddingus leiddur til undirheima og sér þar á sem er full af alls kyns vopnum."],
+["Gylfaginning 49","Hermóður ríður yfir Gjallarbrú á ánni Gjöll á leið sinni til Heljar."]],
+c:[
+["Grísk","Ár undirheima","Styx, Akeron, Kókýtos, Lethe og Pýriflegeþon, eldfljótið sem rennur um Tartaros."],
+["Indversk","Vaitarani","Áin sem hinir látnu verða að fara yfir til ríkis Yama. Hún er sögð full af blóði, greftri og beinum fyrir syndara (Garuda Purana)."],
+["Persnesk","Chinvat-brúin","Brú hinna dauðu er breið fyrir réttláta en mjó sem sverðsegg fyrir rangláta."]]};
+
+D[37] = {t:"Salir Sindra og Brimis",
+s:"Fyrir norðan á Niðavöllum stóð salur úr gulli sem ætt Sindra átti; en annar stóð á Ókólni, bjórsalur jötuns, og sá heitir Brimir. Niðavellir (myrkravellir eða tunglvellir) eru dvergaslóðir og Sindri er dvergur. Ókólnir merkir „hinn ókaldi“. Hér eru sýndir góðir salir handan dauðans, andstæða við Náströnd í næsta erindi.",
+no:[
+["Gylfaginning 52","Eftir ragnarök verða margar vistir góðar. Best er að vera á Gimlé, og góð drykkja er í salnum Brimi á Ókólni og í Sindra á Niðafjöllum, þar sem góðir menn og siðlátir búa."],
+["Skáldskaparmál 35","Dvergurinn Sindri (Eitri) smíðar Gullinbursta, Draupni og Mjölni með bróður sínum Brokki í veðmáli við Loka."],
+["9. erindi","Brimir er líklega heiti á Ými. Salurinn er þá kenndur við frumjötuninn."]],
+c:[
+["Grísk","Elysion og Tartaros","Hinir réttlátu og hinir ranglátu fá ólík örlög eftir dauðann, eins og í Brimi annars vegar og á Náströndum hins vegar."],
+["Egypsk","Reyrvellirnir","Sekhet-Aaru er himnaríki Egypta, með ríkulegri uppskeru, brauði og bjór. Bjórsalur sem sæluvist."],
+["Persnesk","Garōdmān","„Söngvahúsið“ í Avesta er bústaður réttlátra. Himnaríki sem veislusalur er víða í trúarbrögðum."]]};
+
+D[38] = {t:"Salurinn á Náströnd",
+s:"Völvan sá sal standa fjarri sólu á Náströnd (strönd líkanna); dyrnar snúa í norður. Eiturdropar falla inn um ljórann (reykopið), og salurinn er undinn (fléttaður) úr ormahryggjum. Þetta er dvalarstaður hinna verstu: kaldur, myrkur og eitraður.",
+no:[
+["Gylfaginning 52","Snorri vitnar í 38.–39. erindi. Á Náströndum er salur ofinn ormahryggjum, ormahöfuðin snúa inn og blása eitri svo að eiturár renna eftir salnum."],
+["Gylfaginning 49","Norður er átt dauðans. Hermóður ríður til Heljar níu nætur dökka dali og djúpa, „niðr ok norðr“."]],
+c:[
+["Grísk","Tartaros","Djúp undir Hadesi þar sem Títanar eru lokaðir inni bak við eirhlið (Goðakyn 720 o.áfr.)."],
+["Indversk","Naraka","Helvíti hindúa skiptist í mörg hólf með ólíkum refsingum, s.s. Andhatamisra (algert myrkur). Yama dæmir hina látnu."],
+["Persnesk","Hús lyginnar","Drūjō Demāna í Avesta er staður myrkurs og fúllar fæðu."],
+["Kristin","Helvíti","Margir fræðimenn telja að lýsingin á Náströndum beri merki kristinna hugmynda um helvíti, sem bárust til Norðurlanda um sama leyti."]]};
+
+D[39] = {t:"Refsing hinna verstu",
+s:"Þar sá hún vaða þunga strauma meinsvara menn (eiðrofa), morðvarga (morðingja) og þann sem tælir eyrarúnu annars (konu annars manns). Þar saug Níðhöggur nái framgenginna (líkin), og úlfur sleit menn. Refsingin bitnar á þeim sem rjúfa eiða, myrða og drýgja hór, en þetta eru einmitt brot goðanna sjálfra (sbr. 26. og 45. erindi).",
+no:[
+["Grímnismál 32 og 35","Níðhöggur nagar rætur Yggdrasils, og íkorninn Ratatoskur ber orð milli hans og arnarins í krónunni."],
+["Gylfaginning 52","„En í Hvergelmi er verst,“ segir Snorri: þar kvelur Níðhöggur nái framliðinna."],
+["Sólarljóð","Kristið kvæði frá 13. öld lýsir refsingum syndara í öðrum heimi á svipaðan hátt."],
+["66. erindi","Níðhöggur flýgur yfir nýja heiminn með nái í fjöðrum sér."]],
+c:[
+["Egypsk","Ammit","„Sú sem gleypir hina dauðu“ étur hjarta þess sem stenst ekki vigtina í dómssal Ósírisar."],
+["Grísk","Refsingar í Tartarosi","Tantalos stendur í vatni sem hann getur ekki drukkið, Sísýfos veltir steini og Íxíon er bundinn við eldhjól."],
+["Indversk","Manusmriti","Lögbók Manu telur eiðrof, morð og hór meðal verstu glæpa, og Purana-rit lýsa sérstökum hellum fyrir slíka syndara."],
+["Kristin","Páls opinberun","Í Apocalypsis Pauli standa syndarar í eldfljóti, misdjúpt eftir syndum sínum. Hugmyndin var útbreidd á miðöldum."]]};
+
+D[40] = {t:"Í Járnviði",
+s:"Í austri sat hin aldna (gýgur) í Járnviði og fæddi þar afkvæmi Fenris (úlfa). Af þeim öllum verður einn sérstakur tungls tjúgari (sá sem gleypir tunglið) í tröllsham. Úlfurinn sem gleypir himintunglin boðar nálæg endalok.",
+no:[
+["Gylfaginning 12","Fyrir austan Miðgarð í Járnviði býr gýgur sem elur marga jötna í vargslíki. Einn þeirra er Mánagarmur, sem fyllist af fjörvi dauðra manna og gleypir tunglið."],
+["Grímnismál 39","Sköll eltir sólina og Hati Hróðvitnisson tunglið."],
+["Vafþrúðnismál 46–47","Fenrir gleypir sólina, en áður hefur hún eignast dóttur sem tekur við af henni."],
+["Angurboða","Gýgurin sem átti Fenri, Jörmungand og Hel með Loka er oft talin vera „hin aldna“."]],
+c:[
+["Indversk","Rahu og Ketu","Púkinn Rahu drakk af ódauðleikadrykknum (amrita). Vishnu hjó af honum höfuðið, en höfuðið lifir og gleypir sól og mána við myrkva. Einhver nákvæmasta hliðstæðan við úlfinn sem gleypir tunglið."],
+["Kínversk","Tiangou","Himinhundurinn étur sólina eða tunglið við myrkva, og fólk barði trumbur til að hrekja hann burt."],
+["Egypsk","Apep","Höggormur myrkursins ræðst á sólarbát Ra á hverri nóttu."]]};
+
+D[41] = {t:"Svört sólskin",
+s:"Úlfurinn fyllist fjörvi (lífi) feigra manna og rýður bústaði goðanna rauðu blóði. Sólskin verður svart á sumrum eftir og öll veður válynd (ótrygg, ill). Sumur án sólar og ill veður lýsa heimsvetri, Fimbulvetri.",
+no:[
+["Vafþrúðnismál 44–45 og Gylfaginning 51","Fimbulvetur kemur: þrír vetur í röð án sumars, og á undan þeim þrír vetur með stríðum um allan heim. Líf og Lífþrasir lifa af í Hoddmímisholti."],
+["Eldgjá","Clive Oppenheimer og félagar (2018) tengdu lýsingar Völuspár við Eldgjárgosið um 939, þegar gosmóða myrkvaði sólina og sumur brugðust. Móðuharðindin 1783–84 sýna hvernig slíkt gat orðið."],
+["Loftslagsáfallið 536","Sumir sagnfræðingar tengja Fimbulvetur við árin 536–540, þegar eldgos myrkvuðu sólina í Evrópu og uppskera brást."]],
+c:[
+["Persnesk","Vetur Yima","Í Vendidad (2. kafla) varar Ahura Mazda Yima við vetri sem eyða mun lífi. Yima reisir vara, byrgi, og geymir þar bestu fræ manna, dýra og jurta. Líkist Líf og Lífþrasi í Hoddmímisholti."],
+["Indversk","Þurrkar fyrir pralaya","Í Purana-ritum koma hundrað ára þurrkar og brennandi sól á undan eyðingu heimsins."],
+["Biblíuleg","Myrkvuð sól","Jóel 3:4 og Matteus 24:29: sólin mun myrkvast og tunglið ekki gefa birtu sína áður en dagur Drottins kemur."]]};
+
+D[42] = {t:"Eggþér og haninn Fjalar",
+s:"Þar sat á haugi og sló hörpu hirðir gýgjarinnar, glaður Eggþér. Yfir honum gól í galgviði (gálgaskógi) fagurrauður hani sem heitir Fjalar. Jötunninn Eggþér gætir hjarðar gýgjarinnar og leikur glaður á hörpu meðan endalokin nálgast. Haninn er sá fyrsti af þremur sem gala til ragnaraka, hér í Jötunheimum.",
+no:[
+["Eggþér","Eggþér kemur hvergi annars staðar fyrir. Nafnið merkir líklega „sá sem á sverð“ eða „eggjaþjónn“."],
+["Fjalar","Fjalar er einnig nafn dvergs sem drap Kvasi (Skáldskaparmál) og jötuns í Hárbarðsljóðum 26."],
+["Galgviður","Gálgaskógur minnir á Óðin sem hangaguð (Hangatýr) og á hengdar fórnir í trjám, sem Adam frá Brimum lýsir við hofið í Uppsölum."]],
+c:[
+["Persnesk","Hani Sraosha","Í zóróastrískri trú er haninn Parodarsh heilagur fugl Sraosha. Hann galar til að vekja menn og hrekja burt myrkurpúka."],
+["Biblíuleg","Hani Péturs","Haninn galar þegar Pétur afneitar Jesú (Matteus 26:74). Hanagal markar tímamót."],
+["Grísk","Orfeus","Hörpuleikur og dauði tengjast í sögunni um Orfeus, sem lék fyrir guði undirheima. Glaður hörpuleikari á haugi við heimsendi er þó einstök mynd í Völuspá."]]};
+
+D[43] = {t:"Gullinkambi og sótrauði haninn",
+s:"Yfir ásum gól Gullinkambi (sá með gullna kambinn), sem vekur höldana (hetjurnar) hjá Herjaföður (Óðni) í Valhöll. En annar hani, sótrauður, galar undir jörðu í sölum Heljar. Þrír hanar gala í þremur heimum: Fjalar hjá jötnum, Gullinkambi hjá goðum og sótrauði haninn í Hel. Allir heimar vakna til lokabardagans.",
+no:[
+["Grímnismál 18–23 og Gylfaginning 38–41","Einherjar berjast á hverjum degi og rísa upp að kvöldi. Þeir búa sig undir ragnarök og munu ganga út um 540 dyr Valhallar."],
+["Helgakviða Hundingsbana II 49","Helgi verður að ríða aftur til Valhallar „áðr Salgófnir sigrþjóð veki“. Salgófnir er annað nafn á hana Valhallar."],
+["Gylfaginning 34 og Baldrs draumar","Hel, dóttir Loka, stýrir ríki hinna dauðu. Í Baldrs draumum er salur hennar skreyttur fyrir komu Baldurs."]],
+c:[
+["Persnesk","Hanagal fyrir dögun","Hani Sraosha vekur menn til bæna og rekur myrkrið burt (sjá 42. erindi)."],
+["Grísk","Hani Asklepíosar","Á dánarstund sinni biður Sókrates Kríton að fórna hana fyrir Asklepíos (Faídón). Haninn tengist dauða og nýju upphafi."],
+["Japönsk","Amaterasu í hellinum","Guðirnir láta hana gala til að lokka sólgyðjuna Amaterasu út úr hellinum þar sem hún hafði falið sig. Hanagal vekur heiminn."]]};
+
+D[44] = {t:"Garmur geltir",
+s:"Garmur geltir nú ákaft fyrir Gnipahelli; fjöturinn mun slitna og freki (úlfurinn) renna laus. Völvan kann mikinn fróðleik og sér lengra fram um ragna rök, hin römmu örlög sigurgoðanna. Þetta erindi er stef sem kemur fjórum sinnum (44., 49., 54. og 58. erindi) og skiptir lýsingu ragnaraka í þætti. „Ragna rök“ merkir örlög eða endalok goðanna; myndin „ragnarøkkr“, rökkur goðanna, er hjá Snorra og í Lokasennu.",
+no:[
+["Grímnismál 44 og Gylfaginning 51","Garmur er bestur hunda. Í ragnarökum losnar hann úr Gnipahelli og berst við Tý, og þeir drepa hvor annan."],
+["Gylfaginning 34","Goðin binda Fenrisúlf með fjötrinum Gleipni, sem dvergar gerðu. Týr leggur hönd sína í munn úlfsins sem veð og missir hana þegar úlfurinn finnur að hann er svikinn."],
+["Garmur og Fenrir","Margir fræðimenn telja Garm og Fenri vera sömu skepnuna, því Gylfaginning lætur þá berjast við sitt hvort goðið en Völuspá nefnir aðeins einn úlf."]],
+c:[
+["Grísk","Kerberos","Hundur Hadesar gætir hliðs undirheima. Sumir málfræðingar hafa tengt nafnið við sanskrít śabala (flekkóttur)."],
+["Indversk","Hundar Yama","Tveir fjögurra augna hundar Yama, Shyama og Shabala, gæta vegarins til ríkis dauðans (Rigveda 10.14)."],
+["Írsk / rómversk","Hönd Týs","Írski konungurinn Nuada missir höndina í bardaga og fær silfurhönd. Rómverjinn Mucius Scaevola brennir hönd sína í eldi frammi fyrir óvinakonungi til að sanna orð sín. Dumézil bar þá báða saman við Tý."]]};
+
+D[45] = {t:"Skeggöld, skálmöld",
+s:"Bræður munu berjast og verða hvor annars banar, systrungar (systkinabörn) munu spilla frændsemi. Hart er í heimi, mikill hórdómur: skeggöld (öld axa), skálmöld (öld sverða), skildir klofnir, vindöld, vargöld, áður en veröldin steypist. Enginn maður mun eira öðrum. Siðferðið hrynur á undan heiminum: frændsemi og hjúskapur, burðarásar samfélagsins, bresta.",
+no:[
+["Gylfaginning 51","Á undan Fimbulvetri verða þrír vetur með miklum orrustum um allan heim. Þá drepa bræður hver annan vegna ágirndar og enginn þyrmir föður né syni."],
+["Hetjukvæði Eddu","Atlakviða, Hamðismál og Sigurðarkviður eru full af frændvígum og eiðrofum. Erindið lýsir hetjuöldinni sem upphafi heimsendis."],
+["Hávamál","Frændsemi, vinátta og orðheldni eru grunngildi Hávamála. Rof þeirra eru æðstu glæpir."]],
+c:[
+["Grísk","Járnöldin","Hesíódos (Verk og dagar 182–201) lýsir járnöldinni: faðir og börn verða ósátt, bróðir verður bróður sínum ekki kær, eiðar og réttlæti verða einskis virt. Sláandi lík lýsing."],
+["Indversk","Kali Yuga","Á síðustu og verstu öld heimsins hverfur dharma, fjölskyldur sundrast og hjúskapur riðlast (Vishnu Purana 4.24, Mahabharata)."],
+["Biblíuleg","Markús 13:12","„Bróðir mun selja bróður sinn til dauða og faðir barn sitt.“ Einnig Míka 7:6."]]};
+
+D[46] = {t:"Gjallarhorn",
+s:"Synir Míms leika (ólmast) og mjötuður (örlögin, „mælirinn“) kviknar við hið gjallandi Gjallarhorn. Heimdallur blæs hátt, hornið er á lofti. Óðinn talar við höfuð Mímis. Synir Míms eru óljósir: jötnar, vötn eða öfl úr undirheimum. Heimdallur vekur goðin til síðustu orrustu og Óðinn leitar ráða hjá Mími í síðasta sinn.",
+no:[
+["Gylfaginning 51","Heimdallur blæs ákaft í Gjallarhorn og vekur öll goðin. Óðinn ríður til Mímisbrunns og tekur ráð af Mími fyrir sig og sína."],
+["Ynglinga saga 4 og Sigrdrífumál 14","Vanir hálshjuggu Mími og sendu höfuðið til Ása. Óðinn smurði það jurtum og kvað galdur yfir því. Í Sigrdrífumálum mælir höfuð Mímis fyrstu spekiorðin."],
+["Heimdallur","Hyndluljóð 35–37: sonur níu mæðra. Húsdrápa: berst við Loka í selslíki um Brísingamen. Þrymskviða 15: hvítastur ása, sem veit fram eins og Vanir."]],
+c:[
+["Grísk","Höfuð Orfeifs","Eftir að Orfeus var rifinn í sundur flaut höfuð hans syngjandi til Lesbos og varð þar véfrétt."],
+["Velsk","Höfuð Brans","Í Mabinogion talar höfuð Brans hins blessaða og skemmtir félögum hans árum saman eftir dauða hans. Höfuðdýrkun Kelta er vel þekkt."],
+["Biblíuleg","Lúðurhljómur","„Lúðurinn mun gjalla og hinir dauðu upp rísa“ (1. Korintubréf 15:52). Sjö englar með básúnur í Opinberunarbókinni 8."],
+["Frankísk","Olifant","Í Rólandskvæði blæs Róland í hornið Olifant til að kalla á hjálp, en of seint."]]};
+
+D[47] = {t:"Yggdrasill skelfur",
+s:"Askur Yggdrasils skelfur þar sem hann stendur; hið aldna tré ymur (stynur) og jötunninn losnar. Allir hræðast á helvegum (hinir dauðu) áður en frændi Surts (eldurinn, eða úlfurinn) gleypir hann. Heimstréð sjálft titrar. Jötunninn sem losnar er líklega Loki eða Fenrir.",
+no:[
+["Gylfaginning 51","„Þá skelfr askr Yggdrasils, ok engi hlutr er þá óttalauss á himni eða á jörðu.“"],
+["Vafþrúðnismál 45","Líf og Lífþrasir fela sig „í holti Hoddmímis“, sem flestir telja vera Yggdrasil. Tréð verndar lífið gegnum eldinn."],
+["Surtar sefi","„Frændi Surts“ hefur verið túlkaður sem eldurinn eða Fenrir. Hann gleypir líklega Óðin (sbr. 53. erindi) eða tréð sjálft."]],
+c:[
+["Indversk","Ashvattha höggvið","Bhagavad Gíta 15.3: heimstréð skal höggvið niður með sterku sverði afskiptaleysisins. Fall heimstrés sem endir veraldar."],
+["Grísk","Jarðskelfirinn","Póseidon er kallaður „jarðskelfir“, og Týfon hristir jörðina undir Etnu."],
+["Biblíuleg","Haggaí 2:6","„Enn einu sinni mun ég hræra himin og jörð.“ Endurtekið í Hebreabréfinu 12:26."]]};
+
+D[48] = {t:"Hvat er með ásum?",
+s:"Hvað er að gerast hjá ásum? Hvað hjá álfum? Allur Jötunheimur glymur, æsir eru á þingi. Dvergar stynja fyrir steindyrum sínum, vitringar bergveggjanna. Uppnám ríkir í öllum heimum: goðin ráðgast, jötnar búast til bardaga og dvergarnir kveina.",
+no:[
+["Þrymskviða 7","Sömu orð, „Hvat er með ásum? Hvat er með alfum?“, segir Þrymur þegar Loki kemur til Jötunheima. Formúlan virðist hafa verið föst í munnlegri hefð."],
+["Æsir og álfar","Æsir og álfar eru oft nefndir saman (Hávamál 159, Lokasenna 2, Skírnismál 7). Fornensk særingarþula, Wið færstice, nefnir einnig skot ása og álfa saman."],
+["Alvíssmál og Ynglinga saga 12","Dvergar búa í steinum; dyrnar að heimi þeirra eru í berginu."]],
+c:[
+["Indversk","Tandava Shiva","Þegar Shiva dansar tandava, eyðingardansinn sem bindur enda á heiminn, skelfast allir heimar: devar, asúrar og nagar."],
+["Grísk","Títanastríðið","Í Goðakyni (678–705) titrar allur heimurinn, Ólympos, jörðin og Tartaros, þegar Seifur berst við Títana."],
+["Biblíuleg","Opinberunarbókin 6:15–16","Konungar jarðar og allir menn fela sig í hellum og klettum og biðja fjöllin að hylja sig."]]};
+
+D[49] = {t:"Garmur geltir (stef)",
+s:"Stefið í annað sinn. Endurtekningin skiptir frásögninni í þætti og eykur spennu: í hvert sinn sem stefið kemur er ragnarökum lengra komið. Nú, eftir að Yggdrasill hefur skolfið og jötunninn losnað, brestur fjöturinn sem haldið hefur úlfinum frá upphafi.",
+no:[
+["Gylfaginning 34","Gleipnir var gerður af dvergum úr sex hlutum: dyn kattarins, skeggi konunnar, rótum bergsins, sinum bjarnarins, anda fisksins og hráka fuglsins. Þess vegna eru þeir hlutir ekki lengur til. Goðin bundu úlfinn á eyjunni Lyngva í vatninu Ámsvartni og settu sverð í góm hans."],
+["Lokasenna 38–39","Loki minnir Tý á að úlfurinn hafi tekið hönd hans. Týr svarar að úlfurinn liggi í böndum allt til ragnaraka."],
+["Stef í Eddukvæðum","Endurtekin stef eru einkenni munnlegs kveðskapar. Þau koma víðar fyrir, t.d. í Hávamálum og Grottasöng."]],
+c:[
+["Persnesk","Azhi Dahaka losnar","Undir lok heimsins slítur drekinn sig lausan af Damavand-fjalli og eyðir þriðjungi alls lífs áður en hetjan Kersaspa drepur hann."],
+["Biblíuleg","Satan leystur","„Þegar þúsund árin eru liðin verður Satan leystur úr fangelsi sínu“ (Opinberunarbókin 20:7)."],
+["Grísk","Kerberos sóttur","Herakles dregur Kerberos upp úr undirheimum; hundur hliðsins kemur upp í heim lifenda."]]};
+
+D[50] = {t:"Hrymur, ormurinn og Naglfar",
+s:"Hrymur (jötunn) ekur úr austri og heldur lind (skildi úr linditré) fyrir sér. Jörmungandur (Miðgarðsormur) snýst í jötunmóði, ormurinn knýr öldurnar og örninn gargar af ákafa; fölnefur rífur nái. Naglfar losnar. Óvinirnir koma úr öllum áttum: jötnar af landi, ormurinn úr sjó og skip hinna dauðu.",
+no:[
+["Gylfaginning 51","Naglfar er gert úr nöglum dauðra manna. Því skyldi enginn deyja með óskornar neglur, svo að skipinu seinki. Hrymur stýrir Naglfara í gerð Snorra."],
+["Gylfaginning 34 og Hymiskviða","Óðinn kastaði Miðgarðsormi í sæinn, þar sem hann óx svo að hann liggur um öll lönd og bítur í sporð sér. Þór reynir að veiða hann í Hymiskviðu og lyftir honum í kattarlíki hjá Útgarða-Loka."],
+["Vafþrúðnismál 37","Hræsvelgur, jötunn í arnarham, situr á himins enda og veldur vindum. Örninn sem hlakkar yfir nánum."]],
+c:[
+["Biblíuleg / úgarítísk","Levíatan og Lotan","Guð mun „á þeim degi“ refsa Levíatan, hinni flughröðu slöngu (Jesaja 27:1). Í úgarítískum textum sigrar Baal sjávarslönguna Lotan."],
+["Grísk / egypsk","Okeanos og Ouroboros","Okeanos er áin sem umlykur jörðina, og Ouroboros er ormurinn sem bítur í sporð sér. Hvort tveggja minnir á Miðgarðsorm."],
+["Indversk","Vritra og Shesha","Vritra er ormurinn sem heftir vötnin, og slöngurnar Shesha og Vasuki umlykja heiminn eða bera hann."],
+["Grísk","Ferja Karons","Skip tengt hinum dauðu, eins og Naglfar, flytur sálir yfir Styx."]]};
+D[51] = {t:"Loki stýrir",
+s:"Kjóll (skip) fer úr austri; lýðir Múspells koma yfir hafið, og Loki stýrir. Fíflmegir (afkvæmi trölla, ófreskjur) fara allir með freka (úlfinum); með þeim í för er bróðir Býleists, þ.e. Loki. Loki hefur losnað og stýrir nú her eldjötna gegn goðunum. Múspell er eldheimurinn í suðri.",
+no:[
+["Gylfaginning 51","Múspellssynir ríða yfir Bifröst og hún brotnar. Loki fylgir þeim með allt lið Heljar, og Hrymur með alla hrímþursa."],
+["Gylfaginning 33","Bræður Loka heita Býleistur og Helblindi."],
+["Lokasenna 42","Freyr er varaður við því sem gerist „er Múspells synir ríða Myrkvið yfir“."]],
+c:[
+["Germönsk","Muspilli","Fornháþýskt kvæði frá 9. öld um heimsendi og dómsdag heitir Muspilli, orð sem merkir líklega heimsbruna. Orðið Múspell er því samgermanskt og hefur verið kristnað í Bæjaralandi."],
+["Biblíuleg","Góg og Magóg","Þjóðirnar úr norðri safnast saman gegn hinum heilögu á endadögum (Esekíel 38–39, Opinberunarbókin 20:8)."],
+["Indversk","Asúrar","Andguðirnir ráðast sífellt gegn devunum, og í Purana-ritum leiða stríð þeirra til eyðingar heimsskeiða."],
+["Persnesk","Her Ahrimans","Angra Mainyu safnar her djöfla til lokabaráttunnar gegn Ahura Mazda."]]};
+
+D[52] = {t:"Surtur fer sunnan",
+s:"Surtur fer úr suðri með sviga lævi (eldinum, „bana greinanna“); af sverði hans skín sól valguðanna. Grjótbjörgin gnötra (rekast saman), tröllkonur hrapa, menn troða helveg og himinninn klofnar. Eldjötunninn Surtur kemur með brennandi sverð sem ljómar eins og sól.",
+no:[
+["Gylfaginning 4","Surtur situr við landsenda Múspellsheims með logandi sverð. Við enda veraldar mun hann sigra öll goðin og brenna heiminn."],
+["Vafþrúðnismál 17–18","Vígríður heitir völlurinn þar sem Surtur og goðin mætast; hann er hundrað rasta á hvern veg."],
+["Gylfaginning 51","Þegar Múspellssynir ríða yfir Bifröst brotnar hún og himinninn rifnar."]],
+c:[
+["Indversk","Kalki","Tíunda og síðasta holdtekja Vishnu kemur í lok Kali Yuga á hvítum hesti með logandi sverð og eyðir hinum ranglátu."],
+["Grísk / rómversk","Ekpyrosis","Stóíkar töldu að heimurinn færist reglulega í allsherjarbruna og endurnýjaðist síðan."],
+["Persnesk","Bráðinn málmur","Við endalok renna fjöll úr bráðnum málmi yfir jörðina. Hinir réttlátu finna það sem volga mjólk, hinir ranglátu brenna."],
+["Biblíuleg","Eldur og sverð","Kerúbinn með logandi sverð gætir Eden (1. Mós. 3:24). Í 2. Pétursbréfi 3:10 líða himnarnir undir lok með gný og frumefnin sundurleysast í eldi."]]};
+
+D[53] = {t:"Annar harmur Friggjar",
+s:"Þá kemur annar harmur Hlínar (Friggjar) fram, þegar Óðinn fer að berjast við úlfinn, en bani Belja (Freyr) bjartur gegn Surti; þá mun Friggjar angan (ástvinur, Óðinn) falla. Fyrri harmur Friggjar var dauði Baldurs; nú missir hún eiginmann sinn. Freyr berst við Surt.",
+no:[
+["Gylfaginning 51","Fenrisúlfur gleypir Óðin. Freyr berst við Surt og fellur, því hann skortir sverð sitt."],
+["Skírnismál","Freyr gefur Skírni sverð sitt fyrir að vinna honum Gerði jötnadóttur. Án sverðsins fellur hann í ragnarökum."],
+["Gylfaginning 37","Freyr drap jötuninn Belja með hjartarhorni, því hann hafði gefið sverðið frá sér."],
+["Hlín","Hlín er heiti Friggjar. Í Gylfaginningu 35 er hún einnig talin sérstök ásynja sem verndar menn."]],
+c:[
+["Grísk","Seifur og Týfon","Í fyrstu atrennu sigrar Týfon Seif og sker úr honum sinarnar áður en Seifur nær yfirhöndinni (Apollodóros). Æðsti guðinn í lífsháska gegn skrímsli."],
+["Indversk","Indra gleyptur","Í sumum gerðum gleypir Vritra Indra, sem kemst þó út aftur. Hinn æðsti gleyptur af ófreskju."],
+["Grísk","Krónos","Krónos gleypti börn sín, guðina, öll nema Seif."],
+["Persnesk","Endabarátta","Í lok tímanna mætast guðir og djöflar í einvígi, hver gegn sínum óvini, eins og goðin í ragnarökum."]]};
+
+D[54] = {t:"Garmur geltir (stef)",
+s:"Stefið í þriðja sinn, beint á eftir falli Óðins. Hlé verður á frásögninni og fall Óðins ómar áfram áður en hefndin kemur í næsta erindi. Áherslan er á fróðleik völvunnar: hún sér lengra en goðin sjálf, jafnvel nú þegar æðsti guðinn er fallinn.",
+no:[
+["Gnipahellir","Gnípa er klettanef eða tindur. Hellirinn er við inngang undirheima, þar sem Garmur er bundinn."],
+["Gylfaginning 51","Týr berst við Garm og þeir verða hvor annars banar."],
+["Sigrdrífumál 6","Sigrúnir skal rista á sverð og nefna tvisvar Tý. Týr er guð bardaga og laga."]],
+c:[
+["Rómversk","Týr og Mars","Rómverjar þýddu Tý sem Mars. Þess vegna heitir þriðjudagur Tuesday (dagur Tíws) á ensku en mardi (dagur Mars) á frönsku."],
+["Indóevrópsk","Týr, Seifur og Dyaus","Nafnið Týr er skylt Zeus, Júpíter og vedíska Dyaus, sem öll eru af indóevrópsku *dyēus, „himinn, guð“. Týr virðist eitt sinn hafa verið hinn forni himinguð."],
+["Egypsk","Anúbis","Sjakalguðinn Anúbis gætir hliðs dauðaríkisins og leiðir sálirnar, hliðstæða hundsins í hellinum."]]};
+
+D[55] = {t:"Víðarr hefnir",
+s:"Þá kemur hinn mikli sonur Sigföður (Óðins), Víðarr, að berjast við valdýrið (úlfinn). Hann lætur mæki standa til hjarta í syni Hveðrungs (Loka), þ.e. Fenri, og þá er föður hans hefnt. Víðarr hefnir föður síns með því að reka sverð í hjarta úlfsins.",
+no:[
+["Gylfaginning 51","Víðarr stígur öðrum fæti í neðri kjálka úlfsins. Á þeim fæti er skór sem gerður er úr öllum leðurbútum sem menn hafa skorið af skóm sínum. Með hendinni tekur hann í efri kjálkann og rífur sundur gin hans."],
+["Vafþrúðnismál 53","Víðarr klýfur kalda kjálka úlfsins."],
+["Gylfaginning 29 og Grímnismál 17","Víðarr er hinn þögli áss, næstur Þór að styrk. Land hans, Viði, er vaxið hrísi og háu grasi."],
+["Hveðrungur","Hveðrungur er heiti Loka í skáldskap."]],
+c:[
+["Egypsk","Hórus hefnir Ósírisar","Sonurinn hefnir föður síns, guðsins sem var drepinn, á morðingjanum Set."],
+["Grísk","Órestes","Órestes hefnir Agamemnons föður síns."],
+["Persnesk","Saoshyant","Frelsarinn sem kemur við endalok tímanna sigrar illskuna og vekur hina dauðu."],
+["Ensk-norræn","Gosforth-krossinn","Steinkross í Cumbria á Englandi frá fyrri hluta 10. aldar sýnir mann sem stígur í gin úlfs og rífur það sundur, líklega Víðar, við hlið krossfestingar Krists."]]};
+
+D[56] = {t:"Þór og Miðgarðsormur",
+s:"Þá kemur hinn mæri sonur Hlóðynjar (Jarðar), sonur Óðins, að berjast við orminn. Véurr Miðgarðs (verndari Miðgarðs, Þór) drepur hann í reiði sinni, og allir menn munu ryðja heimstöð (yfirgefa heiminn, deyja). Sonur Fjörgynjar (Þór) gengur níu fet frá naðrinum, neppur (örmagna), hann sem óttaðist ekki níð. Þór drepur orminn en fellur sjálfur af eitri hans.",
+no:[
+["Gylfaginning 51","Þór ber banaorð af Miðgarðsormi og stígur þaðan níu fet. Þá fellur hann dauður til jarðar fyrir eitrinu sem ormurinn blæs á hann."],
+["Hymiskviða og Gylfaginning 48","Þór rær út með Hymi jötni og dregur Miðgarðsorm upp á uxahöfði. Hymir sker á færið og ormurinn sekkur. Fyrsta viðureign þeirra."],
+["Hlóðyn og Fjörgyn","Bæði nöfnin eru heiti Jarðar, móður Þórs."],
+["Vafþrúðnismál 51","Synir Þórs, Móði og Magni, erfa Mjölni eftir ragnarök."]],
+c:[
+["Indversk","Indra og Vritra","Þrumuguðinn drepur með vajra orminn sem heldur vötnunum (Rigveda 1.32). Vedíska hliðstæðan við Þór og Miðgarðsorm."],
+["Hittítísk","Tarhunt og Illuyanka","Stormguð Hittíta berst við drekann Illuyanka."],
+["Slavnesk / baltnesk","Perun og Veles","Þrumuguðinn Perun berst við Veles í ormslíki. Nafnið Fjörgyn er talið skylt Perkūnas, þrumuguði Litháa, og vedíska regnguðinum Parjanya."],
+["Fornensk","Bjólfur","Bjólfur drepur drekann og deyr sjálfur af eitri hans. Sama minni og hjá Þór."],
+["Grísk","Seifur og Apollon","Seifur sigrar Týfon og Apollon drepur drekann Pýþon við Delfí."]]};
+
+D[57] = {t:"Sól tér sortna",
+s:"Sólin tekur að sortna, jörðin sígur í mar (sjó), heiðar (bjartar) stjörnur hverfa af himni. Eimur (gufa) og aldurnari (eldurinn, „lífsbaninn“) geisa; hár hitinn leikur við himininn sjálfan. Heimurinn ferst í eldi og sjó. Íslenskt landslag, með eldgosum og jökulhlaupum, gefur myndinni sérstakan veruleika.",
+no:[
+["Gylfaginning 51","Surtur slöngvir eldi yfir jörðina og brennir allan heiminn."],
+["Vafþrúðnismál 50–51","Spurt er hverjir lifi „er sloknar Surtalogi“."],
+["Eldgos","Gufa og logar sem leika við himin minna á gosmökk. Skáldið kann að hafa séð eldgos eða haft af þeim spurnir (sjá 41. erindi)."]],
+c:[
+["Indversk","Pralaya","Við enda heimsskeiðs brennir eldurinn Samvartaka heimana, og síðan flæðir allt í vatni meðan Vishnu sefur á slöngunni Shesha. Sama röð: eldur, svo sjór."],
+["Biblíuleg","Opinberunarbókin 6:12–14","Sólin varð svört, stjörnurnar féllu og himinninn hvarf eins og bókrolla sem vafin er saman. Einnig Markús 13:24–25."],
+["Grísk / rómversk","Faeþon","Sonur Helíosar missir stjórn á sólvagninum og brennir jörðina (Ummyndanir Óvidíusar, 2. bók)."],
+["Mesópótamísk","Flóðið","Í Gilgameskviðu og Atrahasis eyða guðirnir mannkyninu í flóði."]]};
+
+D[58] = {t:"Garmur geltir (stef)",
+s:"Stefið í síðasta sinn. Eftir það breytist sýnin: ekki meiri eyðing heldur nýtt upphaf. Stefið lokar ragnarökum eins og hlið. Orðin „römm sigtíva“, hin römmu örlög sigurgoðanna, eru nú kaldhæðin: sigurgoðin eru fallin.",
+no:[
+["Handritin","Í handritum eru endurtekin stef oft aðeins skrifuð með upphafsorðum. Útgefendur ákveða hvort og hvar stefið er prentað í heild."],
+["Vafþrúðnismál 46–47","Áður en Fenrir gleypir sólina eignast hún dóttur sem mun aka brautir móður sinnar í nýjum heimi. Stefið vísar nú fram til þess."],
+["Gylfaginning 53","Snorri segir að eftir brunann komi upp jörð úr sjó; lokin eru upphaf."]],
+c:[
+["Indversk","Kalpa","Hindúar telja tímann í hringjum: hvert heimsskeið, kalpa, endar í eyðingu og nýtt hefst."],
+["Grísk","Ár Platóns","Platón (Tímaios 39d) talar um „hið fullkomna ár“, þegar himintunglin snúa öll aftur í sömu stöðu og hringrásin hefst á ný."],
+["Mesóamerísk","Sólirnar fimm","Astekar trúðu að fjórir heimar, „sólir“, hefðu farist á undan þeim fimmta, sem nú stendur."]]};
+
+D[59] = {t:"Jörð úr ægi",
+s:"Völvan sér jörðina koma upp úr hafinu í annað sinn, iðjagræna (sígræna). Fossar falla, örn flýgur yfir, sá sem veiðir fiska á fjalli. Ný jörð rís eftir ragnarök, frjó og fersk. Myndin af fossum og erni sem veiðir í fjallaám er ljóslifandi íslenskt landslag. Sköpunin í 4. erindi endurtekur sig: land úr sæ.",
+no:[
+["Gylfaginning 53","Jörð skýtur upp úr sjónum, græn og fögur, og akrar vaxa ósánir."],
+["Vafþrúðnismál 44–47","Líf og Lífþrasir lifa af og nærast á morgundögg; frá þeim kemur nýtt mannkyn. Sólin á dóttur sem tekur við af móður sinni."],
+["50. erindi","Í ragnarökum gargaði örninn og reif nái. Nú veiðir hann fisk: friðsamleg breyting."]],
+c:[
+["Biblíuleg","Nói","Jörðin kemur upp úr flóðinu og dúfan snýr aftur með olíuviðarlauf (1. Mós. 8). Opinberunarbókin 21:1: nýr himinn og ný jörð."],
+["Indversk","Nýtt Krita Yuga","Eftir pralaya vaknar Brahma og skapar heiminn á ný. Fyrsta öldin er aftur gullöld."],
+["Persnesk","Frashokereti","Heimurinn er endurnýjaður og gerður fullkominn, án dauða og elli."],
+["Grísk / stóísk","Eilíf endurkoma","Stóíkar töldu að eftir bruna heimsins risi sami heimur aftur."]]};
+
+D[60] = {t:"Æsir finnast á ný",
+s:"Æsir finnast á Iðavelli og dæma um hinn máttuga moldþinur (Miðgarðsorm, „jarðarbandið“) og minnast þar hinna miklu atburða og fornra rúna Fimbultýs (Óðins). Goðin sem lifa af hittast á sama stað og í 7. erindi og rifja upp söguna. Minnið og rúnirnar lifa ragnarök af.",
+no:[
+["Gylfaginning 53","Víðarr og Váli, Móði og Magni, Baldur og Höður koma saman á Iðavelli, þar sem Ásgarður var. Þeir ræða rúnar sínar og minnast tíðinda, Miðgarðsorms og Fenrisúlfs."],
+["Hávamál 138–145","Óðinn nam rúnir með því að hanga níu nætur á vindgameiði. Fimbultýr merkir hinn mikli guð."],
+["Vafþrúðnismál 51","Víðarr og Váli byggja vé goða „er sloknar Surtalogi“."]],
+c:[
+["Indversk","Matsya","Fyrsta holdtekja Vishnu, fiskurinn Matsya, bjargar Manu og Vedabókunum úr flóðinu. Helg þekking sem varðveitist yfir heimsendi."],
+["Babýlonsk","Ritin í Sippar","Berossus segir að Xisuthros hafi grafið helg rit í borginni Sippar fyrir flóðið, og þau fundust aftur á eftir."],
+["Grísk","Mnemosyne","Minnið er móðir Músanna. Án minnis er engin saga og enginn kveðskapur."]]};
+
+D[61] = {t:"Gullnu töflurnar",
+s:"Þar munu finnast aftur í grasinu hinar undursamlegu gullnu töflur sem goðin áttu í árdaga. Taflið úr 8. erindi snýr aftur: gullöldin hefst á ný. Hringurinn lokast.",
+no:[
+["Gylfaginning 53","Þar finna þeir í grasinu gulltöflur sem æsir höfðu átt."],
+["8. erindi","„Tefldu í túni ... var þeim vettergis vant ór gulli.“ Andstæða við Gullveigu (21. erindi): gullið er aftur saklaust leikfang."],
+["Tafl sem heimsmynd","Hnefatafl er leikur um konung í miðju og varnarlið hans. Töflurnar hafa verið túlkaðar sem tákn heimsskipanarinnar sjálfrar."]],
+c:[
+["Rómversk","4. hirðljóð Virgils","„Redeunt Saturnia regna“, ríki Satúrnusar snýr aftur. Virgill boðar endurkomu gullaldar með fæðingu barns, og kristnir menn lásu kvæðið síðar sem spádóm um Krist."],
+["Indversk","Besta kastið","Endurnýjun heimsins hefst á Krita Yuga, sem heitir eftir besta teningakastinu (sjá 8. erindi)."],
+["Grísk","Öld Krónosar","Hjá Platóni (Stjórnmálamaðurinn) snýst heimurinn við og tími Krónosar, gullöldin, kemur aftur."]]};
+
+D[62] = {t:"Baldur mun koma",
+s:"Ósánir akrar munu vaxa, allt böl batnar, Baldur mun koma. Höður og Baldur búa í sigursölum Hrofts (Óðins), véum valguðanna. Baldur og banamaður hans, Höður, koma sáttir úr Helju. Hinn nýi heimur er heimur sátta.",
+no:[
+["Gylfaginning 53","Baldur og Höður koma frá Helju. Þeir setjast allir saman og talast við."],
+["Vafþrúðnismál 51","Víðarr og Váli byggja vé goða, og Móði og Magni hafa Mjölni."],
+["Hroftur","Hroftur og Hroftatýr eru heiti Óðins í kvæðum."]],
+c:[
+["Grísk","Ósánir akrar","Hesíódos (Verk og dagar 117–118) segir að á gullöld hafi jörðin borið ávöxt af sjálfu sér, mikinn og ríkulegan."],
+["Biblíuleg","Úlfurinn og lambið","Jesaja 11:6 og 65:25 lýsa sátt í nýjum heimi, þar sem úlfurinn býr hjá lambinu. Baldur sem Kristsmynd hefur verið rædd frá 19. öld."],
+["Egypsk / grísk","Ósíris og Persefóna","Ósíris er endurlífgaður sem konungur undirheima, og Persefóna snýr aftur úr undirheimum með vorinu."],
+["Persnesk","Upprisan","Við Frashokereti rísa allir hinir dauðu upp."]]};
+
+D[63] = {t:"Hænir kýs hlautvið",
+s:"Þá getur Hænir kosið hlautvið (spávið, kvisti sem hlutað er með) og synir tveggja bræðra byggja hinn víða vindheim (himininn). Hænir verður blótgoði eða spámaður nýja heimsins. Bræðurnir tveir eru annaðhvort Baldur og Höður eða Óðinn og bróðir hans (Vili eða Vé). Í síðara tilviki tekur nýr ættliður goða við.",
+no:[
+["Ynglinga saga 4","Hænir var sendur til Vana sem gísl en reyndist ráðlaus án Mímis. Hér fær hann loks hlutverk."],
+["18. erindi","Hænir gaf mönnunum óð. Hann fylgir Óðni og Loka í Haustlöng og Reginsmálum."],
+["Hákonar saga góða","Hlaut var fórnarblóð og hlautteinn sproti sem því var stökkt með yfir hof og menn."]],
+c:[
+["Rómversk","Tacitus um hlutkesti","Tacitus (Germania 10) segir að Germanir skeri grein af ávaxtatré í búta, merki þá táknum og kasti á hvítan dúk. Prestur les svo úr þeim. Hlautviður!"],
+["Rómversk","Augures","Rómversku spáprestarnir lásu vilja guðanna úr flugi fugla."],
+["Kínversk","I Ching","Spáð er með því að kasta vallhumalsstönglum og lesa úr myndunum."]]};
+
+D[64] = {t:"Gimlé",
+s:"Völvan sér sal standa, fegri en sólina, gulli þakinn á Gimlé. Þar munu dyggar (trúar, réttlátar) dróttir byggja og njóta yndis um aldur og ævi. Gimlé merkir líklega „skjól fyrir eldi“ eða „gimsteinahlé“. Hér er sæluríki hinna réttlátu.",
+no:[
+["Gylfaginning 3 og 17","Gimlé stendur á himni sunnanverðum, fegurstur allra og bjartari en sólin. Hann mun standa þegar himinn og jörð farast, og þar búa góðir menn og réttlátir."],
+["Gylfaginning 52","Gimlé er besti dvalarstaður eftir ragnarök (sbr. 37. erindi)."]],
+c:[
+["Biblíuleg","Nýja Jerúsalem","Í Opinberunarbókinni 21:18–23 er borgin úr skíru gulli og þarf hvorki sól né mána, því dýrð Guðs lýsir hana. Mjög lík lýsing, og margir telja áhrif kristni augljós hér."],
+["Grísk","Eyjar hinna sælu","Í Elysion og á Eyjum hinna sælu búa hetjur eftir dauðann."],
+["Indversk","Vaikuntha","Bústaður Vishnu, þar sem hinir réttlátu dvelja í eilífri sælu."],
+["Persnesk","Garōdmān","„Söngvahúsið“ er æðsta himnaríki Zóróastrista."]]};
+
+D[65] = {t:"Hinn ríki kemur",
+s:"Þá kemur hinn ríki (máttugi) til regindóms (hins mikla dóms), öflugur ofan að, sá sem öllu ræður. Erindið er aðeins í Hauksbók. Flestir telja að hér sé átt við Krist eða hinn kristna Guð sem kemur til dóms, og að kvæðið hafi verið ort á tíma kristnitökunnar um árið 1000. Aðrir benda á að „hinn ríki“ gæti verið heiðinn alvaldur sem skáldið nefnir ekki.",
+no:[
+["Hyndluljóð 44 (Völuspá in skamma)","„Þá kemr annarr enn meiri, þó þori ek eigi þann at nefna.“ Annar ónafngreindur máttur sem kemur eftir ragnarök."],
+["Kristnitakan","Kvæðið er líklega ort í umbrotum siðaskiptanna, og margir telja það sýna samruna eða togstreitu heiðni og kristni."],
+["Gylfaginning","Snorri tekur þetta erindi ekki upp í endursögn sína."]],
+c:[
+["Biblíuleg","Endurkoma Krists","„Þegar Mannssonurinn kemur í dýrð sinni ... mun hann sitja í dýrðarhásæti sínu“ (Matteus 25:31). „Sá er öllu ræðr“ minnir á Pantokrator, alvaldinn."],
+["Búddísk","Maitreya","Framtíðarbúddann kemur þegar kenning Búdda er gleymd og endurnýjar heiminn."],
+["Indversk / persnesk","Kalki og Saoshyant","Frelsarar sem koma í lok tímanna og dæma heiminn."]]};
+
+D[66] = {t:"Níðhöggur flýgur",
+s:"Þar kemur hinn dimmi dreki fljúgandi, glitrandi naðra, neðan frá Niðafjöllum; hann ber nái í fjöðrum sér þar sem hann flýgur yfir völlinn, Níðhöggur. Nú mun hún sökkva. Lokaerindið vekur ugg: illskan og dauðinn eru ekki horfin úr nýja heiminum. „Hon“ er völvan, sem sekkur nú aftur í dauðann eða úr leiðslunni eftir að hafa lokið spá sinni. Sumir telja að drekinn sé á leið til að farast; aðrir að hringrás heimsins hefjist á ný.",
+no:[
+["Grímnismál 32 og 35","Níðhöggur nagar rót Yggdrasils neðan frá. Í 39. erindi sýgur hann nái framliðinna."],
+["Baldrs draumar 14","Völvan rekur Óðin burt: hann skuli ríða heim, og enginn muni vitja hennar framar fyrr en Loki losnar. Völvan sem snýr aftur til grafar."],
+["Niðafjöll","Sbr. Niðavelli í 37. erindi. Myrk fjöll í norðri, þar sem í Gylfaginningu 52 stendur salurinn Sindri."]],
+c:[
+["Biblíuleg","Drekinn leystur","Eftir þúsund ára ríkið verður drekinn leystur um stund (Opinberunarbókin 20:7–8). Illskan hverfur ekki strax."],
+["Egypsk","Apep snýr aftur","Höggormurinn er sigraður á hverri nóttu en kemur alltaf aftur; baráttan við myrkrið er eilíf."],
+["Grísk","Kassandra","Spákonan sem sá allt fyrir en enginn trúði. Spádómsgáfan sem byrði."],
+["Indversk","Hringrás kalpa","Hvert nýtt heimsskeið ber í sér fræ hnignunar og nýrra endaloka."]]};
+
+const PARTS=[[1,8,"Upphaf heimsins"],[9,16,"Dvergatal"],[17,20,"Menn og örlög"],[21,30,"Fyrsta stríðið"],[31,36,"Dauði Baldurs"],[37,43,"Undirheimar og fyrirboðar"],[44,58,"Ragnarök"],[59,66,"Nýr heimur"]];
+const REFRAIN=[44,49,54,58];
+const OPENING=[6,9,23,25];
+const N=66;
+const partOf=n=>PARTS.find(p=>n>=p[0]&&n<=p[1]);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+let cur=1, tab=0;
+try{const t=parseInt(localStorage.getItem("vsp-tab"));if(t>=0&&t<3)tab=t}catch(e){}
+
+// rail
+const rail=document.getElementById("rail");
+PARTS.forEach(p=>{
+  const d=document.createElement("div");d.className="part";d.dataset.a=p[0];
+  const tk=document.createElement("div");tk.className="ticks";
+  for(let i=p[0];i<=p[1];i++){const b=document.createElement("button");b.className="tick"+(REFRAIN.includes(i)?" ref":"");b.title=i+". "+D[i].t;b.setAttribute("aria-label",i+". erindi: "+D[i].t);b.dataset.n=i;b.onclick=()=>go(i);tk.appendChild(b)}
+  const l=document.createElement("span");l.className="pl";l.textContent=p[2];
+  d.append(tk,l);rail.appendChild(d);
+});
+
+function renderLines(lines){
+  let out="",buf=[];
+  const flush=()=>{for(let i=0;i<buf.length;i+=2){const a=buf[i],b=buf[i+1];out+=b===undefined?`<div class="ll single"><span>${esc(a)}</span></div>`:`<div class="ll"><span class="a">${esc(a)}</span><span class="b">${esc(b)}</span></div>`}buf=[]};
+  lines.forEach(l=>{if(/^Vituð ér enn/.test(l)||/^Nú mun hon sökkvask/.test(l)){flush();out+=`<div class="refr">${esc(l)}</div>`}else buf.push(l)});
+  flush();return out;
+}
+
+function renderVerse(){
+  const p=partOf(cur),d=D[cur],v=document.getElementById("verse");
+  const badges=[];
+  if(REFRAIN.includes(cur))badges.push("Stef · endurtekið í 44., 49., 54. og 58. erindi");
+  if(OPENING.includes(cur))badges.push("Upphafsstef goðaþings · 6., 9., 23. og 25. erindi");
+  badges.push(VERSES[cur].length+" vísuorð");
+  v.innerHTML=`<div class="eyebrow">${p[2]} · ${p[0]}.–${p[1]}. erindi</div>
+  <div class="num">${cur}.</div><h2 class="vtitle">${d.t}</h2>
+  <div class="lines">${renderLines(VERSES[cur])}</div>
+  <div class="meta">${badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>`;
+  v.classList.remove("fade");void v.offsetWidth;v.classList.add("fade");
+}
+
+function renderPanel(){
+  const d=D[cur],P=document.getElementById("panel");
+  document.querySelectorAll(".tab").forEach((t,i)=>{t.setAttribute("aria-selected",i===tab);t.tabIndex=i===tab?0:-1});
+  document.getElementById("c1").textContent=d.no.length;
+  document.getElementById("c2").textContent=d.c.length;
+  P.setAttribute("aria-labelledby","t"+tab);
+  if(tab===0){P.innerHTML=`<p class="lead">${d.s}</p><p class="hint">Sjá einnig: Norrænar heimildir (${d.no.length}) og Samanburð (${d.c.length}).</p>`}
+  else if(tab===1){P.innerHTML=`<ul class="items">${d.no.map(x=>`<li><span class="src">${x[0]}</span><p>${x[1]}</p></li>`).join("")}</ul>`}
+  else{P.innerHTML=`<ul class="items">${d.c.map(x=>`<li><span class="src"><span class="chip">${x[0]}</span>${x[1]}</span><p>${x[2]}</p></li>`).join("")}</ul>`}
+  P.classList.remove("fade");void P.offsetWidth;P.classList.add("fade");
+}
+
+function renderNav(){
+  document.querySelectorAll(".tick").forEach(t=>t.classList.toggle("on",+t.dataset.n===cur));
+  const p=partOf(cur);
+  document.querySelectorAll(".part").forEach(e=>e.classList.toggle("cur",+e.dataset.a===p[0]));
+  const on=document.querySelector(".tick.on");if(on&&on.scrollIntoView)on.scrollIntoView({block:"nearest",inline:"nearest"});
+  document.getElementById("count").textContent=cur+" / "+N;
+  const pv=document.getElementById("prev"),nx=document.getElementById("next");
+  pv.disabled=cur===1;nx.disabled=cur===N;
+  document.getElementById("prevT").textContent=cur>1?(cur-1)+". "+D[cur-1].t:"";
+  document.getElementById("nextT").textContent=cur<N?(cur+1)+". "+D[cur+1].t:"";
+  pv.setAttribute("aria-label",cur>1?"Fyrra erindi":"");nx.setAttribute("aria-label",cur<N?"Næsta erindi":"");
+}
+
+function go(n,fromHash){
+  n=Math.max(1,Math.min(N,n));if(n===cur&&!fromHash&&document.getElementById("verse").innerHTML)return;
+  cur=n;renderVerse();renderPanel();renderNav();
+  if(!fromHash&&location.hash!=="#v"+n){try{history.replaceState(null,"","#v"+n)}catch(e){location.hash="v"+n}}
+  if(!fromHash&&window.innerWidth<=860){const r=document.getElementById("verse").getBoundingClientRect();if(r.top<0)window.scrollTo({top:window.scrollY+r.top-12,behavior:"smooth"})}
+}
+function setTab(i){tab=i;try{localStorage.setItem("vsp-tab",i)}catch(e){}renderPanel()}
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>setTab(+t.dataset.i));
+document.querySelector(".tabs").addEventListener("keydown",e=>{if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.stopPropagation();const i=(tab+(e.key==="ArrowRight"?1:2))%3;setTab(i);document.getElementById("t"+i).focus()}});
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){go(cur+1);e.preventDefault()}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){go(cur-1);e.preventDefault()}
+  else if(e.key==="1"||e.key==="2"||e.key==="3")setTab(+e.key-1);
+});
+const ab=document.getElementById("aboutBtn"),abs=document.getElementById("about");
+ab.onclick=()=>{abs.hidden=!abs.hidden;ab.setAttribute("aria-expanded",!abs.hidden)};
+
+function fromHash(){const m=/^#v(\d+)$/.exec(location.hash);return m?+m[1]:1}
+window.addEventListener("hashchange",()=>go(fromHash(),true));
+go(fromHash(),true);
+</script>
+
+</body></html>
