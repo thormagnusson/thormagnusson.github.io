@@ -1,0 +1,1233 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lokasenna</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans+SC:wght@500;700&display=swap">
+<style>
+/* Layout: same reading desk as Völuspá. Stanza left with its speaker, three-part commentary right. The rail above maps the whole quarrel: Loki's turns in ember, everyone else's in sea-grey, prose as squares. */
+:root{
+  --bg:#E5E9EA;          /* Ægir's sea-grey */
+  --panel:#F2F4F4;
+  --ink:#172127;
+  --muted:#56636B;
+  --rule:#C6CFD2;
+  --loki:#A2441B;        /* ember */
+  --loki-soft:#F0D9CB;
+  --god:#2C6676;         /* sea */
+  --god-soft:#CFE0E4;
+  --tick:#B5C1C5;
+  --glbg:var(--god-soft);--glfocus:var(--loki);
+  --f-verse:"Alegreya", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-body:"Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --f-label:"Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1518;--panel:#152026;--ink:#E2E5E1;--muted:#93A1A8;--rule:#2A363C;--loki:#E58052;--loki-soft:#3B2519;--god:#73B3C3;--god-soft:#1C3139;--tick:#34434A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1518;--panel:#152026;--ink:#E2E5E1;--muted:#93A1A8;--rule:#2A363C;--loki:#E58052;--loki-soft:#3B2519;--god:#73B3C3;--god-soft:#1C3139;--tick:#34434A;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:0 96px}
+.wrap{max-width:1240px;margin:0 auto}
+
+header.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-block:22px 10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font-family:var(--f-verse);font-style:italic;font-weight:500;font-size:2.4rem;line-height:1;margin:0}
+.brand span{font-family:var(--f-label);font-size:.9rem;letter-spacing:.08em;color:var(--muted)}
+.ghost{font:500 .95rem var(--f-label);letter-spacing:.06em;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.ghost:hover{border-color:var(--loki);color:var(--loki)}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--loki);outline-offset:2px}
+
+/* rail */
+.rail{display:flex;gap:10px;align-items:flex-end;padding-block:6px 4px;overflow-x:auto;scrollbar-width:thin}
+.part{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+.part .ticks{display:flex;gap:3px;align-items:flex-end;height:30px}
+.tick{width:9px;height:18px;border:0;padding:0;border-radius:2px;background:var(--tick);cursor:pointer;transition:height .15s,box-shadow .15s}
+.tick.loki{background:var(--loki);opacity:.55}
+.tick.prose{height:9px;width:9px;background:var(--muted);opacity:.6}
+.tick:hover{opacity:1}
+.tick.on{height:28px;opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--ink)}
+.tick.prose.on{height:12px;width:12px}
+.part .pl{font:500 .72rem var(--f-label);letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.part.cur .pl{color:var(--ink)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font:500 .75rem var(--f-label);letter-spacing:.07em;color:var(--muted);padding-block:4px 0}
+.legend i{display:inline-block;width:9px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+#about{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:18px 22px;margin-block:12px;max-width:72ch}
+#about h2{font-family:var(--f-verse);font-weight:500;margin:0 0 6px;font-size:1.3rem}
+#about p{margin:.4em 0}
+
+/* desk */
+.desk{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;margin-top:22px;align-items:start}
+.verse{position:sticky;top:16px;min-width:0}
+.eyebrow{font:500 .8rem var(--f-label);letter-spacing:.1em;color:var(--muted)}
+.numrow{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin:6px 0 2px}
+.num{font-family:var(--f-verse);font-weight:700;font-size:4.2rem;line-height:.9;font-variant-numeric:oldstyle-nums;color:var(--god)}
+.num.word{font-size:2.6rem;font-style:italic;font-weight:500}
+.who{display:flex;flex-direction:column;gap:0}
+.who .sp{font-family:var(--f-verse);font-weight:700;font-size:1.35rem;line-height:1.15}
+.who .to{font:500 .78rem var(--f-label);letter-spacing:.08em;color:var(--muted)}
+.is-loki .num,.is-loki .who .sp{color:var(--loki)}
+.is-god .who .sp{color:var(--god)}
+.vtitle{font-family:var(--f-verse);font-weight:500;font-size:1.45rem;margin:10px 0 18px;text-wrap:balance}
+.lead{font-family:var(--f-verse);font-style:italic;color:var(--muted);font-size:1.02rem;margin:0 0 14px;max-width:46ch}
+.lines{font-family:var(--f-verse);font-size:1.3rem;line-height:1.55;border-left:2px solid var(--god-soft);padding-left:20px}
+.is-loki .lines{border-left-color:var(--loki-soft)}
+.ll{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:1.6em}
+.ll.single{grid-template-columns:1fr}
+.prosebox{font-family:var(--f-verse);font-size:1.12rem;line-height:1.65;border-left:2px solid var(--rule);padding-left:20px;max-width:52ch}
+.meta{margin-top:18px;font:500 .78rem var(--f-label);letter-spacing:.08em;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.badge{border:1px solid var(--rule);border-radius:999px;padding:1px 9px}
+
+/* commentary */
+.comm{min-width:0;background:var(--panel);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--rule);overflow-x:auto}
+.tab{flex:1 1 0;min-width:max-content;background:none;border:0;border-bottom:3px solid transparent;padding:14px 18px 11px;cursor:pointer;color:var(--muted);font:700 .92rem var(--f-label);letter-spacing:.07em;text-align:left;display:flex;align-items:baseline;gap:8px}
+.tab small{font:400 .82rem var(--f-body);letter-spacing:0;color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--loki)}
+.tab:hover{color:var(--ink)}
+.panel{padding:24px 28px 30px}
+.panel p.lead2{font-size:1.08rem;max-width:68ch;margin:0}
+.items{display:flex;flex-direction:column;gap:20px;margin:0;padding:0;list-style:none}
+.items li{max-width:70ch}
+.src{font-family:var(--f-verse);font-weight:700;font-size:1.06rem;display:block;margin-bottom:2px}
+.items p{margin:0}
+.chip{display:inline-block;font:700 .72rem var(--f-label);letter-spacing:.09em;color:var(--god);border:1px solid currentColor;border-radius:3px;padding:0 6px;margin-right:8px;vertical-align:2px}
+.hint{font-size:.88rem;color:var(--muted);margin:22px 0 0}
+
+nav.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px))}
+nav.bar .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nb{display:flex;align-items:center;gap:10px;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:6px;padding:8px 14px;cursor:pointer;min-width:0;font-family:var(--f-body);font-size:.95rem}
+.nb:hover:not(:disabled){border-color:var(--loki)}
+.nb:disabled{opacity:.35;cursor:default}
+.nb .arr{font-family:var(--f-verse);font-size:1.3rem;color:var(--loki);line-height:1}
+.nb .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:26ch}
+.count{font:500 .9rem var(--f-label);letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+
+.gl{border-bottom:1px dotted var(--muted);cursor:help;border-radius:2px;transition:background .12s}
+.gl:hover,.gl.act{background:var(--glbg)}
+.gl:focus-visible{outline:2px solid var(--glfocus);outline-offset:1px}
+#tip{position:fixed;z-index:30;max-width:min(320px,calc(100vw - 16px));background:var(--ink);color:var(--bg);padding:10px 13px 11px;border-radius:6px;font:15px/1.45 var(--f-body);box-shadow:0 6px 24px rgba(0,0,0,.18);pointer-events:none}
+#tip b{display:block;font-family:var(--f-verse);font-style:italic;font-size:1.08rem;font-weight:700;margin-bottom:2px}
+.words{margin-top:16px;max-width:52ch}
+.words summary{cursor:pointer;font:500 .8rem var(--f-label);letter-spacing:.08em;color:var(--muted);padding:4px 0}
+.words summary:hover{color:var(--ink)}
+.words dl{margin:8px 0 0;display:flex;flex-direction:column;gap:8px;font-size:.95rem}
+.words dl div{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:12px;align-items:baseline}
+.words dt{font-family:var(--f-verse);font-style:italic;font-weight:700}
+.words dd{margin:0;color:var(--muted)}
+@media (max-width:520px){.words dl div{grid-template-columns:1fr;gap:0}}
+.fade{animation:fade .28s ease}
+@keyframes fade{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fade{animation:none}.tick{transition:none}}
+
+@media (max-width:860px){
+  .desk{grid-template-columns:1fr;gap:24px}
+  .verse{position:static}
+  .num{font-size:3.2rem}
+  .panel{padding:20px 18px 24px}
+  .nb .t{display:none}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .brand h1{font-size:2rem}
+  .lines{font-size:1.15rem;padding-left:14px}
+  .ll{grid-template-columns:1fr}
+  .ll span+span{padding-left:1.4em}
+  .tab{padding:12px 12px 9px;font-size:.84rem}
+  .tab small{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>Lokasenna</h1><span>Senna Loka í höll Ægis · 65 erindi með skýringum</span></div>
+    <button class="ghost" id="aboutBtn" aria-expanded="false" aria-controls="about">Um kvæðið</button>
+  </header>
+  <section id="about" hidden>
+    <h2>Um kvæðið og skýringarnar</h2>
+    <p>Lokasenna er varðveitt í Konungsbók Eddukvæða (GKS 2365 4to, um 1270). Kvæðið er senna, deila í orðum: Loki kemur óboðinn í veislu Ægis og ber hverju goðinu á fætur öðru á brýn skömm og afbrot þar til Þór kemur og rekur hann út. Margar ásakanirnar vísa til goðsagna sem þekktar eru úr öðrum heimildum, en sumar eru hvergi annars staðar varðveittar.</p>
+    <p>Hverju erindi fylgja þrjár skýringar: <b>Skýring</b> endursegir erindið á nútímamáli, <b>Norrænar heimildir</b> rekja tengsl við aðrar norrænar sagnir (Snorra-Eddu, önnur Eddukvæði, sögur og Saxo), og <b>Samanburður</b> bendir á hliðstæður í goðsögum annarra þjóða. Samanburðurinn sýnir samsvörun; hann fullyrðir ekki alltaf beinan skyldleika.</p>
+    <p>Á strikunum efst eru erindi Loka sýnd með eldrauðum lit og erindi annarra með gráum, en laust mál sem ferningar. Undirstrikuð orð í erindunum hafa orðskýringu: bentu á orðið eða smelltu á það. Allar orðskýringar erindisins eru einnig taldar upp undir því. Örvatakkar fletta milli erinda; tölurnar 1, 2 og 3 skipta um flipa.</p>
+    <p>Textinn fylgir Netútgáfunni (1997), eftir uppskrift Ole Nielsby.</p>
+  </section>
+  <div class="rail" id="rail" aria-label="Erindi kvæðisins"></div>
+  <div class="legend"><span><i style="background:var(--loki)"></i>Loki mælir</span><span><i style="background:var(--tick)"></i>Aðrir mæla</span><span><i style="background:var(--muted);height:9px"></i>Laust mál</span></div>
+
+  <main class="desk">
+    <article class="verse" id="verse" aria-live="polite"></article>
+    <section class="comm">
+      <div class="tabs" role="tablist" aria-label="Skýringar">
+        <button class="tab" role="tab" id="t0" aria-controls="panel" data-i="0">Skýring</button>
+        <button class="tab" role="tab" id="t1" aria-controls="panel" data-i="1">Norrænar heimildir <small id="c1"></small></button>
+        <button class="tab" role="tab" id="t2" aria-controls="panel" data-i="2">Samanburður <small id="c2"></small></button>
+      </div>
+      <div class="panel" id="panel" role="tabpanel" tabindex="0"></div>
+    </section>
+  </main>
+</div>
+
+<nav class="bar" aria-label="Fletta erindum">
+  <div class="in">
+    <button class="nb" id="prev"><span class="arr">←</span><span class="t" id="prevT"></span></button>
+    <span class="count" id="count"></span>
+    <button class="nb" id="next"><span class="t" id="nextT"></span><span class="arr">→</span></button>
+  </div>
+</nav>
+
+<script>
+const PAGES = [{"prose": "Ægir, er öðro nafni hét Gymer, hann hafði búit ásom öl, þá er hann hafði fengit ketill in mikla, sem nú er sagt. Til þeirar veizlo kom Óðinn ok Frigg kona hans. Þorr kom eigi, þvíat hann var í austrvegi. Sif var þar, kona Þórs, Bragi ok Iðunn kona hans. Týr var þar, hann var einhendr, Fenrisúlfr sleit hönd af hánom þá er hann var bundinn. Þar var Niörðr og kona hans Skaði, Freyr ok Freyia, Víðarr son Óðins; Loki var þar ok þiónustomenn Freys, Byggvir ok Beyla. Mart var þar ása ok álfa. Ægir átti tvá þiónustomenn, Fimafengr ok Elder. Þar var lýsigull haft fyrir eltzliós; siálft barsk þar öl; þar var griðastaðr mikill. Menn lofoðo miök hverso góðir þiónustomenn Ægis vóro. Loki mátti eigi heyra þat, ok drap hann Fimafeng. Þá skóko æsir skiöldo sína ok æpðo at Loka, ok elto hann braut til skógar, en þeir fóro at drekka."}, {"sp": "Loki", "to": "Eldir", "lines": ["Segðu þat, Eldir,", "svá at þú einugi", "feti gangir framarr,", "hvat hér inni", "hafa at ölmálum", "sigtíva synir."], "lead": "Loki hvarf aptr ok hitti úti Eldi; Loki kvaddi hann:"}, {"sp": "Eldir", "to": "Loki", "lines": ["Of vápn sín dæma", "ok um vígrisni sína", "sigtíva synir;", "ása ok álfa", "er hér inni ero,", "mangi er þér í orði vinr."]}, {"sp": "Loki", "to": "Eldir", "lines": ["Inn skal ganga", "Ægis hallir í,", "á þat sumbl at siá;", "iöll ok áfo", "færi ek ása sonom,", "ok blend ek þeim sva'meini miöð."]}, {"sp": "Eldir", "to": "Loki", "lines": ["Veiztu, ef þú inn gengr", "Ægis hallir í,", "á þat sumbl at siá,", "hrópi ok rógi", "ef þú eyss á holl regin:", "á þér muno þau þerra þat."]}, {"sp": "Loki", "to": "Eldir", "lines": ["Veiztu þat, Eldir,", "ef vit einir skolom", "sáryrðom sakaz,", "auðigr verða", "mun ek í andsvörum,", "ef þu mælir til mart."]}, {"sp": "Loki", "to": "ásana", "lines": ["Þyrstr ek kom", "þessar hallar til,", "Loptr, um langan veg,", "áso at biðia", "at mér einn gefi", "mæran drykk miaðar."], "lead": "Siðan gekk Loki inn í höllina. En er þeir sá, er fyrir vóro, hverr inn var kominn, þögnoðo þeir allir."}, {"sp": "Loki", "to": "ásana", "lines": ["Hví þegið ér svá,", "þrungin goð,", "at þer mæla ne megoð?", "sessa ok staði", "velið mér sumbli at,", "eða heitið mik heðan!"]}, {"sp": "Bragi", "to": "Loki", "lines": ["Sessa ok staði", "velia þér sumbli at", "æsir aldregi,", "þvíat æsir vito", "hveim þeir alda skolo", "gambansumbl um geta."]}, {"sp": "Loki", "to": "Óðin", "lines": ["Mantu þat, Óðinn,", "er vit í árdaga", "blendom blóði saman?", "ölvi bergia", "léztu eigi mundo,", "nema okr væri báðom borit."]}, {"sp": "Óðinn", "to": "Víðar", "lines": ["Rístu þá, Viðarr,", "ok lát úlfs föður", "sitia sumbli at,", "síðr oss Loki", "kveði lastastöfom", "Ægis höllo í."]}, {"sp": "Loki", "to": "ásana", "lines": ["Heilir æsir,", "heilar ásynior", "ok öll ginnheilög god!", "nema sá einn áss", "er innar sitr,", "Bragi, bekkiom á."], "lead": "Þá stóð Viðarr upp ok skenkti Loka, en áðr hann drykki, kvaddi hann ásona:"}, {"sp": "Bragi", "to": "Loka", "lines": ["Mar ok mæki", "gef ek þér míns fiár,", "ok bætir þér svá baugi Bragi,", "síþr þú ásom", "öfund um gialdir;", "gremðu eigi goð at þér!"]}, {"sp": "Loki", "to": "Braga", "lines": ["Iós ok armbauga", "mundu æ vera", "beggia vanr, Bragi;", "ása ok álfa,", "er hér inni ero,", "þú ert við víg varastr", "ok skiarrastr við skot."]}, {"sp": "Bragi", "to": "Loka", "lines": ["Veit ek, ef fyr útan værak,", "svá sem fyr innan emk", "Ægis höll um kominn,", "höfuð þitt", "bæra ek í hendi mér;", "lítt ek þér þat fyr lygi."]}, {"sp": "Loki", "to": "Braga", "lines": ["Sniallr ertu í sessi,", "skalatu svá göra,", "Bragi bekkskrautuðr!", "vega þú gakk,", "ef þú vreiðr sér,", "hyggz vætr hvatr fyrir."]}, {"sp": "Iðunn", "to": "Braga", "lines": ["Bið ek, Bragi,", "barna sifiar duga", "ok allra óskmaga,", "at þú Loka", "kveðira lastastöfom", "Ægis höllo í."]}, {"sp": "Loki", "to": "Iðunni", "lines": ["Þegi þú, Iðunn,", "þik kveð ek allra kvenna", "vergiarnasta vera,", "sitztu arma þína", "lagðir itrþvegna", "um þinn bróðurbana."]}, {"sp": "Iðunn", "to": "Loka", "lines": ["Loka ek kveðka", "lastastöfum", "Ægis höllo í;", "Braga ek kyrri", "biórreifan,", "vilkat ek at it vreiðir vegiz."]}, {"sp": "Gefjun", "to": "Braga og Loka", "lines": ["Hví it æsir tveir", "skoloð inni hér", "sáryrðom sakaz?", "Lopzki þat veit,", "at hann leikinn er", "ok hann fiörgvall friá."]}, {"sp": "Loki", "to": "Gefjuni", "lines": ["Þegi þú, Gefion,", "þess mun ek nú geta,", "er þik glapði at geði:", "sveinn inn hvíti,", "er þér sigli gaf", "ok þú lagðir lær yfir."]}, {"sp": "Óðinn", "to": "Loka", "lines": ["Ærr ertu, Loki,", "ok örviti,", "er þú fær þér Gefion at gremi,", "þvíat aldar örlög", "hygg ek at hón öll um viti", "iafngörla sem ek."]}, {"sp": "Loki", "to": "Óðin", "lines": ["Þegi þú, Óðinn,", "þú kunnir aldregi", "deila víg með verom;", "opt þú gaft", "þeim er þú gefa skyldira,", "enom slævorom, sigr."]}, {"sp": "Óðinn", "to": "Loka", "lines": ["Veiztu, ef ek gaf", "þeim er ek gefa ne skylda,", "enom slævorom, sigr,", "átta vetra", "vartu fyr iörð neðan", "kýr mólkandi ok kona,", "ok hefir þú þar börn of borit,", "ok hugða ek þat args aðal."]}, {"sp": "Loki", "to": "Óðin", "lines": ["En þik síða kóðo", "Sámseyo í,", "ok draptu á vétt sem völor,", "vitka líki", "fórtu verþjóð yfir,", "ok hugða ek þat args aðal."]}, {"sp": "Frigg", "to": "Óðin og Loka", "lines": ["Örlögom ykrom", "skylið aldregi", "segia seggiom frá,", "hvat it æsir tveir", "drýgðuð í árdaga;", "firriz æ forn rök firar."]}, {"sp": "Loki", "to": "Frigg", "lines": ["Þegi þú, Frigg,", "þú ert fiörgyns mær", "ok hefir æ vergiörn verit,", "er þá Véa ok Vilia", "léztu þér, Viðris kvæn,", "báða i baðmn um tekit."]}, {"sp": "Frigg", "to": "Loka", "lines": ["Veiztu, ef ek inni ættak", "Ægis höllom i", "Baldri líkan bur,", "út þú ne kvæmir", "frá ása sonom,", "ok væri þá at þér vreiðom vegit."]}, {"sp": "Loki", "to": "Frigg", "lines": ["Enn vill þú, Frigg,", "at ek fleira telia", "mína meinstafi;", "ek þvi réd,", "er þú rída sérat", "siðan Baldr at sölom."]}, {"sp": "Freyja", "to": "Loka", "lines": ["Ærr ertu, Loki,", "er þú yðra telr", "lióta leiðstafi;", "örlög Frigg", "hygg ek at öll viti,", "þótt hón siálfgi segi."]}, {"sp": "Loki", "to": "Freyju", "lines": ["Þegi þú, Freyia,", "þik kann ek fullgerva;", "era þér vamma vant;", "ása ok álfa,", "er hér inni ero,", "hverr hefir þinn hór verit."]}, {"sp": "Freyja", "to": "Loka", "lines": ["Flá er þér tunga,", "hygg ek at þér fremr myni", "ógott um gala;", "reiðir ro þér æsir", "ok ásynior,", "hryggr muntu heim fara."]}, {"sp": "Loki", "to": "Freyju", "lines": ["Þegi þú, Freyia,", "þú ert fordæða", "ok meini blandin miök,", "síztu at bræðr þínom", "siðo blíð regin,", "ok myndir þú þá, Freyia, frata."]}, {"sp": "Njörður", "to": "Loka", "lines": ["Þat er válitit,", "þótt sér varðir vers fái,", "hós eða hvárs;", "hitt er undr, er áss ragr", "er hér inn of kominn,", "ok hefir sá börn of borit."]}, {"sp": "Loki", "to": "Njörð", "lines": ["Þegi þú, Niörðr,", "þú vart austr heðan", "gíls um sendr at goðom;", "Hymis meyiar", "höfðo þik at hlandtrogi", "ok þér i munn migo."]}, {"sp": "Njörður", "to": "Loka", "lines": ["Sú eromk líkn,", "er ek vark langt heðan", "gísl um sendr at goðom,", "þá ek mög gat,", "þann er mangi fiár,", "ok þikkir sá ása iaðarr."]}, {"sp": "Loki", "to": "Njörð", "lines": ["Hættu nú, Niörðr,", "haf þú á hófi þik!", "munka ek þvi leyna lengr:", "við systor þinni", "gaztu slíkan mög,", "ok era þó óno verr."]}, {"sp": "Týr", "to": "Loka", "lines": ["Freyr er beztr", "allra ballriða", "ása görðom í;", "mey hann ne grætir", "né mannz kono,", "ok leysir ór höptom hvern."]}, {"sp": "Loki", "to": "Tý", "lines": ["Þegi þú, Týr,", "þú kunnir aldregi", "bera tilt með tveim;", "handar ennar hægri", "mun ek hinnar geta,", "er þér sleit Fenrir frá."]}, {"sp": "Týr", "to": "Loka", "lines": ["Handar em ek vanr,", "en þú hróðrs-vitnis;", "böl er beggia þrá;", "úlfgi hefir ok vel,", "er í böndom skal", "bíða ragnarökrs."]}, {"sp": "Loki", "to": "Tý", "lines": ["Þegi þú, Týr,", "þat varð þinni kono,", "at hón átti mög við mér;", "öln né penning", "hafðir þú þess aldregi", "vanréttis, vesall."]}, {"sp": "Freyr", "to": "Loka", "lines": ["Úlfr sé ek liggia", "árósi fyrir,", "unz riúfaz regin;", "því mundu næst,", "nema þú nú þegir,", "bundinn, bölvasmiðr!"]}, {"sp": "Loki", "to": "Frey", "lines": ["Gulli keypta", "léztu Gymis dóttur", "ok seldir þitt svá sverð;", "en er Muspellz synir", "ríða Myrkvið yfir,", "veizta þú þá, vesall, hvé þú vegr."]}, {"sp": "Byggvir", "to": "Loka", "lines": ["Veiztu, ef ek öðli ættak", "sem Ingunar-Freyr,", "ok svá sælikt setr,", "mergi smæra", "mölða ek þá meinkráko", "ok lemða alla í liðo."]}, {"sp": "Loki", "to": "Byggvi", "lines": ["Hvat er þat it litla", "er ek þat löggra sék,", "ok snapvíst snapir?", "at eyrom Freys", "mundu æ vera", "ok und kvernom klaka."]}, {"sp": "Byggvir", "to": "Loka", "lines": ["Byggvir ek heiti,", "en mik bráðan kveða", "goð öll ok gumar;", "því em ek hér hróðugr,", "at drekka Hroptz megir", "allir öl saman."]}, {"sp": "Loki", "to": "Byggvi", "lines": ["Þegi þú, Byggvir,", "þú kunnir aldregi", "deila með mönnum mat;", "ok þik í fletz strá", "finna ne máttu,", "þá er vágo verar."]}, {"sp": "Heimdallur", "to": "Loka", "lines": ["Ölr ertu, Loki,", "svá at þú ert örviti,", "hví ne lezkaðu, Loki?", "þvíat ofdrykkia", "veldr alda hveim,", "er sína mælgi ne manat."]}, {"sp": "Loki", "to": "Heimdall", "lines": ["Þegi þú, Heimdallr,", "þér var í árdaga", "it lióta líf um lagit:", "aurgo baki", "þú munt æ vera", "ok vaka vörðr goða."]}, {"sp": "Skaði", "to": "Loka", "lines": ["Létt er þér, Loki;", "munattu lengi svá", "leika lausom hala,", "þvíat þik á hiörvi skolo", "ins hrímkalda magar", "görnom binda goð."]}, {"sp": "Loki", "to": "Skaða", "lines": ["Veiztu, ef mik á hiörvi skolo", "ens hrímkalda magar", "görnom binda goð,", "fyrstr ok öfrstr", "var ek at fiörlagi,", "þars vér á Þiaza þrifom."]}, {"sp": "Skaði", "to": "Loka", "lines": ["Veiztu, ef fyrstr ok öfrstr", "vartu at fiörlagi,", "þá er ér á Þiaza þrifuð", "frá mínom véom", "ok vöngom skolo", "þér æ köld ráð koma."]}, {"sp": "Loki", "to": "Skaða", "lines": ["Léttari i málom", "vartu við Laufeyiar son,", "þá er þú létz mér á beð þinn boðit;", "getit verðr oss slíks,", "ef vér görva skolom", "telia vömmin vár."]}, {"sp": "Sif", "to": "Loka", "lines": ["Heill ver þú nú, Loki,", "ok tak við hrímkálki", "fullom forns miaðar,", "heldr þú hana eina", "látir með ása sonom", "vammalausa vera."], "lead": "þá gekk Sif fram ok byrlaði Loka í hrímkálki miöð ok mælti:"}, {"sp": "Loki", "to": "Sif", "lines": ["Ein þú værir,", "ef þú svá værir,", "vör ok gröm at veri;", "einn ek veit,", "svá at ek vita þikkiomk,", "hór ok af Hlorriða,", "ok var þat sá inn lævísi Loki."], "lead": "Hann tók við horni ok drakk af:"}, {"sp": "Beyla", "to": "Loka", "lines": ["Fiöll öll skiálfa;", "hygg ek á för vera", "heiman Hlórriða;", "han ræðr ró", "þeim er rægir hér", "goð öll ok guma."]}, {"sp": "Loki", "to": "Beylu", "lines": ["Þegi þú, Beyla,", "þú ert Byggvis kvæn", "ok meini blandinn miök;", "ókynian meira", "koma med ása sonom;", "öll ertu, deigia, dritin."]}, {"sp": "Þór", "to": "Loka", "lines": ["Þegi þú, rög vættr,", "þér skal minn þrúðhamarr,", "Miöllnir, mál fyrnema:", "herða klett", "drep ek þér hálsi af,", "ok verðr þá þíno fiörvi um farit."], "lead": "Þá kom Þorr at ok kvað:"}, {"sp": "Loki", "to": "Þór", "lines": ["Iarðar burr", "er hér nú inn kominn;", "hví þrasir þú svá, Þórr?", "en þá þorir þú ekki", "er þú skalt við úlfinn vega,", "ok svelgr hann allan Sigföður."]}, {"sp": "Þór", "to": "Loka", "lines": ["Þegi þú, rög vættr,", "þér skal minn þrúðhamarr,", "Miöllnir, mál fyrnema:", "upp ek þér verp", "ok á austrvega,", "síðan þík mangi sér."]}, {"sp": "Loki", "to": "Þór", "lines": ["Austrförum þínom", "skaltu aldregi", "segia seggiom frá,", "sízt í hanska þumlungi", "hnúkðir þú, einheri,", "ok þóttiska þú þá Þórr vera."]}, {"sp": "Þór", "to": "Loka", "lines": ["Þegi þú, rög vættr,", "þér skal minn þrúðhamarr,", "Miöllnir, mál fyrnema:", "hendi inni hægri", "drep ek þik Hrungnis bana,", "svá at þér brotnar beina hvat."]}, {"sp": "Loki", "to": "Þór", "lines": ["Lifa ætla ek mér", "langan aldr,", "þóttu hætir hamri mér;", "skarpar álar", "þóttu þér Skrýmis vera,", "ok máttira þú þá nesti ná,", "ok svaltz þú þá hungri heill."]}, {"sp": "Þór", "to": "Loka", "lines": ["Þegi þú, rög vættr,", "þér skal minn þrúðhamarr,", "Miöllnir, mál fyrnema:", "Hrungnis bani", "mun þér í hel koma", "fyr nágrindr neðan."]}, {"sp": "Loki", "to": "Þór", "lines": ["Kvað ek fyr ásom,", "kvað ek fyr ása sonom,", "þaz mik hvatti hugr,", "en fyr þér einom", "mun ek út ganga,", "þviat ek veit at þú vegr."]}, {"sp": "Loki", "to": "Ægi", "lines": ["Öl görðir þú, Ægir,", "en þú aldri munt", "síðan sumbl um göra;", "eiga þín öll,", "er hér inni er,", "leiki yfir logi,", "ok brenni þér á baki."]}, {"prose": "En eptir þetta falz Loki í Fránangrs forsi í lax líki. Þar tóko æsir hann. Hann var bundinn með þörmom sonar síns Nara. En Narfi sonr hans varð at vargi. Skaði tók eitrorm ok festi upp yfir annlit Loka; draup þar ór eitr. Sigyn kona Loka sat þar ok helt munnlaug undir eitrit. En er munnlaugin var full, bar hón út eitrit; en meðan draup eitrit á Loka. Þá kiptiz hann svá hart við, at þaðan af skalf iörð öll; þat eru nú kallaðir landskiálptar."}];
+const D = {};
+
+D[0] = {t:"Veisla Ægis",
+s:"Kvæðið hefst á lausu máli. Ægir, sem öðru nafni heitir Gymir, hefur bruggað ásum öl eftir að hann fékk ketilinn mikla. Til veislunnar koma flest goðin: Óðinn og Frigg, Sif (en Þór er í austurvegi), Bragi og Iðunn, Týr einhendi, Njörður og Skaði, Freyr og Freyja, Víðar og Loki, og þjónar Freys, Byggvir og Beyla. Höllin er lýst með glóandi gulli í stað elda, ölið ber sig sjálft og staðurinn er griðastaður, þar sem enginn má vega. Menn lofa þjóna Ægis, Fimafeng og Eldi. Loki þolir það ekki og drepur Fimafeng. Goðin skaka skildi sína, æpa að honum og elta hann til skógar. Með víginu hefur Loki rofið grið hins helga staðar áður en eitt orð er sagt.",
+no:[
+["Hymiskviða","Kvæðið segir frá því hvernig Þór og Týr sóttu ketilinn mikla til jötunsins Hymis svo að Ægir gæti bruggað goðunum öl. Lokasenna vísar beint til þeirrar sögu: „hafði fengit ketil inn mikla, sem nú er sagt“."],
+["Skáldskaparmál 33","Snorri segir að Ægir hafi haldið goðunum veislu og lýst höllina með lýsigulli. Þess vegna er gull kallað „eldr Ægis“ og „eldr sævar“ í skáldskap. Kona Ægis er Rán og dætur þeirra níu eru öldurnar."],
+["Grímnismál 45","Óðinn nefnir veislu Ægis: goðin munu koma „Ægis bekki á, Ægis drekku at“."],
+["Gylfaginning 50","Snorri tengir bindingu Loka við dauða Baldurs, en Lokasenna lætur hana koma í kjölfar veislunnar. Fimafengur kemur hvergi annars staðar fyrir."]],
+c:[
+["Grísk","Eris í brúðkaupi Peleifs og Þetisar","Öllum guðum var boðið nema Eris, gyðju sundrungarinnar. Hún kom samt og kastaði gullepli „handa hinni fegurstu“ inn í veisluna, og deilan sem fylgdi leiddi til Trójustríðsins. Óvelkominn gestur sem sáir illdeilum í veislu goðanna."],
+["Írsk","Fled Bricrend","Í Veislu Bricriu heldur Bricriu „eiturtunga“ veislu eingöngu til að etja Ulster-hetjunum saman. Hann rægir hverja hetju við aðra og konur þeirra hver við aðra. Næsta hliðstæða Lokasennu sem til er."],
+["Indversk","Fórn Daksha","Daksha býður öllum guðum til fórnar nema Shiva. Sati, kona Shiva, kemur samt og hlýtur svívirðingu, og í hefndarskyni er fórnin lögð í rúst. Helg veisla sem endar í eyðingu."],
+["Japönsk","Susanoo í höll Amaterasu","Stormguðinn Susanoo saurgar veislusal sólgyðjunnar og kastar fleginni hryssu inn í vefstofu hennar. Goðin reka hann úr himninum. Bragðarefur sem rýfur helgi hallarinnar og er útskúfað."]]};
+
+D[1] = {t:"Loki spyr Eldi",
+s:"Loki snýr aftur og hittir Eldi, hinn þjón Ægis, fyrir utan höllina. Hann skipar honum að standa kyrr og segja sér hvað synir sigurgoðanna ræði um við ölið þar inni. Loki er rekinn út en vill vita hvað um hann sé sagt áður en hann gengur inn aftur. „Ölmál“ eru samræður við drykkju, þar sem menn hældust af afrekum sínum og strengdu heit.",
+no:[
+["Eldir og Fimafengur","Nöfnin merkja „sá sem kveikir eld“ og „sá sem er fljótur að ná“. Þau eru lýsandi fyrir hlutverk þjónanna og koma hvergi annars staðar fyrir."],
+["Hávamál 17–19","Hávamál vara við því að tala of mikið við öl og lýsa hættum ölmála: „Ölr ek varð, varð ofrölvi.“"],
+["Sigtívar","„Sigtívar“, sigurgoðin, er sama heiti og í stefi Völuspár: „um ragna rök römm sigtíva“."]],
+c:[
+["Fornensk","Bjólfskviða","Í höllinni Heorot sitja menn við mjöð og ræða afrek sín, og Unferð gerir lítið úr Bjólfi. Hallarsamræður við drykkju eru vettvangur sæmdar og niðurlægingar."],
+["Grísk","Samdrykkjan","Gríska samdrykkjan (symposion) hafði fastar reglur um drykkju og ræður. Sá sem braut þær setti sig utan samfélagsins."]]};
+
+D[2] = {t:"Eldir svarar",
+s:"Eldir segir að synir sigurgoðanna ræði um vopn sín og hreysti. Af öllum ásum og álfum þar inni sé enginn vinur Loka í orði. Viðvörunin er skýr: Loki á engan bandamann í höllinni.",
+no:[
+["Æsir og álfar","Æsir og álfar eru nefndir saman eins og í Völuspá 48 („Hvat er með ásum? Hvat er með alfum?“) og víðar í Eddukvæðum. Hér eru álfar líklega Vanir eða gestir af þeirra ætt."],
+["Heitstrengingar","Í Jómsvíkinga sögu og Hervarar sögu strengja menn heit við bragafull. Tal um vopn og hreysti var hluti af slíkri drykkju."]],
+c:[
+["Grísk","Ilíonskviða 9","Hetjurnar ræða afrek og sæmd í tjaldi Akkillesar. Sæmd (timê) er ávallt mæld í orðum annarra."],
+["Indversk","Sabha Parva","Í Mahabharata eru konungarnir í höll Yudhishthira saman komnir til að hylla hann. Shishupala er sá eini sem á þar engan vin, og hann ræðst gegn Krishna með orðum."]]};
+
+D[3] = {t:"Jöll og áfu",
+s:"Loki svarar að hann skuli ganga inn í hallir Ægis og sjá veisluna. Hann muni færa ásasonum „jöll ok áfu“, þ.e. háð og deilur, og blanda mjöð þeirra meini. Hér lýsir Loki ásetningi sínum skýrt: hann kemur til að eitra veisluna með orðum.",
+no:[
+["Völuspá 25","„Hverjir hefði loft allt lævi blandit“: sama hugsun um að blanda einhverju illu í hið góða. Í báðum tilvikum er Loki á bak við lævið."],
+["Skáldskaparmál 57","Skáldamjöðurinn varð til úr blóði Kvasis, sem blandað var hunangi. Mjöður er drykkur sáttar og skáldskapar sem Loki hyggst nú spilla."],
+["Lævísi","Loki er kallaður „inn lævísi“ í 54. erindi og „lægjarn“ í Völuspá 35."]],
+c:[
+["Grísk","Ate","Ate er gyðja blindu og ófarnaðar. Seifur greip hana í hárið og kastaði henni niður af Ólympsfjalli fyrir að blekkja sig (Ilíonskviða 19.126–131). Hún gengur síðan meðal manna og spillir dómgreind þeirra."],
+["Grísk","Gullepli Eris","Eris kemur í veisluna með einn hlut, og hann nægir til að sundra öllum."],
+["Indversk","Kali og teningarnir","Í Nala-sögunni í Mahabharata smýgur púkinn Kali inn í Nala og spillir honum við teningaspil. Ill vera sem kemur til að eitra samfélagið innan frá."]]};
+
+D[4] = {t:"Viðvörun Eldis",
+s:"Eldir varar Loka við: ef hann gengur inn og eys hrópi og rógi yfir hin hollu goð, munu þau þerra það af sér á honum. Allt sem Loki kastar á goðin mun hann fá til baka.",
+no:[
+["Hollu regin","„Holl regin“, hin góðu og velviljuðu goð, eru andstæða Loka sem kemur með „meini blandinn miöð“."],
+["Lokaprósinn","Spá Eldis rætist: goðin binda Loka og eitur drýpur á hann (niðurlag). Rógurinn kemur aftur yfir hann."]],
+c:[
+["Grísk","Nemesis","Nemesis er gyðja hefndar og réttláts endurgjalds sem refsar fyrir hroka (hybris)."],
+["Indversk","Karma","Hugmyndin um að verk og orð snúi aftur til þess sem þau framdi. Eldir orðar karmalögmál veislunnar."]]};
+
+D[5] = {t:"Loki hótar",
+s:"Loki svarar að ef þeir tveir skuli deila með sárum orðum muni hann verða „auðigr í andsvörum“, ríkur af svörum, ef Eldir segi of mikið. Síðan gengur Loki inn í höllina, og þegar þeir sem fyrir eru sjá hver er kominn þagna þeir allir. Loki treystir á eina vopnið sem hann hefur í griðastað: tunguna.",
+no:[
+["Senna og mannjafnaður","Senna er deila í orðum, og mannjafnaður er keppni þar sem menn bera sig saman. Í Hárbarðsljóðum takast Óðinn og Þór á með sama hætti, og í Helgakviðu Hundingsbana I 32–46 deila Sinfjötli og Guðmundur."],
+["Örvar-Odds saga 27","Mannjafnaður Odds við hirðmenn Herrauðs konungs sýnir sömu bókmenntagrein í fornaldarsögum."]],
+c:[
+["Skosk","The Flyting of Dumbar and Kennedie","Skosku skáldin Dunbar og Kennedy háðu frægt níðkvæðaeinvígi um 1500. „Flyting“ er skylt fornenska orðinu flītan, að deila."],
+["Arabísk","Naqa'id","Í arabískum kveðskap ortu skáld eins og Jarir og al-Farazdaq níð hvort um annað í löngum svarkvæðum."],
+["Grísk","Þersítes","Þersítes ræðst með orðum gegn Agamemnon á þingi Grikkja (Ilíonskviða 2.211–277). Hann er ljótur og hataður en mælir ekki allt rangt."]]};
+
+D[6] = {t:"Þyrstur kom ég",
+s:"Loki gengur inn í þögnina og segist kominn þyrstur um langan veg, Loftur, til að biðja ásana að einhver gefi honum frægan drykk mjaðar. Hann kynnir sig með öðru nafni sínu og höfðar til gestrisninnar: sá sem kemur langt að á rétt á drykk.",
+no:[
+["Loftur","Loftur er annað nafn Loka (Gylfaginning 33, Hyndluljóð 41). Nafnið hefur verið tengt lofti eða því að vera „lopt“ (í loftinu), enda flýgur Loki í valsham."],
+["Hávamál 2–4","„Elds er þörf, þeims inn er kominn“ og „vatns er þörf, þeim er til verðar kemr“. Gesturinn á rétt á eldi, vatni, mat og orðum. Loki notar þessa siðareglu gegn goðunum."],
+["Baldrs draumar","Óðinn segir völvunni að hann heiti Vegtamur, sá sem er vanur vegi, og þiggur drykk í Hel. Ferðalangur sem biður um drykk er kunnugt minni."]],
+c:[
+["Grísk","Xenia og Seifur Xenios","Gestrisni var heilög skylda undir vernd Seifs Xeniosar. Í Ódysseifskviðu fá ókunnugir alltaf mat og drykk áður en spurt er hverjir þeir eru."],
+["Grísk / rómversk","Baukis og Fílemon","Seifur og Hermes koma dulbúnir sem ferðalangar og eru reknir burt alls staðar nema hjá fátæku gömlu hjónunum (Ummyndanir Óvidíusar 8). Guðir prófa gestrisni manna."],
+["Indversk","Atithi Devo Bhava","„Gesturinn er guð“ (Taittiriya Upanishad 1.11). Að neita gesti um mat og drykk var talin alvarleg synd."]]};
+
+D[7] = {t:"Hví þegið þér?",
+s:"Loki spyr hví hin þrútnu goð þegi svo að þau megi ekki mæla. Þau skuli annaðhvort velja honum sæti og stað við veisluna eða reka hann burt. Hann setur goðunum tvo kosti og veit að hvor um sig er þeim óþægilegur.",
+no:[
+["Sætaskipan","Sæti í höll sýndi stöðu manna. Í Njáls sögu og Laxdæla sögu kvikna deilur af því hver situr hvar."],
+["Hávamál 24–26","Ósviðr maðr ... hyggr sér alla vera viðhlæjendr vini. Hávamál lýsa því hvernig gestur á að hegða sér í annarra húsum."]],
+c:[
+["Indversk","Shiva útilokaður","Daksha neitar Shiva um hlut í fórninni. Að vera neitað um sæti eða hlut í helgri veislu er ein mesta smán sem hægt er að gera guði."],
+["Grísk","Hefaistos í Ólympos","Hefaistos var kastað úr himni og var lengi utanveltu meðal guðanna. Í Hómerssálmum og hjá Pausaníasi er hann sóttur aftur með brögðum. Utanveltuguð sem knýr á um sæti meðal hinna."]]};
+
+D[8] = {t:"Bragi neitar",
+s:"Bragi, skáldskaparguðinn, svarar að æsir muni aldrei velja Loka sæti við veisluna, því æsir viti hverjum þeir eigi að unna „gambansumbls“, mikillar veislu eða helgidrykkju. Bragi talar fyrir hönd goðanna og útilokar Loka. Með því verður hann fyrsta skotmark Loka.",
+no:[
+["Gylfaginning 26","Bragi er frægur af speki og mælsku og manna mest í skáldskap. Kona hans er Iðunn. Bragarfull eða bragafull er heitstrengingarbikarinn."],
+["Bragi Boddason","Bragi gamli Boddason er elsta skáld sem kvæði eru varðveitt eftir (Ragnarsdrápa, 9. öld). Margir telja að guðinn Bragi sé skáldið sjálft, orðið að guði í Valhöll (sbr. Eiríksmál)."],
+["Gamban","„Gamban“ kemur einnig fyrir í Skírnismálum 32 („gambantein“, töfrasprota) og virðist merkja eitthvað mikið eða máttugt."]],
+c:[
+["Keltnesk","Ogmios","Lúkíanos lýsir gallverska guðinum Ogmios sem gömlum manni sem dregur menn á eftir sér með keðjum sem festar eru við tungu hans. Mælsku- og skáldaguð eins og Bragi."],
+["Grísk","Apollon og Músurnar","Apollon er guð kveðskapar og leikur á lýru í veislum guðanna (Ilíonskviða 1.603)."],
+["Indversk","Brihaspati","Bænaprestur og ráðgjafi guðanna, drottinn orðsins, í Rigveda."]]};
+
+D[9] = {t:"Blóðbræðralag",
+s:"Loki snýr sér að Óðni: „Manstu, Óðinn, þegar við tveir blönduðum blóði saman í árdaga? Þú sagðist aldrei mundu bergja öl nema okkur báðum væri borið.“ Loki minnir Óðin á eið þeirra. Fóstbræðralag var heilagt, og nú verður Óðinn að velja milli eiðsins og vilja goðanna.",
+no:[
+["Gísla saga Súrssonar 6","Fóstbræður ganga undir jarðarmen (torfu sem lyft er upp), láta blóð sitt renna saman í moldinni og sverja þess eið að hefna hver annars. Besta lýsing á slíkri athöfn."],
+["Lóðurr","Hvergi annars staðar er sagt frá blóðbræðralagi Óðins og Loka. Það er ein röksemd fyrir því að Lóðurr í Völuspá 18, sem skapar mennina með Óðni og Hæni, sé Loki."],
+["Haustlöng og Reginsmál","Óðinn, Hænir og Loki ferðast saman í sögunum af Þjassa og Andvara. Óðinn og Loki eru óaðskiljanlegir félagar í mörgum goðsögum."]],
+c:[
+["Skýþísk","Blóðeiðar Skýþa","Heródótos (4.70) segir að Skýþar hafi gert sáttmála með því að blanda blóði sínu í vín og drekka það saman. Blóð og drykkur í einum eiði."],
+["Mesópótamísk","Gilgames og Enkídú","Konungurinn og villimaðurinn verða óaðskiljanlegir bræður eftir að hafa tekist á. Ólíkar verur bundnar böndum sem sterkari eru en ætt."],
+["Indversk","Mitra og Varuna","Mitra merkir bókstaflega „samningur“ eða „vinur“. Í Rigveda er hann tvíburaguð Varuna, og saman gæta þeir eiða og samninga."]]};
+
+D[10] = {t:"Rístu, Víðar",
+s:"Óðinn biður Víðar, son sinn, að rísa upp og láta föður úlfsins sitja við veisluna, svo að Loki kveði þeim ekki lastastöfum (níði) í höll Ægis. Eiðurinn bindur Óðin. Hann vonar að drykkurinn kaupi frið, en Loki fær þó sæti. Víðar þjónar Loka, þótt hann eigi síðar að drepa son hans, úlfinn.",
+no:[
+["Gylfaginning 29","Víðar er hinn þögli áss, næstum jafnsterkur Þór, og goðin treysta á hann í öllum þrautum."],
+["Völuspá 55","Víðar drepur Fenrisúlf og hefnir Óðins. Það er því kaldhæðið að Víðar sé látinn bera „úlfs föður“ drykkinn."],
+["Lastastafir","„Lastastafir“ eru níðorð. Orðið kemur aftur í 16. og 18. erindi."]],
+c:[
+["Indversk","Krishna og Shishupala","Krishna hafði lofað móður Shishupala að fyrirgefa syni hennar hundrað móðganir. Hann þolir því svívirðingar hans á fórnarhátíðinni allt þar til mælirinn er fullur. Guð bundinn af heiti þolir níðið."],
+["Grísk","Eiður Seifs","Seifur sver við Styx að veita Semele hvað sem hún biður um. Hún biður að fá að sjá hann í allri sinni dýrð og brennur til ösku. Guðinn er bundinn af eigin eiði þótt hann viti að illa fari."]]};
+
+D[11] = {t:"Heilir æsir",
+s:"Víðar stendur upp og skenkir Loka. Áður en Loki drekkur skálar hann fyrir goðunum: „Heilir æsir, heilar ásynjur og öll ginnheilög goð, nema sá einn áss sem innar situr á bekkjum, Bragi.“ Loki skálar fyrir öllum nema þeim sem neitaði honum um sæti. Með því smánar hann Braga frammi fyrir öllum.",
+no:[
+["Sigrdrífumál 3–4","„Heilir æsir, heilar ásynjur, heil sjá in fjölnýta fold.“ Sigurdrífa heilsar goðunum með nær sama orðalagi. Loki snýr helgri formúlu upp í móðgun."],
+["Hákonar saga góða 14","Við blót var drukkið full Óðins, Njarðar og Freys og minni látinna frænda. Hver skál var helgiathöfn."],
+["Ginnheilög goð","Sama orðalag og í Völuspá 6, 9, 23 og 25: „ginnheilög goð“."]],
+c:[
+["Grísk","Dreypifórnir","Í grískum veislum var helt niður víni til guðanna áður en drukkið var. Að sleppa einum guði var að smána hann opinberlega."],
+["Grísk","Eris og Afródíta","Gullepli Eris var ætlað „hinni fegurstu“ og því ekki hinum tveimur. Að velja einn úr hópi er jafnmikil móðgun og að útiloka einn."]]};
+
+D[12] = {t:"Bætur Braga",
+s:"Bragi býður Loka hest og sverð og baug úr eigin fé svo að hann gjaldi ekki ásum öfund og reiti ekki goðin til reiði. Bragi reynir að kaupa frið með bótum eins og siður var í deilum manna.",
+no:[
+["Grágás og baugatal","Í fornum lögum var deila sætt með bótum í fé. Baugatal í Grágás tilgreinir hve mikið skyldi gjalda fyrir víg."],
+["Hrafnkels saga","Hrafnkell býður Þorbirni bætur fyrir víg sonar hans en Þorbjörn hafnar þeim. Höfnun bóta leiðir til frekari deilna."],
+["Gjafir í veislum","Gjafir voru hluti af veisluhaldi: „Vin sínum skal maðr vinr vera ok gjöldum gjöld“ (Hávamál 42)."]],
+c:[
+["Grísk","Agamemnon býður Akkillesi gjafir","Í 9. bók Ilíonskviðu sendir Agamemnon menn til að bjóða Akkillesi hesta, gull og konur í sáttaskyni. Akkilles hafnar boðinu og heldur reiði sinni."],
+["Rómversk / germönsk","Wergeld","Tacitus (Germania 21) segir að Germanir sætti jafnvel víg með nautgripum og hestum. Bætur í fé eru grunnur germansks réttar."]]};
+
+D[13] = {t:"Ragur Bragi",
+s:"Loki hafnar boðinu og segir að Bragi muni aldrei eiga hvorki hest né baug. Af öllum ásum og álfum þar inni sé hann varkárastur í vígum og hræddastur við skot. Loki kallar skáldið hugleysingja: Bragi er maður orða en ekki vopna.",
+no:[
+["Skáld og vígamenn","Í sögum eru skáld oft jafnframt kappar, t.d. Egill Skallagrímsson. Að kalla skáldaguð huglausan er því sár móðgun."],
+["Hárbarðsljóð","Þór og Hárbarður (Óðinn) brigsla hvor öðrum um hugleysi og leti. Sama aðferð í senu."]],
+c:[
+["Grísk","París","Hektor kallar bróður sinn París „Dysparis“, illan París, sem er fagur en huglaus og forðast bardaga (Ilíonskviða 3.39). París er bogaskytta sem berst úr fjarlægð."],
+["Fornensk","Unferð","Unferð er þulur Hróðgars konungs. Bjólfur ber honum á brýn að hafa drepið bræður sína en aldrei unnið afrek sjálfur."]]};
+
+D[14] = {t:"Bragi hótar",
+s:"Bragi svarar: „Væri ég fyrir utan höll Ægis eins og ég er hér inni, bæri ég höfuð þitt í hendi mér. Það launaði ég þér fyrir lygina.“ Bragi getur ekki vegið Loka því höllin er griðastaður. Hann hótar aðeins því sem hann myndi gera annars staðar.",
+no:[
+["Griðastaður","Í formálanum er sagt að „þar var griðastaðr mikill“. Á þingum og í hofum mátti ekki vega. Loki rauf griðin með því að drepa Fimafeng, en goðin halda þau."],
+["Höfuð Mímis","Höfuðið sem tákn sigurs kemur fyrir í Ynglinga sögu 4, þar sem Vanir senda Ásum höfuð Mímis."],
+["Gylfaginning 50","Goðin gátu ekki hefnt sín á Loka eftir dauða Baldurs vegna þess að þar var griðastaður („svá mikill griðastaðr“)."]],
+c:[
+["Grísk","Griðastaðir (asylon)","Sá sem flúði að altari guðs mátti ekki vega. Að drepa beiðanda (hiketes) var helgispjöll."],
+["Biblíuleg","Griðaborgir","Í 4. Mósebók 35 eru sex griðaborgir þar sem sá sem varð manni að bana óviljandi var óhultur fyrir hefnd."]]};
+
+D[15] = {t:"Bekkjarskraut",
+s:"Loki hæðist að Braga og kallar hann „bekkskrautuð“, bekkjarskraut, og segir hann djarfan í sæti sínu. Hann skorar á Braga að fara og berjast ef hann sé reiður, því hugrakkur maður hugsi sig ekki um. Loki veit vel að Bragi getur ekki barist í griðastað og hæðist því að honum.",
+no:[
+["Bekkskrautuðr","Orðið kemur aðeins fyrir hér. Það lýsir manni sem situr til skrauts en gerir ekkert."],
+["Hávamál 6","„Gætinn ... sjaldan verðr víti vörum.“ Það sem Loki kallar hugleysi lofa Hávamál sem varkárni."]],
+c:[
+["Grísk","Momos","Momos, guð háðs og ásakana, gagnrýnir guðina fyrir hvaðeina (Esópsdæmisögur, Lúkíanos). Seifur rekur hann að lokum úr Ólympos. Momos er eins konar grískur Loki í veislunni."],
+["Grísk","Þersítes og Akkilles","Þersítes hæðist einnig að Akkillesi og fær síðar fyrir það dauða (Eþíópíukviða)."]]};
+
+D[16] = {t:"Iðunn biður Braga",
+s:"Iðunn, kona Braga, biður hann vegna barna og allra „óskmaga“ (kjörsona, þ.e. ættingja og þeirra sem tengjast með fóstri eða ættleiðingu) að kveða ekki lastastöfum að Loka í höll Ægis. Iðunn reynir að stilla til friðar.",
+no:[
+["Skáldskaparmál 1–2 og Haustlöng","Iðunn geymir eplin sem halda goðunum ungum. Loki lokkaði hana í hendur jötunsins Þjassa og varð síðar að sækja hana aftur í valsham. Hún hefur því fulla ástæðu til að óttast Loka."],
+["Gylfaginning 26","Iðunn geymir í eski sínu epli sem goðin bíta þegar þau eldast, og verða þá ung aftur."],
+["Óskmagar","Orðið kemur einnig fyrir í Grímnismálum. Óskmegir Óðins eru einherjar, kjörsynir hans."]],
+c:[
+["Rómversk","Sabínakonurnar","Sabínakonurnar ganga á milli feðra sinna og eiginmanna á vígvellinum og biðja þá að berjast ekki, vegna barnanna (Livíus 1.13). Konur stilla til friðar milli frænda."],
+["Grísk","Epli Hesperídanna","Gullnu eplin sem Gaia gaf Heru voru varðveitt í garði Hesperídanna. Herakles sótti þau. Ódauðleikaepli í gæslu gyðju."],
+["Írsk","Emain Ablach","Eplaeyjan er sæluheimur hafguðsins Manannán mac Lir. Epli sem tákn eilífs lífs."]]};
+
+D[17] = {t:"Þegi þú, Iðunn",
+s:"Loki svarar með fyrsta „Þegi þú“ kvæðisins: „Þegi þú, Iðunn, ég segi þig allra kvenna vergjarnasta, er þú lagðir þína fagurþvegnu arma um bróðurbana þinn.“ Iðunn á að hafa faðmað þann sem drap bróður hennar. Sú saga er hvergi annars staðar þekkt. Sumir telja að Bragi sjálfur hafi verið banamaðurinn.",
+no:[
+["Óþekkt saga","Hvergi er sagt frá bróður Iðunnar né víginu. Lokasenna geymir hér líklega goðsögn sem annars er týnd, eða Loki hefur búið hana til."],
+["Guðrúnarkviða II","Guðrún giftist Atla eftir að bræður hennar hafa drepið Sigurð og sættist við þá eftir minnisdrykk. Kona sem gengur að eiga eða sættist við banamenn ættingja sinna er þekkt í hetjukvæðum."],
+["„Þegi þú“","Formúlan „Þegi þú, ...“ kemur nú aftur og aftur. Loki þaggar niður í hverju goði eftir annað með henni."]],
+c:[
+["Grísk","Andrómakka","Eftir fall Tróju verður Andrómakka frilla Neoptólemosar, sonar Akkillesar sem drap Hektor mann hennar (Evrípídes, Andrómakka)."],
+["Grísk","Helena","Helena er oft sökuð um að hafa svikið mann sinn og leitt dauða yfir ættingja. Kona sem ber ábyrgð á blóðsúthellingum er algengt skotmark níðs."]]};
+
+D[18] = {t:"Iðunn stillir Braga",
+s:"Iðunn svarar að hún kveði ekki Loka lastastöfum í höll Ægis. Hún kyrri Braga, sem er bjórreifur (ölvaður), og vilji ekki að þeir berjist reiðir. Iðunn tekur ekki þátt í senunni og heldur áfram að reyna að sætta.",
+no:[
+["Gylfaginning 26","Iðunn er kona Braga. Þau koma saman til veislunnar."],
+["Hávamál 12","„Era svá gott, sem gott kveða, öl alda sonum.“ Öl og reiði fara illa saman."]],
+c:[
+["Grísk","Hefaistos sættir Seif og Heru","Í lok 1. bókar Ilíonskviðu rífast Seifur og Hera í veislu guðanna. Hefaistos ber þeim vín og biður móður sína að stilla sig svo að Seifur slái hana ekki. Guðirnir hlæja og veislan heldur áfram. Friðarboði í deilu guða við drykkju."],
+["Rómversk","Concordia","Gyðja einingar og samlyndis í Róm. Hof hennar var reist á Forum eftir sættir stétta."]]};
+
+D[19] = {t:"Gefjun ber blak af Loka",
+s:"Gefjun spyr hví æsirnir tveir, Bragi og Loki, skuli deila með sárum orðum. „Lopzki“ er Loptr með neitunarviðskeytinu -ki: Loftur veit ekki að hann er „leikinn“, þ.e. blekktur eða ölvaður. Síðasta línan („fjörgvall friá“) er óljós og hefur verið túlkuð á ýmsa vegu, t.d. að hann elski allt lifandi eða að örlögin reki hann áfram. Gefjun virðist reyna að afsaka Loka: hann veit ekki hvað hann gerir.",
+no:[
+["Gylfaginning 35","Gefjun er mær og henni þjóna þær sem deyja meyjar."],
+["Gylfaginning 1 og Ragnarsdrápa","Gefjun plægði Sjáland úr Svíþjóð með fjórum uxum sem voru synir hennar og jötuns. Eftir varð Lögurinn (Mälaren). Bragi Boddason segir frá þessu í Ragnarsdrápu."],
+["Ynglinga saga 5","Gefjun giftist Skildi Óðinssyni og þau bjuggu í Hleiðru."],
+["Gefn og Freyja","Gefn er eitt af nöfnum Freyju. Margir telja Gefjun og Freyju vera náskyldar eða jafnvel sömu gyðjuna."]],
+c:[
+["Fönísk / rómversk","Dídó og uxahúðin","Dídó fékk eins mikið land og ein uxahúð gat umlukið. Hún skar húðina í ræmur og umlukti heila hæð, þar sem Karþagó var reist. Land unnið með bragði og nautgrip."],
+["Rómversk","Plógfar Rómúlusar","Rómúlus plægði frumfarið (sulcus primigenius) sem markaði borgarmörk Rómar. Að plægja land var að eigna sér það."],
+["Grísk / rómversk","Artemis og Vesta","Meygyðjur sem vernda ógiftar konur, eins og Gefjun sem tekur á móti þeim sem deyja meyjar."]]};
+
+D[20] = {t:"Þegi þú, Gefjun",
+s:"Loki svarar: „Þegi þú, Gefjun, nú skal ég geta þess hver tældi þig: sveinninn hvíti sem gaf þér sigli (hálsmen) og þú lagðir læri yfir.“ Loki sakar meygyðjuna um að hafa selt sig fyrir skart. Sagan er ekki þekkt annars staðar en minnir á söguna af Freyju og Brísingameni.",
+no:[
+["Sörla þáttur","Freyja eignaðist Brísingamen með því að liggja eina nótt hjá hverjum fjögurra dverga sem smíðuðu það. Loki stal meninu fyrir Óðin. Sagan styður þá kenningu að Gefjun og Freyja séu tengdar."],
+["Þrymskviða 13","Freyja reiðist svo þegar hún er beðin að giftast Þrymi að „stökk þat it mikla men Brísinga“."],
+["Húsdrápa","Úlfur Uggason segir frá því að Heimdallur og Loki hafi barist um Brísingamen í selslíki."]],
+c:[
+["Mesópótamísk","Hálsmen Inönnu","Í Niðurför Inönnu leggur gyðjan af sér skart sitt, m.a. hálsmen, við hvert hlið undirheima. Skart gyðjunnar er tákn máttar hennar."],
+["Grísk","Belti Afródítu","Hera fær lánað töfrabelti Afródítu til að tæla Seif (Ilíonskviða 14). Skart og tæling fara saman í goðsögum."]]};
+
+D[21] = {t:"Óðinn ver Gefjuni",
+s:"Óðinn segir Loka vitlausan og örvita að egna Gefjuni til reiði, því hún viti öll örlög aldanna jafnvel og hann sjálfur. Óðinn virðir spádómsgáfu Gefjunar og ber henni vitni.",
+no:[
+["Spádómsgyðjur","Í 29. erindi segir Freyja hið sama um Frigg: að hún viti öll örlög þótt hún segi þau ekki."],
+["Völuspá 28","„Allt veit ek, Óðinn“: völvan veit meira en Óðinn sjálfur. Kvenleg spádómsgáfa er þekkt minni."]],
+c:[
+["Grísk","Þemis","Þemis, gyðja réttar og guðlegrar reglu, réð véfréttinni í Delfí á undan Apollon og vissi örlögin. Seifur leitaði ráða hennar."],
+["Grísk","Metis","Metis var fyrsta kona Seifs og vitrari en allir guðir. Seifur gleypti hana til að eignast visku hennar."]]};
+
+D[22] = {t:"Þegi þú, Óðinn",
+s:"Loki snýr sér aftur að Óðni: „Þegi þú, Óðinn, þú kunnir aldrei að skipta vígum meðal manna. Oft gafstu þeim sigur sem þú áttir ekki að gefa, hinum lakari.“ Loki ræðst á hlutverk Óðins sem sigurguðs og segir hann óréttlátan og ótraustan.",
+no:[
+["Völsunga saga 11","Óðinn birtist í orrustu og Sigmundur höggur sverði sínu í spjót hans. Sverðið brotnar og Sigmundur fellur."],
+["Brávallabardagi","Saxo og Sögubrot segja frá því að Óðinn hafi drepið Harald hilditönn, sem hann hafði áður veitt sigur, í Brávallabardaga."],
+["Eiríksmál","Óðinn er spurður hví hann hafi tekið sigur frá Eiríki blóðöx. Hann svarar að grár úlfur gæti goðanna og að hann þurfi góða kappa í Valhöll. Óðinn velur dauða bestu kappanna með vilja."],
+["Hárbarðsljóð 24","„Óðinn á jarla, þás í val falla, en Þórr á þræla kyn.“"]],
+c:[
+["Grísk","Ares hinn hverflyndi","Aþena kallar Ares „alloprosallos“, þann sem skiptir um lið (Ilíonskviða 5.831, 889). Hann lofaði að berjast með Grikkjum en studdi Trójumenn."],
+["Grísk","Vogir Seifs","Seifur vegur örlög herjanna á gullnum vogum (Ilíonskviða 8.69–74, 22.209–213). Sigur er ákveðinn á himnum, ekki á vígvellinum."],
+["Indversk","Krishna á Kurukshetra","Krishna ráðleggur Pándavabræðrum að beita brögðum gegn Bhishma, Drona og Karna. Guð sem tryggir sigur með óheiðarlegum hætti."]]};
+
+D[23] = {t:"Loki undir jörðu",
+s:"Óðinn svarar: „Þótt ég hafi gefið þeim sigur sem ég átti ekki að gefa, þá varst þú átta vetur undir jörðu, mjólkandi kýr og kona, og hefur þar börn borið. Það þótti mér eðli ragmennis.“ Óðinn sakar Loka um að hafa verið kona og borið börn, sem var mesta smán sem hægt var að bera á karlmann.",
+no:[
+["Gylfaginning 42","Loki breytti sér í meri, lokkaði hestinn Svaðilfara burt og fæddi síðar Sleipni, áttfættan hest Óðins."],
+["Hyndluljóð 41","Loki át hálfsviðið hjarta konu og varð þungaður af því. Af honum eru öll flögð komin."],
+["Ergi og níð","„Argr“ og „ragr“ merktu karlmann sem tók á sig kvenhlutverk. Í Grágás og norskum lögum mátti vega fyrir slík orð."]],
+c:[
+["Grísk","Teiresías","Teiresías var kona í sjö ár eftir að hafa slegið til tveggja höggorma sem voru að eðla sig (Ummyndanir Óvidíusar 3)."],
+["Indversk","Ila og Narada","Ila konungur breytist í konu í töfraskógi og elur börn (Ramayana, Purana-rit). Spekingurinn Narada verður kona og eignast börn áður en Vishnu breytir honum aftur."],
+["Grísk","Seifur elur börn","Seifur fæðir Aþenu úr höfði sínu og Díónýsos úr læri sínu. Karlguð sem elur börn."]]};
+
+D[24] = {t:"Seiður í Samsey",
+s:"Loki svarar: „En þig sögðu þeir síða (fremja seið) í Samsey, og þú barðir á vétt (trumbu) eins og völvur. Í vitka líki fórstu yfir mannheim. Það þótti mér eðli ragmennis.“ Loki snýr ásökuninni við: Óðinn sjálfur stundar seið, kvennagaldur, og er því jafn argur.",
+no:[
+["Ynglinga saga 7","Óðinn kunni seið og vissi af honum örlög manna, en honum fylgdi svo mikil ergi að körlum þótti skömm að fremja hann. Því var gyðjum kenndur hann."],
+["Saxo, 3. bók","Óðinn dulbýr sig sem konuna Wecha, græðara, til að komast að Rindu og geta með henni Vála, hefnanda Baldurs."],
+["Samsey","Samsey er eyja í Kattegat. Í Hervarar sögu er hún staður haugbúa og galdra, þar sem Hervör vekur föður sinn upp úr haugi."],
+["Vétt","Vétt er líklega trumba. Samískir galdramenn (noaidi) notuðu trumbur til að komast í leiðslu."]],
+c:[
+["Indversk","Arjuna sem Brihannala","Í Mahabharata (Virata Parva) dulbýst kappinn Arjuna sem geldingurinn Brihannala og kennir prinsessum dans í heilt ár."],
+["Grísk","Herakles og Omfale","Herakles þjónar Lýdíudrottningunni Omfale í kvenfötum og spinnur ull meðan hún ber ljónshúð hans."],
+["Grísk","Akkilles hjá Lýkomedesi","Akkilles er falinn í kvenfötum meðal dætra Lýkomedesar konungs svo að hann fari ekki til Tróju."],
+["Síberísk / samísk","Samanar","Í mörgum samanískum hefðum Síberíu klæddust töframenn kvenfötum. Kynskipti voru hluti af valdi þeirra."]]};
+
+D[25] = {t:"Frigg biður um þögn",
+s:"Frigg biður þá Óðin og Loka að segja aldrei mönnum frá örlögum sínum, því sem þeir tveir æsir drýgðu í árdaga. Forn rök skuli ávallt firrast menn. Frigg vill að fortíðin sé grafin, en með því ber hún óbeint vitni um að eitthvað sé þar að fela.",
+no:[
+["Gylfaginning 20","Frigg veit öll örlög þótt hún segi ekki frá. Sama orðalag er í 29. erindi."],
+["Fensalir","Frigg býr í Fensölum (Völuspá 33) og er móðir Baldurs."],
+["Forn rök","Í Völuspá eru „forn spjöll fira“ það sem völvan segir frá. Frigg vill hið gagnstæða: að það sé ekki sagt."]],
+c:[
+["Egypsk","Ísis og leyndarnafn Ra","Ísis lét höggorm bíta Ra og læknaði hann ekki fyrr en hann sagði henni leyndarnafn sitt. Þekking á leyndarmálum guða er máttur."],
+["Rómversk","Damnatio memoriae","Rómverjar þurrkuðu stundum út minningu um fallna menn, eyddu nöfnum þeirra af minnisvörðum og bönnuðu að minnast á þá."],
+["Grísk","Lethe","Fljót gleymskunnar í undirheimum. Þeir sem drekka af því gleyma fyrri lífum."]]};
+
+D[26] = {t:"Þegi þú, Frigg",
+s:"Loki svarar: „Þegi þú, Frigg, þú ert dóttir Fjörgyns og hefur ávallt verið vergjörn, er þú, kona Viðris (Óðins), tókst bæði Vé og Vilja í faðm þér.“ Loki sakar drottningu goðanna um að hafa legið með bræðrum Óðins.",
+no:[
+["Ynglinga saga 3","Þegar Óðinn var lengi að heiman töldu bræður hans, Vili og Vé, að hann kæmi ekki aftur. Þeir skiptu arfi hans og áttu báðir Frigg. Óðinn kom síðan aftur og tók við konu sinni. Snorri segir söguna sem staðreynd sem Loki vísar til."],
+["Saxo, 1. bók","Frigga lét þjón brjóta gull af líkneski Óðins og gaf sig honum. Óðinn fór í útlegð af skömm, og Mithotyn réð á meðan."],
+["Fjörgyn og Viðrir","Fjörgyn er faðir Friggjar, en Fjörgyn (kvk.) er móðir Þórs (Völuspá 56). Viðrir er heiti Óðins sem veðurguðs."]],
+c:[
+["Grísk","Penelópa og biðlarnir","Meðan Ódysseifur er að heiman í tuttugu ár reyna biðlar að taka bæði konu hans og eignir. Penelópa er þó trú honum."],
+["Grísk","Klýtæmnestra","Klýtæmnestra tekur Ægisþos sér fyrir mann meðan Agamemnon er í Tróju, og saman drepa þau hann þegar hann kemur heim (Eskýlos, Agamemnon)."]]};
+
+D[27] = {t:"Ef ég ætti son eins og Baldur",
+s:"Frigg svarar: „Ef ég ætti son líkan Baldri hér inni í höll Ægis, kæmistu ekki út frá ásasonum og væri þá barist við þig reiðan.“ Frigg minnist sonar síns sem er dáinn. Án hans á hún engan til að verja sig.",
+no:[
+["Gylfaginning 22","Baldur er bestur ása og allir lofa hann. Hann er svo fagur að ljómar af honum."],
+["Völuspá 31–33","Dauði Baldurs og grátur Friggjar í Fensölum."],
+["Tímaröð","Erindið sýnir að Lokasenna gerist eftir dauða Baldurs, þótt Snorri láti bindingu Loka koma strax í kjölfar hans."]],
+c:[
+["Grísk","Þetis og Akkilles","Sjávargyðjan Þetis syrgir son sinn Akkilles áður en hann deyr, því hún veit örlög hans."],
+["Egypsk","Ísis og Hórus","Ísis elur Hórus til að hefna Ósírisar á Set. Móðir sem treystir á son til að verja sæmd ættarinnar."]]};
+
+D[28] = {t:"Ég réð því",
+s:"Loki svarar: „Enn viltu, Frigg, að ég telji fleiri meinstafi mína (illverk): ég réð því að þú sérð ekki Baldur síðan ríða til sala.“ Hér játar Loki sjálfur að hafa valdið dauða Baldurs. Játningin er sögð í hrokafullri gleði og er hvergi annars staðar í Eddukvæðum.",
+no:[
+["Gylfaginning 49","Loki komst að því að mistilteinninn hafði ekki svarið eiðinn, gaf Höð blinda hann og vísaði honum hvert skjóta skyldi. Síðan kom hann í veg fyrir að Baldur kæmist úr Helju með því að gráta ekki sem gýgurin Þökk."],
+["Baldrs draumar og Völuspá","Hvorki Völuspá né Baldrs draumar nefna Loka í tengslum við dauða Baldurs. Lokasenna er elsta skýra heimildin um þátt hans."],
+["Húsdrápa","Úlfur Uggason lýsir bálför Baldurs um 985 en nefnir ekki hlut Loka."]],
+c:[
+["Egypsk","Set","Set drepur Ósíris bróður sinn með svikum. Hann lokkar hann í kistu og hendir henni í Níl. Bragðarefur drepur hinn góða guð."],
+["Grísk","Apollon og París","Apollon stýrir ör Parísar í hæl Akkillesar. Ósýnilegur guð að baki banaskoti, eins og Loki að baki Heði."],
+["Persnesk","Isfandiyar","Simurgh vísar Rostam á greinina sem eina getur drepið hinn ósæranlega Isfandiyar (Konungabók Ferdowsis)."]]};
+D[29] = {t:"Freyja ver Frigg",
+s:"Freyja segir Loka vitlausan að telja upp sín ljótu illverk. Frigg viti öll örlög, hyggur hún, þótt hún segi það ekki sjálf. Freyja minnir á að Frigg sér meira en hún lætur uppi, og verður með því næsta skotmark Loka.",
+no:[
+["Gylfaginning 20","Frigg „veit öll örlög þótt hún segi eigi spár“."],
+["21. erindi","Óðinn segir hið sama um Gefjuni. Gyðjurnar þrjár, Gefjun, Frigg og Freyja, eru allar sagðar vita örlög."],
+["Ynglinga saga 4","Freyja kenndi Ásum seið, svo hún þekkir sjálf spádómsgáfuna."]],
+c:[
+["Grísk","Herakleitos um Delfí","„Drottinn véfréttarinnar í Delfí hvorki segir né leynir, heldur gefur til kynna“ (Herakleitos, brot 93). Að vita án þess að segja."],
+["Grísk","Kassandra","Kassandra veit allt fyrir en enginn trúir henni. Spádómsgáfa sem kemur ekki að notum."]]};
+
+D[30] = {t:"Þegi þú, Freyja",
+s:"Loki svarar: „Þegi þú, Freyja, ég þekki þig fullvel; þér er ekki vamma vant. Af öllum ásum og álfum hér inni hefur hver og einn verið friðill þinn.“ Freyja er gyðja ástar og frjósemi, og Loki snýr eiginleika hennar upp í níð.",
+no:[
+["Sörla þáttur","Freyja lá hjá fjórum dvergum til að eignast Brísingamen."],
+["Hyndluljóð 30","Hyndla segir að Freyja hlaupi um nætur eins og geitin Heiðrún með höfrum."],
+["Kristniboð","Hjalti Skeggjason var dæmdur fyrir goðgá eftir að hafa kveðið á Alþingi árið 999: „Vil ek eigi goð geyja, grey þykki mér Freyja.“ (Kristni saga, Njáls saga 102). Níð um Freyju var vopn kristniboða."]],
+c:[
+["Mesópótamísk","Gilgames hafnar Ístar","Í 6. töflu Gilgameskviðu býður gyðjan Ístar Gilgamesi að verða maður sinn. Hann hafnar henni og telur upp alla elskhuga hennar og hvernig hún fór með þá: Tammúz, fuglinn, ljónið, hestinn, hirðinn og garðyrkjumanninn. Náin hliðstæða: upptalning á elskhugum ástargyðju sem móðgun."],
+["Grísk","Afródíta","Afródíta á marga elskhuga: Ares, Ankíses og Adónis, þótt hún sé gift Hefaistosi."]]};
+
+D[31] = {t:"Fláráð tunga",
+s:"Freyja svarar að tunga Loka sé fláráð og að hann muni gala sér sjálfum ógæfu. Æsir og ásynjur séu honum reið og hann muni fara hryggur heim. Freyja spáir fyrir um það sem bíður Loka.",
+no:[
+["Niðurlag","Spá Freyju rætist: Loki fer ekki aðeins hryggur heim heldur er hann bundinn."],
+["Hávamál 29","„Hraðmælt tunga, nema haldendr eigi, oft sér ógott um gelr.“ Nær sama orðalag og hjá Freyju."]],
+c:[
+["Mesópótamísk","Ístar hefnir sín","Eftir að Gilgames smánar hana fær Ístar Anu til að senda Himinnautið gegn Úrúk. Afleiðingin verður dauði Enkídús."],
+["Grísk","Afródíta hefnir sín","Hippolýtos neitar að dýrka Afródítu, og hún veldur dauða hans (Evrípídes, Hippolýtos)."]]};
+
+D[32] = {t:"Fordæða",
+s:"Loki svarar: „Þegi þú, Freyja, þú ert fordæða (galdrakona) og mjög meini blandin, er goðin komu að þér hjá bróður þínum. Þá myndir þú, Freyja, hafa frata (leyst vind).“ Loki sakar Freyju um sifjaspell með Frey og bætir við grófri niðurlægingu.",
+no:[
+["Ynglinga saga 4","Meðan Njörður var hjá Vönum átti hann systur sína að konu, því það voru lög þeirra. Börn þeirra eru Freyr og Freyja. Þetta var bannað meðal Ása."],
+["Fordæða","Fordæða er galdrakona. Orðið er notað í lögum og sögum um konur sem beittu illum galdri."],
+["Freyr og Freyja","Nöfnin merkja „herra“ og „frú“. Í Svíþjóð og Noregi voru þau dýrkuð sem tvíburar frjóseminnar."]],
+c:[
+["Egypsk","Ísis og Ósíris","Systkinin Ísis og Ósíris eru jafnframt hjón. Systkinahjónabönd voru algeng meðal egypskra guða og konunga."],
+["Grísk","Seifur og Hera","Seifur og Hera eru systkini og hjón, börn Krónosar og Rheu."],
+["Japönsk","Izanagi og Izanami","Systkinin Izanagi og Izanami skapa Japan saman sem hjón."]]};
+
+D[33] = {t:"Njörður svarar",
+s:"Njörður segir það lítilfjörlegt þótt konur eigi sér friðil eða mann, annan eða hinn. Hitt sé undur að argur áss sé hér kominn inn, og hafi sá borið börn. Njörður gerir lítið úr ásökunum Loka gegn Freyju og snýr athyglinni að ergi Loka sjálfs.",
+no:[
+["23. erindi","Óðinn hefur þegar sakað Loka um að hafa borið börn sem kona. Njörður endurtekur þá ásökun."],
+["Gylfaginning 23","Njörður býr í Nóatúnum og ræður göngu vinds og sjávar. Hann er faðir Freys og Freyju."],
+["Vanir og ástir","Ynglinga saga gefur til kynna að Vanir hafi haft aðrar siðvenjur um hjónabönd og ástir en Æsir."]],
+c:[
+["Hittítísk","Kumarbi","Kumarbi bítur af kynfæri himinguðsins Anu, gleypir þau og verður þungaður af guðum, m.a. stormguðinum Teshub (Kumarbi-kviða). Karlguð sem ber börn."],
+["Grísk","Hermafródítos","Sonur Hermesar og Afródítu rennur saman við vatnadísina Salmakis og verður bæði karl og kona (Ummyndanir Óvidíusar 4)."]]};
+
+D[34] = {t:"Þegi þú, Njörður",
+s:"Loki svarar: „Þegi þú, Njörður, þú varst sendur austur héðan sem gísl til goðanna. Dætur Hymis höfðu þig að hlandtrogi og migu þér í munn.“ Loki smánar Njörð fyrir gíslinguna. Fræðimenn hafa túlkað „dætur Hymis“ sem árnar sem renna í sjóinn, en Njörður er guð sjávar.",
+no:[
+["Ynglinga saga 4","Eftir stríð Ása og Vana voru Njörður og Freyr sendir til Ása sem gíslar, og Hænir og Mímir til Vana."],
+["Vafþrúðnismál 38–39","Njörður var alinn í Vanaheimi en gefinn goðunum í gíslingu. Í ragnarökum mun hann snúa aftur heim til vísra Vana."],
+["Hymir","Jötunninn Hymir er faðir Týs í Hymiskviðu og á ketilinn sem goðin sóttu. Hymir tengist hafinu."]],
+c:[
+["Rómversk","Gíslar","Rómverjar tóku gísla af sigruðum þjóðum. Í sögunni af Clœliu flýr hún úr gíslingu Etrúska yfir Tíberfljót."],
+["Grísk","Ókeanos og árnar","Ókeanos er faðir allra fljóta, og fljótin renna til hans. Sjór sem tekur við ánum."]]};
+
+D[35] = {t:"Sonur Njarðar",
+s:"Njörður svarar að það sé sér líkn, þótt hann hafi verið sendur langt sem gísl til goðanna, að hann hafi getið þann son sem enginn hatar og þykir höfðingi ása, þ.e. Frey. Njörður snýr niðurlægingunni í stolt: gíslingin færði goðunum Frey.",
+no:[
+["Gylfaginning 24","Freyr er ágætastur ása. Hann ræður regni og skini sólar og ávexti jarðar, og á hann skal heita til árs og friðar."],
+["Adam frá Brimum 4.26","Í hofinu í Uppsölum var líkneski Fricco (Freys) með miklum reðri. Hann var dýrkaður í brúðkaupum."],
+["Ynglinga saga 10","Freyr var konungur Svía. Á hans dögum var ár og friður, Fróðafriður."]],
+c:[
+["Rómversk","Quirinus","Dumézil taldi Frey og Njörð samsvara Quirinusi, guði hins þriðja sviðs: friðar, frjósemi og velsældar."],
+["Grísk","Díónýsos","Guð frjósemi og gleði sem allir fagna. Hann kemur utan frá og verður einn af Ólympsguðunum."]]};
+
+D[36] = {t:"Hættu nú, Njörður",
+s:"Loki svarar: „Hættu nú, Njörður, haf hóf á þér, ég mun ekki leyna því lengur: með systur þinni gastu slíkan son, og er þó ekki verri en von var.“ Loki snýr hrósinu um Frey upp í sifjaspell.",
+no:[
+["Ynglinga saga 4","Njörður átti systur sína hjá Vönum. Nafn hennar er ekki nefnt."],
+["Nerthus","Tacitus (Germania 40) segir frá gyðjunni Nerthus, „móður jörð“, sem dýrkuð var á eyju í hafinu. Nafnið Nerthus samsvarar Njörður að formi, og margir telja hana vera systur og konu Njarðar."]],
+c:[
+["Rómversk","Tacitus um Nerthus","Líkneski Nerthusar var ekið um í vagni sem kýr drógu. Á meðan ríkti friður og vopn voru lögð niður. Að lokum var vagninn þveginn í helgu vatni og þrælunum sem það gerðu drekkt."],
+["Grísk","Krónos og Rhea","Systkinin Krónos og Rhea eru foreldrar Ólympsguðanna."]]};
+
+D[37] = {t:"Týr lofar Frey",
+s:"Týr segir að Freyr sé bestur allra djarfra reiðmanna í görðum ása. Hann grætir hvorki mey né manns konu og leysir hvern úr höftum. Týr ver Frey gegn níðinu: hann er göfugur og frelsari en ekki saurugur.",
+no:[
+["Gylfaginning 24","Freyr er sá sem heitið er á til árs og friðar. Hann er mildur og góður."],
+["Skírnismál","Freyr þráir Gerði jötnadóttur og fær hana með hjálp Skírnis. Hann er þar ekki svo mildur, því Skírnir hótar Gerði hörðu."],
+["Leysir ór höptum","Freyr er guð frelsis og friðar. Andstæðan er Loki, sem sjálfur verður bundinn."]],
+c:[
+["Grísk","Díónýsos Lýaios","Díónýsos er kallaður Lýaios, „sá sem leysir“. Í Bakkynjum Evrípídesar falla fjötrarnir af fylgjendum hans. Frjósemisguð sem leysir úr böndum."],
+["Rómversk","Liber","Liber Pater, „hinn frjálsi faðir“, var rómverskur guð víns og frjósemi."]]};
+
+D[38] = {t:"Þegi þú, Týr",
+s:"Loki svarar: „Þegi þú, Týr, þú kunnir aldrei að bera sátt á milli tveggja. Hinnar hægri handar mun ég geta, sem Fenrir sleit af þér.“ Loki minnir Tý á handarmissinn, sem var afleiðing svika goðanna við Fenrisúlf.",
+no:[
+["Gylfaginning 25","Týr er djarfastur og hugaðastur og ræður sigri í orrustum. Hann er einhendur og „ekki kallaðr sættir manna“, sem er sama ásökun og hjá Loka."],
+["Gylfaginning 34","Goðin binda Fenri með Gleipni. Týr leggur hönd sína í munn hans sem veð, og úlfurinn bítur hana af þegar hann losnar ekki."],
+["Sigrdrífumál 6","Sigrúnir skal rista á sverð og nefna tvisvar Tý."]],
+c:[
+["Rómversk","Mucius Scaevola","Mucius stingur hægri hendi sinni í eld frammi fyrir Etrúskakonunginum Porsenna til að sanna hugrekki Rómverja (Livíus 2.12). Dumézil bar hann saman við Tý: guð laga og eiða sem fórnar hendi sinni."],
+["Írsk","Nuada Silfurhönd","Konungur Tuatha Dé Danann missir hönd sína í orrustu og fær silfurhönd. Einhendur guð."],
+["Indversk","Savitr","Í Kaushitaki Brahmana missir sólguðinn Savitr hendur sínar við fórn og fær gullhendur í staðinn."]]};
+
+D[39] = {t:"Týr svarar",
+s:"Týr svarar: „Ég er handarvana, en þú hróðrsvitnis (Fenris, sonar þíns). Böl er beggja þrá. Úlfurinn hefur það ekki gott heldur, sem í böndum skal bíða ragnarökkurs.“ Týr bendir á að báðir hafi misst eitthvað: hann hönd, Loki son.",
+no:[
+["Ragnarøkkr","Hér og hjá Snorra kemur fyrir myndin „ragnarøkkr“, rökkur goðanna, í stað „ragnarök“, örlög goðanna, eins og í Völuspá."],
+["Völuspá 44","„Festr mun slitna en freki renna.“ Úlfurinn bíður bundinn."],
+["Hróðrsvitnir","Hróðrsvitnir er heiti Fenris. Hati, sonur hans, er kallaður Hróðvitnisson í Grímnismálum 39."]],
+c:[
+["Grísk","Prómeþeifur","Prómeþeifur er bundinn á Kákasusfjöllum þar til Herakles leysir hann."],
+["Georgísk","Amirani","Hetjan Amirani bíður hlekkjuð í helli. Hundur hennar sleikir fjötrana þar til þeir eru nær slitnir."]]};
+
+D[40] = {t:"Kona Týs",
+s:"Loki svarar: „Þegi þú, Týr, það varð konu þinni að hún átti son með mér. Hvorki öln (álnir vaðmáls) né pening fékkstu nokkru sinni fyrir það vanrétti, vesall.“ Loki sakar Tý um að vera kokkáll og hafa ekki fengið bætur fyrir.",
+no:[
+["Kona Týs","Kona Týs er hvergi annars staðar nefnd, og ekki heldur sonur hennar með Loka."],
+["Hymiskviða","Týr er sonur jötunsins Hymis, en Snorri segir hann son Óðins. Ætt hans er óljós."],
+["Bætur í Grágás","Lög ákváðu bætur fyrir legorð með konu annars manns. Að fá engar bætur var smán."]],
+c:[
+["Grísk","Hefaistos krefst bóta","Hefaistos veiðir Ares og Afródítu í net og krefst þess að Seifur greiði sér aftur brúðarféð (Ódysseifskviða 8.266–366). Eiginmaður sem krefst bóta fyrir hórdóm konu sinnar."],
+["Grísk","Seifur og Alkmena","Seifur tekur á sig líki Amfítrýons og getur Herakles með konu hans."]]};
+
+D[41] = {t:"Freyr spáir",
+s:"Freyr segir: „Ég sé úlf liggja fyrir árósi uns regin rjúfast. Því munt þú næst, nema þú þegir nú, verða bundinn, bölvasmiður!“ Freyr spáir því að Loki verði bundinn eins og sonur hans.",
+no:[
+["Gylfaginning 34","Fenrir liggur bundinn með sverð í gómi. Af munni hans rennur froða sem verður að ánni Vón (von)."],
+["Niðurlag","Spá Freys rætist: Loki er bundinn."],
+["Bölvasmiðr","Loki er kallaður „bölvasmiðr“, smiður bölsins. Hann er á bak við smíði Mjölnis, en einnig smiður ills."]],
+c:[
+["Grísk","Prómeþeifur spáir","Prómeþeifur spáir um fall Seifs í Fjötruðum Prómeþeifi eftir Eskýlos. Spá og binding fara saman."],
+["Grísk","Týfon og Seifur","Seifur bindur Týfon undir Etnu, og sá sem gerir uppreisn gegn guðum endar í böndum."]]};
+
+D[42] = {t:"Sverð Freys",
+s:"Loki svarar: „Gulli keypta léstu Gymis dóttur og seldir svo sverð þitt. En þegar synir Múspells ríða yfir Myrkvið veistu ekki, vesall, hvernig þú átt að berjast.“ Loki minnir Frey á að hann lét sverð sitt fyrir Gerði og muni því falla í ragnarökum.",
+no:[
+["Skírnismál","Freyr sér Gerði, dóttur Gymis jötuns, úr Hliðskjálf og fær sjúka ást á henni. Hann gefur Skírni sverð sitt fyrir að biðja hennar. Skírnir býður henni gullepli og hringinn Draupni og hótar henni loks með galdri."],
+["Gylfaginning 37 og 51","Freyr drepur Belja með hjartarhorni því hann hefur ekki sverðið. Í ragnarökum fellur hann fyrir Surti."],
+["Völuspá 53","„En bani Belja bjartr at Surti.“ Myrkviður er hér leið Múspellssona."],
+["Gymir","Gymir er bæði faðir Gerðar og annað nafn Ægis í formálanum. Óljóst er hvort um sama jötun er að ræða."]],
+c:[
+["Grísk","Dómur Parísar","París velur Afródítu og ást Helenu fram yfir völd og visku. Það kostar Tróju falli."],
+["Biblíuleg","Samson og Dalíla","Samson missir styrk sinn fyrir ást á Dalílu (Dómarabókin 16)."],
+["Indversk","Dasharatha og Kaikeyi","Dasharatha konungur hafði heitið uppáhaldskonu sinni Kaikeyi tveimur óskum. Hún krefst þess að Rama verði sendur í útlegð, og konungurinn deyr af sorg (Ramayana). Ást og loforð sem kosta konunginn það sem hann þurfti mest á að halda."]]};
+
+D[43] = {t:"Byggvir reiðist",
+s:"Byggvir, þjónn Freys, segir: „Ef ég ætti ætt eins og Ingunar-Freyr og svo sælt setur, myndi ég mala þessa illu kráku smærri en merg og lemja hana alla í liði.“ Byggvir merkir líklega „sá sem tengist byggi“. Hann hótar að mala Loka eins og korn.",
+no:[
+["Ingunar-Freyr","Freyr er kallaður Yngvi-Freyr og Ingunar-Freyr. Hann er ættfaðir Ynglinga (Ynglinga saga 10)."],
+["Grottasöngr","Jötnameyjarnar Fenja og Menja mala gull og frið fyrir Fróða konung í kvörninni Grotta. Kvörn og mölun eru mikilvægt minni."],
+["Byggvir og Beyla","Byggvir og Beyla koma aðeins fyrir í Lokasennu. Beyla hefur verið tengd baun, kú (baula) eða bý."]],
+c:[
+["Ensk","John Barleycorn","Í enskri og skoskri þjóðvísu er byggið persónugert sem John Barleycorn. Hann er sleginn, malaður og bruggaður en lifnar við í ölinu."],
+["Finnsk","Pellervo","Í Kalevala sáir Sampsa Pellervoinen fræjum skóganna og kornsins. Byggguð Finna."],
+["Mesópótamísk","Ashnan og Ninkasi","Ashnan er gyðja korns og Ninkasi gyðja bjórs. Sálmurinn til Ninkasi er ein elsta bjóruppskrift heims."]]};
+
+D[44] = {t:"Hvað er þetta litla?",
+s:"Loki svarar: „Hvað er það litla sem ég sé dilla sér og snapa eftir mat? Við eyru Freys muntu ætíð vera og klaka undir kvörnum.“ Loki gerir lítið úr Byggvi sem smáum þjóni sem skríður um og malar undir kvörnum.",
+no:[
+["Snapvíst","Loki líkir Byggvi við fugl eða hund sem snapar eftir mat."],
+["Kvörn","Byggvir undir kvörnum styður túlkunina að hann sé persónugert bygg eða mjöl."]],
+c:[
+["Frazer","Kornandinn","James Frazer lýsti í The Golden Bough útbreiddri trú á kornanda sem býr í síðasta knippinu á akrinum."],
+["Grísk","Triptólemos","Þjónn Demetru sem dreifir korni um heiminn. Lítill guð í þjónustu frjósemisguðs."]]};
+
+D[45] = {t:"Byggvir kynnir sig",
+s:"Byggvir svarar: „Byggvir heiti ég, en öll goð og menn kalla mig bráðan (fljótan, kappsfullan). Því er ég hér hróðugur, að synir Hropts (Óðins) drekka allir öl saman.“ Byggvir er stoltur af hlutverki sínu: án hans væri ekkert öl.",
+no:[
+["Hroptur","Hroptur er heiti Óðins (Völuspá 62: „Hrofts sigtoftir“)."],
+["Öl og helgi","Öl var drukkið við blót og veislur. Ölgerð var helgur hluti samfélagsins (Hákonar saga góða 14)."]],
+c:[
+["Mesópótamísk","Ninkasi","Sálmurinn til Ninkasi lýsir bjórgerð skref fyrir skref sem helgu verki."],
+["Indversk","Soma","Soma er bæði helgur drykkur og guð. Allir guðir koma saman til að drekka hann við fórnina."],
+["Grísk","Díónýsos","Vínguðinn sameinar menn í drykkju."]]};
+
+D[46] = {t:"Þegi þú, Byggvir",
+s:"Loki svarar: „Þegi þú, Byggvir, þú kunnir aldrei að skipta mat milli manna. Og í fletjastrái (hálmi á gólfi) mátti ekki finna þig þegar menn börðust.“ Loki sakar Byggvi um að vera nískur þjónn og hugleysingi sem felur sig í hálminum.",
+no:[
+["Fletjastrá","Hálmur á gólfum skála var notaður sem rúmföt og gólfdúkur."],
+["Hávamál 58","„Ár skal rísa, sá er annars vill fé eða fjör hafa.“ Hávamál lýsa skyldum manna í samfélagi."]],
+c:[
+["Indversk","Agni deilir fórninni","Eldguðinn Agni ber og deilir fórnum milli guðanna. Að deila mat rétt er helgt hlutverk."],
+["Grísk","Ganýmedes og Hebe","Byrlarar guðanna þjóna þeim víni og ódáinsmat."]]};
+
+D[47] = {t:"Heimdallur áminnir",
+s:"Heimdallur segir: „Ölvaður ertu, Loki, svo að þú ert örviti. Hví lætur þú ekki af, Loki? Því ofdrykkja veldur hverjum manni að hann gætir ekki mælgi sinnar.“ Heimdallur skýrir hegðun Loka með drykkju.",
+no:[
+["Hávamál 11–14","„Ölr ek varð, varð ofrölvi at ins fróða Fjalars.“ Óminnishegri svífur yfir ölinu og stelur geði manna."],
+["Gylfaginning 27","Heimdallur er vörður goðanna og situr við Bifröst. Hann þarf minni svefn en fugl."]],
+c:[
+["Indversk","Shukra bannar vín","Í Mahabharata (Adi Parva) drekkur spekingurinn Shukra óafvitandi ösku Kacha blandaða víni. Hann bannar síðan bramínum að drekka vín."],
+["Grísk","Hófdrykkja","Xenofanes og Platón (Samdrykkjan) lýsa hófdrykkju sem dyggð í veislum."],
+["Biblíuleg","Drykkja Nóa","Nói drekkur sig fullan og liggur nakinn. Það leiðir til bölvunar yfir Kanaan (1. Mós. 9)."]]};
+
+D[48] = {t:"Þegi þú, Heimdallur",
+s:"Loki svarar: „Þegi þú, Heimdallur, þér var í árdaga hið ljóta líf lagt: með aurgu (blautu) baki muntu ætíð vera og vaka sem vörður goða.“ Loki hæðist að varðmannshlutverki Heimdallar: hann stendur úti í óveðri og fær aldrei að njóta veislunnar.",
+no:[
+["Gylfaginning 27","Heimdallur býr á Himinbjörgum við Bifröst og gætir brúarinnar fyrir bergrisum. Hann sér hundrað rasta jafnt nótt sem dag og heyrir gras gróa."],
+["Völuspá 27 og 46","Hljóð Heimdallar er falið undir Yggdrasli. Hann blæs í Gjallarhorn í ragnarökum."],
+["Húsdrápa og Gylfaginning 51","Heimdallur og Loki berjast um Brísingamen. Í ragnarökum verða þeir hvor annars banar."]],
+c:[
+["Grísk","Argos Panoptes","Hundraðeygði risinn Argos sefur aldrei og gætir kýrinnar Íó fyrir Heru. Hermes, bragðarefur guðanna, svæfir hann og drepur. Varðmaður drepinn af bragðaref, eins og Heimdallur og Loki."],
+["Mesópótamísk","Húmbaba","Húmbaba gætir sedrusskógarins fyrir guðina í Gilgameskviðu."]]};
+
+D[49] = {t:"Skaði spáir",
+s:"Skaði segir: „Létt er þér, Loki, en ekki muntu lengi leika lausum hala, því goðin munu binda þig á hjörvi (sverði eða kletti) með görnum hins hrímkalda sonar þíns.“ Skaði spáir nákvæmlega fyrir um refsingu Loka.",
+no:[
+["Gylfaginning 23","Skaði er dóttir Þjassa jötuns. Hún kom vopnuð til Ásgarðs að hefna föður síns og fékk að velja sér mann af fótum. Hún valdi Njörð og hélt að hann væri Baldur."],
+["Niðurlag og Gylfaginning 50","Loki er bundinn með þörmum sonar síns. Skaði festir eiturorm yfir höfði hans."],
+["Gylfaginning 23","Skaði fer á skíðum og veiðir með boga. Hún er kölluð öndurdís."]],
+c:[
+["Grísk","Prómeþeifur bundinn","Prómeþeifur er hlekkjaður á klett."],
+["Grísk","Artemis","Artemis er veiðigyðja fjallanna, ein og sjálfstæð eins og Skaði."],
+["Grísk","Atalanta","Veiðikonan Atalanta keppir við karla í hlaupi og veiðum."]]};
+
+D[50] = {t:"Fyrstur að fjörlagi",
+s:"Loki svarar: „Þótt goðin bindi mig á hjörvi með görnum hins hrímkalda sonar, þá var ég fyrstur og fremstur að fjörlagi (drápi) þegar við tókum Þjassa.“ Loki gortar af því að hafa átt mestan þátt í drápi föður Skaða.",
+no:[
+["Skáldskaparmál 1–2 og Haustlöng","Þjassi í arnarham neyddi Loka til að lokka Iðunni út úr Ásgarði. Goðin eltust án eplanna og neyddu Loka til að sækja hana. Hann fór í valsham, breytti Iðunni í hnetu og flaug með hana. Æsir kveiktu eld á borgarveggnum þegar Þjassi elti og drápu hann."],
+["Augu Þjassa","Í bætur fyrir föður sinn fékk Skaði að velja sér mann, og Óðinn kastaði augum Þjassa upp á himininn þar sem þau urðu að stjörnum (Hárbarðsljóð 19, Skáldskaparmál)."]],
+c:[
+["Indversk","Garuda og amrita","Fuglinn Garuda stelur amrita, ódáinsdrykk guðanna. Indra eltir hann (Mahabharata, Adi Parva). Í Rigveda 4.26–27 sækir fálki soma frá himni. Ránfugl og fæða ódauðleikans."],
+["Grísk","Ganýmedes og örninn","Seifur í arnarlíki rænir Ganýmedesi og gerir hann að byrlara guðanna."]]};
+
+D[51] = {t:"Köld ráð",
+s:"Skaði svarar: „Þótt þú værir fyrstur og fremstur að fjörlagi þegar þið tókuð Þjassa, munu þér ætíð koma köld ráð frá véum mínum og völlum.“ Skaði lofar Loka eilífri óvild.",
+no:[
+["Örnefni","Vé Skaða eru staðir þar sem hún var dýrkuð. Örnefni eins og Skadevi í Svíþjóð hafa verið tengd henni."],
+["Gylfaginning 23","Skaði býr á Þrymheimi á fjöllum, sem faðir hennar átti."]],
+c:[
+["Grísk","Reiði Artemisar","Artemis breytir Aktaion í hjört og lætur hunda hans rífa hann í sundur fyrir að hafa séð hana nakta."],
+["Grísk","Reiði Demetru","Demetra heldur gróðri frá jörðinni í reiði sinni yfir ráni Persefónu."]]};
+
+D[52] = {t:"Á beð Skaða",
+s:"Loki svarar: „Léttari í máli varstu við son Laufeyjar þegar þú bauðst mér á beð þinn. Slíks verður að geta ef við eigum að telja vömm okkar til fulls.“ Loki segist hafa sofið hjá Skaða. Sagan er hvergi annars staðar sögð.",
+no:[
+["Laufey","Laufey (eða Nál) er móðir Loka (Gylfaginning 33). Loki er því oft kallaður „Laufeyjarson“."],
+["Skáldskaparmál 1","Skaði krafðist þess að goðin kæmu henni til að hlæja. Loki batt geitarskegg við kynfæri sín og þau toguðust á þar til Skaði hló. Kann að vera undirrót ásökunarinnar."]],
+c:[
+["Grísk","Baubo og Demetra","Í Hómerssálmi til Demetru kemur þjónustukonan Íambe syrgjandi gyðjunni til að hlæja með grófu gríni. Síðari heimildir segja að Baubo hafi berað sig. Hlátur sem rýfur sorg gyðju, eins og Loki fær Skaða til að hlæja."],
+["Japönsk","Ame-no-Uzume","Gyðjan Ame-no-Uzume dansar og berar sig fyrir utan hellinn þar sem sólgyðjan felur sig. Hlátur guðanna lokkar Amaterasu út."]]};
+
+D[53] = {t:"Sif býður mjöð",
+s:"Þá gengur Sif fram og byrlar Loka mjöð í hrímkálki (ísköldum bikar) og segir: „Heill sért þú nú, Loki, og tak við hrímkálki fullum forns mjaðar, frekar en að þú látir hana eina, meðal ásasona, vera vammlausa.“ Sif reynir að kaupa sér frið með drykk.",
+no:[
+["Skáldskaparmál 35","Loki klippti allt hár af Sif. Þór neyddi hann til að fá syni Ívalda til að smíða henni hár úr gulli, sem óx eins og annað hár."],
+["Hárbarðsljóð 48","Hárbarður (Óðinn) segir Þór að Sif eigi friðil heima."],
+["Sif og sifjar","Nafnið Sif er skylt orðinu sifjar (tengdir). Gullið hár hennar hefur verið túlkað sem kornakrar."]],
+c:[
+["Grísk","Demetra","Gyðja kornsins og akranna með gullið hár."],
+["Indversk","Sita","Sita, kona Rama, fannst í plógfari og nafn hennar merkir „plógfar“. Jarðargyðja tengd akri."],
+["Grísk","Hebe byrlar","Hebe, gyðja æskunnar, byrlar guðunum ódáinsdrykk."]]};
+
+D[54] = {t:"Ein þú værir",
+s:"Loki tekur við horninu og drekkur. Síðan segir hann: „Ein værir þú ef svo væri, vör og trú manni þínum. Einn veit ég, svo að ég þykist vita, hór einnig af Hlórriða (Þór), og það var hinn lævísi Loki.“ Loki drekkur hennar mjöð og nefnir sig sjálfan sem friðil hennar.",
+no:[
+["Hlórriði","Hlórriði er heiti Þórs, líklega „sá sem ríður með gný“."],
+["Hárbarðsljóð 48","Sama ásökun um friðil Sifjar."],
+["Skáldskaparmál 35","Það að Loki gat komist að Sif til að klippa hár hennar hefur verið túlkað sem vísbending um náin kynni."]],
+c:[
+["Grísk","Ares, Afródíta og Hefaistos","Ares og Afródíta eiga í ástarsambandi á heimili Hefaistosar, eiginmanns hennar (Ódysseifskviða 8)."],
+["Indversk","Indra og Ahalya","Indra tekur á sig líki spekingsins Gautama og liggur með konu hans, Ahalyu. Gautama kemur að og bölvar þeim báðum (Ramayana, Bala Kanda)."]]};
+
+D[55] = {t:"Fjöll öll skjálfa",
+s:"Beyla, þjónustukona Freys, segir: „Fjöll öll skjálfa, ég hygg að Hlórriði sé á för heiman. Hann ræður ró þeim sem rægir hér öll goð og menn.“ Beyla heyrir Þór nálgast. Endalok níðsins eru í nánd.",
+no:[
+["Þrymskviða 21","Þegar Þór ekur: „Björg brotnuðu, brann jörð loga.“"],
+["Haustlöng","Þjóðólfur úr Hvini lýsir ferð Þórs til Hrungnis: jörðin skelfur og hagl fellur."],
+["Austurvegur","Í formálanum er sagt að Þór sé í austurvegi. Nú kemur hann heim."]],
+c:[
+["Grísk","Seifur skekur Ólympos","Þegar Seifur kinkar kolli skelfur Ólympos (Ilíonskviða 1.528–530)."],
+["Indversk","Indra","Þegar Indra kemur með eldinguna skelfast himinn og jörð (Rigveda 2.12)."],
+["Slavnesk","Perun","Þrumuguðinn Perun ekur um himininn og skekur fjöllin."]]};
+
+D[56] = {t:"Þegi þú, Beyla",
+s:"Loki svarar: „Þegi þú, Beyla, þú ert kona Byggvis og meini mjög blandin. Ekki kom meiri ókind meðal ásasona. Þú ert öll, deigja (mjólkurþerna), dritin.“ Síðasta „Þegi þú“ Loka áður en Þór kemur er gróft níð um þjónustukonu.",
+no:[
+["Deigja","Deigja var vinnukona sem sá um mjólk og deig. Orðið er skylt deig."],
+["Beyla","Nafnið hefur verið tengt baun, kú (baula) eða bý (býfluga). Hún og Byggvir kunna að vera persónugerðir frjósemi og matar."]],
+c:[
+["Grísk","Íambe","Þjónustukonan Íambe kemur Demetru til að hlæja með grófu gríni. Íambos, bragarhátturinn sem notaður var í háðkvæðum, er sagður dreginn af nafni hennar."],
+["Grísk","Ambáttir í Ódysseifskviðu","Melanþó, ambátt Penelópu, er sögð ósvífin og hlýtur grimmilegan dauða."]]};
+D[57] = {t:"Þór kemur",
+s:"Þá kemur Þór og segir: „Þegi þú, rög vættur, þinn þrúðhamar, Mjöllnir, skal taka af þér málið. Herðaklett (höfuðið) drep ég af hálsi þér, og verður þá fjörvi þínu lokið.“ Í fyrsta sinn mætir Loki einhverjum sem getur stöðvað hann. Þór kemur utan frá og er ekki bundinn af griðunum á sama hátt og hin goðin.",
+no:[
+["Skáldskaparmál 35","Mjöllnir var smíðaður af dvergunum Brokki og Sindra eftir veðmál við Loka. Loki tapaði og Brokkur saumaði saman varir hans. Það er kaldhæðið að Mjöllnir skuli nú eiga að „taka málið“ af Loka."],
+["Stef Þórs","„Þegi þú, rög vættr, þér skal minn þrúðhamarr, Mjöllnir, mál fyrnema“ er endurtekið fjórum sinnum (57., 59., 61. og 63. erindi), eins og „Þegi þú“ Loka áður."],
+["Gylfaginning 21","Þór er sterkastur allra goða og manna. Hann á Mjölni, megingjarðir og járnglófa."]],
+c:[
+["Grísk","Ódysseifur slær Þersítes","Ódysseifur slær Þersítes með veldissprotanum til að þagga niður í honum, og herinn hlær (Ilíonskviða 2.265–277). Níðingurinn er þaggaður með valdi."],
+["Indversk","Indra og vajra","Þrumuguðinn Indra ber eldingarvopnið vajra, sem dvergsmiðurinn Tvashtr smíðaði."],
+["Hittítísk","Teshub","Stormguð Hittíta ber hamar eða öxi og eldingu."]]};
+
+D[58] = {t:"Jarðar burr",
+s:"Loki svarar: „Jarðar sonur er nú hér kominn; hví þrasar þú svo, Þór? En þá þorir þú ekki þegar þú skalt berjast við úlfinn og hann gleypir allan Sigföður (Óðin).“ Loki minnir Þór á að hann muni ekki geta bjargað Óðni í ragnarökum.",
+no:[
+["Völuspá 53–56","Óðinn fellur fyrir úlfinum, og Þór berst við Miðgarðsorm. Þór getur ekki hjálpað föður sínum."],
+["Gylfaginning 51","Þór getur ekki komið Óðni til hjálpar því hann hefur fullt fang við Miðgarðsorm."],
+["Jörð","Jörð (Hlóðyn, Fjörgyn) er móðir Þórs (Gylfaginning 9)."]],
+c:[
+["Grísk","Antaios","Antaios, sonur Gaiu (jarðar), fékk styrk sinn frá jörðinni. Herakles lyfti honum upp og kæfði hann."],
+["Indversk","Mangala","Mangala (Mars) er sonur Bhumi, jarðarinnar, og guð stríðs."]]};
+
+D[59] = {t:"Upp í austurveg",
+s:"Þór svarar með stefinu og hótar: „Upp kasta ég þér og á austurvegu, svo að enginn sér þig síðan.“ Þór hótar að kasta Loka burt úr heimi goðanna.",
+no:[
+["Austurvegur","Austurvegur er Jötunheimur, þangað sem Þór fer að berja tröll. Að kasta Loka þangað væri að senda hann til jötna, ættar hans."],
+["Gylfaginning 42","Þór kastar Mjölni á eftir jötninum sem byggði borgina."]],
+c:[
+["Grísk","Ate kastað úr Ólympos","Seifur greip Ate í hárið og kastaði henni af himni niður á jörð (Ilíonskviða 19.126–131). Ógæfugyðjan sem spillti dómgreind guða var rekin burt fyrir fullt og allt."],
+["Grísk","Hefaistos kastað","Seifur kastaði Hefaistosi af Ólympos, og hann féll í heilan dag þar til hann lenti á Lemnos (Ilíonskviða 1.590–594)."],
+["Biblíuleg","Fall Lúsífers","„Hvernig ertu af himni hrapaður, þú árstjarna“ (Jesaja 14:12). Opinberunarbókin 12:9: drekanum er kastað niður til jarðar."]]};
+
+D[60] = {t:"Í hanskaþumli",
+s:"Loki svarar: „Af austurförum þínum skaltu aldrei segja mönnum, síðan þú hnipraðir þig í þumlungi hanskans, einheri, og þóttist þá ekki vera Þór.“ Loki minnir Þór á niðurlægingu hans hjá Skrými, þegar hann svaf í hanska jötunsins án þess að vita það.",
+no:[
+["Gylfaginning 45","Þór, Loki og Þjálfi fara til Útgarða-Loka. Þeir sofa í húsi sem reynist vera hanski risans Skrýmis, og þumallinn er hliðarherbergi."],
+["Hárbarðsljóð 26","Hárbarður hæðist að Þór á sama hátt: „Í hanzka hnúkðir.“"],
+["Einheri","Kaldhæðni: einherjar eru hetjur Valhallar, en Þór hnipraði sig eins og hræddur maður."]],
+c:[
+["Grísk","Ódysseifur undir hrútnum","Ódysseifur sleppur úr helli Kýklópsins Pólýfemosar með því að hanga undir hrút."],
+["Indversk","Hanúman í munni Surasa","Hanúman minnkar sig og fer inn í munn sæskrímslisins Surasa og út aftur (Ramayana, Sundara Kanda). Hetja sem verður smá frammi fyrir risa."]]};
+
+D[61] = {t:"Hrungnis bani",
+s:"Þór svarar með stefinu og hótar: „Með hægri hendi drep ég þig með Hrungnis bana, svo að hvert bein þitt brotnar.“ Hrungnis bani er Mjöllnir.",
+no:[
+["Skáldskaparmál 17","Þór berst við Hrungni, sterkasta jötun, sem hafði steinhjarta og steinskjöld. Mjöllnir mölvar steinhein Hrungnis, en brot úr því festist í höfði Þórs."],
+["Haustlöng og Hárbarðsljóð 14–15","Skáld lýsa einvígi Þórs og Hrungnis."],
+["Gróa","Völvan Gróa reynir að galdra steinbrotið úr höfði Þórs, en Þór truflar hana með sögu af manni hennar, Aurvandli."]],
+c:[
+["Indversk","Indra og Vala","Indra mölvar klettinn Vala með vajra og leysir kýrnar sem þar voru lokaðar inni (Rigveda)."],
+["Grísk","Seifur og Týfon","Seifur sigrar Týfon með eldingum sínum."],
+["Hittítísk","Teshub og Ullikummi","Stormguðinn Teshub berst við steinrisann Ullikummi, sem vex upp úr hafinu."]]};
+
+D[62] = {t:"Ólar Skrýmis",
+s:"Loki svarar: „Lifa ætla ég mér langan aldur þótt þú hótir mér hamri. Harðar þóttu þér ólar Skrýmis, og máttir þú þá ekki ná nesti og svaltst þá hungri heill.“ Loki rifjar upp aðra niðurlægingu: Þór gat ekki opnað nestisbagga Skrýmis.",
+no:[
+["Gylfaginning 45","Skrýmir býður Þór að bera nesti þeirra. Hann bindur baggann svo að Þór getur ekki leyst hnútana og verður að fara svangur að sofa. Síðar kemur í ljós að Útgarða-Loki hafði bundið baggann með járni."],
+["Lifa langan aldur","Loki veit að hann mun lifa til ragnaraka, því svo segir spáin."]],
+c:[
+["Grísk","Tantalos","Tantalos stendur í vatni sem hverfur þegar hann ætlar að drekka, undir ávöxtum sem hann nær ekki til. Matur sem er nærri en óaðgengilegur."],
+["Grísk","Herakles og Atlas","Atlas blekkir Herakles til að halda himninum. Herakles snýr á hann aftur. Hetjan blekkt af risa."]]};
+
+D[63] = {t:"Fyrir neðan nágrindur",
+s:"Þór svarar með stefinu í síðasta sinn: „Hrungnis bani mun senda þig til Heljar, fyrir neðan nágrindur.“ Nágrindur eru grindur hinna dauðu, hlið Heljar. Þór hótar Loka dauða.",
+no:[
+["Gylfaginning 49","Hermóður stekkur á Sleipni yfir Helgrindur á leið til Baldurs."],
+["Skírnismál 35","Skírnir hótar Gerði því að hún skuli búa „fyr nágrindr neðan“ hjá hrímþursum."],
+["Gylfaginning 34","Hel ræður níu heimum og hefur Éljúðni að sal."]],
+c:[
+["Grísk","Hlið Hadesar","Akkilles segir: „Hataðri en hlið Hadesar er mér sá maður sem leynir einu í brjósti en segir annað“ (Ilíonskviða 9.312–313)."],
+["Mesópótamísk","Sjö hlið undirheima","Inanna fer í gegnum sjö hlið á leið sinni niður til Ereshkigal og afklæðist við hvert þeirra."]]};
+
+D[64] = {t:"Ég fer út",
+s:"Loki svarar: „Ég kvað fyrir ásum og ásasonum það sem hugurinn hvatti mig til. En fyrir þér einum mun ég út ganga, því ég veit að þú vegur.“ Loki viðurkennir að Þór sé sá eini sem hann óttast. Önnur goð eru bundin af griðum og orðum; Þór er bundinn af engu nema afli sínu.",
+no:[
+["Þór og griðin","Þór var ekki í höllinni þegar griðin voru sett og kemur utan frá. Hann er einnig sá sem drap jötninn þótt eiðar hefðu verið gerðir (Völuspá 26: „Þórr einn þar vá“)."],
+["Gylfaginning 21","Þór er sterkastur goða. Í mörgum sögum stöðvar hann jötna og óvini með afli."]],
+c:[
+["Indversk","Krishna og Shishupala","Þegar Shishupala hefur móðgað Krishna hundrað sinnum heggur Krishna af honum höfuðið með kringlunni Sudarshana. Níðið endar þegar mælirinn er fullur."],
+["Grísk","Þersítes þagnar","Eftir högg Ódysseifs situr Þersítes grátandi og hræddur."]]};
+
+D[65] = {t:"Bölvun Loka",
+s:"Áður en Loki fer bölvar hann Ægi: „Öl gerðir þú, Ægir, en aldrei munt þú síðan veislu gera. Allar eigur þínar, sem hér inni eru, leiki logi yfir og brenni þér á baki.“ Síðustu orð Loka eru bölvun um eld. Hún vísar fram til ragnaraka, þegar eldur Surts brennir allan heiminn.",
+no:[
+["Völuspá 52 og 57","„Surtr ferr sunnan með sviga lævi“ og „leikr hár hiti við himin sjalfan“. Eldurinn sem Loki boðar Ægi er sá sem eyðir heiminum."],
+["Völuspá 51","Í ragnarökum stýrir Loki skipinu Naglfara og fer fyrir her Múspells."],
+["Ægir og eldur","Höll Ægis var lýst með gulli. Gull er „eldr Ægis“ (Skáldskaparmál 33). Loki bölvar staðnum með því sem lýsti hann."]],
+c:[
+["Indversk","Fórn Daksha lögð í rúst","Eftir dauða Sati sendir Shiva ófreskjuna Virabhadra, sem leggur fórn Daksha í rúst og heggur höfuðið af honum."],
+["Írsk","Togail Bruidne Dá Derga","Höll Dá Derga er brennd og umsetin í írsku sögunni um dauða Conaire konungs. Veisluhöll í eldi."],
+["Grísk","Eris","Gullepli Eris leiðir að lokum til þess að Trója brennur."]]};
+
+D[66] = {t:"Loki bundinn",
+s:"Eftir þetta faldi Loki sig í Fránangursfossi í laxlíki, og þar tóku æsir hann. Hann var bundinn með þörmum Nara sonar síns, en Narfi sonur hans varð að vargi. Skaði tók eiturorm og festi upp yfir andlit Loka, og eitur draup úr honum. Sigyn kona Loka sat þar og hélt mundlaug undir eitrinu. Þegar laugin var full bar hún eitrið út, og á meðan draup eitrið á Loka. Þá kipptist hann svo hart við að öll jörð skalf. Það eru nú kallaðir landskjálftar. Spár Freys (41) og Skaða (49) rætast.",
+no:[
+["Gylfaginning 50","Snorri segir söguna nánar: Loki byggði sér hús á fjalli með fjórum dyrum. Hann fann upp netið, og goðin veiddu hann með því. Þór greip um sporð laxins, og þess vegna er laxinn mjór aftan."],
+["Völuspá 34–35","„Þá kná Váli vígbönd snúa“ og „Haft sá hon liggja und Hveralundi“. Sigyn situr hjá Loka."],
+["Nari og Narfi","Heimildum ber ekki saman. Í Gylfaginningu verður Váli Lokason að vargi og rífur Narfa bróður sinn, og Loki er bundinn með þörmum Narfa. Hér er Loki bundinn með þörmum Nara, en Narfi verður vargur."],
+["Baldrs draumar 14","Völvan segir að enginn muni vitja hennar „unz lauss Loki líðr ór böndum“."]],
+c:[
+["Grísk","Týfon undir Etnu","Seifur grefur Týfon undir Etnu, og umbrot hans valda eldgosum og jarðskjálftum. Sama skýring á jarðskjálftum."],
+["Grísk","Próteus","Sjávarguðinn Próteus breytir sér í ljón, dreka, vatn og tré, en Menelás heldur honum (Ódysseifskviða 4). Hamskiptingur sem er gripinn og bundinn."],
+["Persnesk","Azhi Dahaka","Drekinn Zahhak er hlekkjaður í helli undir Damavand-fjalli þar til endalok heimsins koma."],
+["Biblíuleg","Satan bundinn","Satan er bundinn í undirdjúpinu í þúsund ár og síðan leystur (Opinberunarbókin 20:1–3)."],
+["Indversk","Bali bundinn","Vishnu (Vamana) bindur asúrakonunginn Bali með snörum Varuna og sendir hann niður í undirheima."]]};
+const G = [
+["einugi","einugi","Engu. „Einugi feti framarr“ = ekki einu feti lengra."],
+["feti","fet","Fet, skref."],
+["ölmálum","ölmál","Samræður við drykkju."],
+["sigtíva","sigtívar","Sigurgoð, goðin."],
+["vígrisni","vígrisni","Vígfimi, hreysti."],
+["mangi","mangi","Enginn maður."],
+["sumbl sumbli","sumbl","Veisla, drykkja."],
+["gambansumbl","gambansumbl","Mikil veisla eða helgidrykkja. „Gamban-“ merkir eitthvað mikið eða máttugt."],
+["iöll","jöll","Háð, rógur."],
+["áfo","áfa","Deila, illindi."],
+["blend blendom","blanda","Blanda."],
+["meini","mein","Skaði, eitur, böl."],
+["hrópi","hróp","Níð, last."],
+["rógi","rógr","Rógur."],
+["eyss","ausa","Ausa."],
+["holl","hollr","Velviljaður, tryggur."],
+["regin","regin","Goðin, ráðandi öfl."],
+["þerra","þerra","Þurrka."],
+["sáryrðom","sáryrði","Særandi orð."],
+["sakaz","sakask","Deila, saka hvor annan."],
+["auðigr","auðigr","Auðugur, ríkur."],
+["andsvörum","andsvar","Svar."],
+["mart","mart","Margt."],
+["loptr","Loptr","Heiti Loka."],
+["lopzki","Lopts-ki","Loftur ekki. Viðskeytið -ki er neitun."],
+["miaðar miöð","mjöðr","Mjöður, hunangsvín."],
+["þegið","þegja","Þegja."],
+["þrungin","þrunginn","Þrútinn, fullur (af reiði eða drambi)."],
+["megoð","megoð","Megið."],
+["sessa","sessi","Sæti."],
+["heitið","heita","Hér: skipa, reka."],
+["heðan","heðan","Héðan."],
+["alda","alda","Eignarfall fleirtölu af öld: „manna“."],
+["mantu","mantu","Manstu."],
+["árdaga","árdagar","Fyrstu dagar heimsins."],
+["bergia","bergja","Drekka, smakka."],
+["okr","okkr","Okkur."],
+["rístu","rístu","Rístu, stattu upp."],
+["lastastöfom lastastöfum","lastastafir","Níð, ljót orð."],
+["skenkti","skenkja","Hella í, skenkja."],
+["heilir heilar heill","heill","Heill, sæll. „Heilir æsir“ er kveðja og skál."],
+["ásynior","ásynja","Gyðja af ætt ása."],
+["ginnheilög","ginnheilagr","Afar heilagur."],
+["bekkiom","bekkr","Bekkur."],
+["mar","marr","Hestur."],
+["mæki","mækir","Sverð."],
+["fiár","fé","Fé, eign."],
+["baugi","baugr","Hringur, armbaugur."],
+["síþr síðr","síðr","Síður."],
+["öfund","öfund","Öfund, óvild."],
+["gialdir","gjalda","Gjalda."],
+["gremðu","gremja","Reita til reiði."],
+["iós","jór","Hestur."],
+["armbauga","armbaugr","Armhringur."],
+["víg","víg","Bardagi."],
+["varastr","varr","Varkár."],
+["skiarrastr","skjarr","Styggur, hræddur."],
+["værak","værak","Væri ég."],
+["emk","emk","Er ég."],
+["bæra","bæra","Bæri."],
+["sniallr","snjallr","Djarfur, snjall (í orðum)."],
+["skalatu","skalatu","Skalt þú ekki."],
+["bekkskrautuðr","bekkskrautuðr","Bekkjarskraut: sá sem situr til skrauts en gerir ekkert."],
+["vreiðr vreiðir vreiðom","vreiðr","Reiður."],
+["hyggz","hyggjask","Hugsa sig um."],
+["vætr","vætr","Ekkert."],
+["hvatr","hvatr","Hraustur, djarfur."],
+["sifiar","sifjar","Tengdir, ætt."],
+["duga","duga","Hér: vegna, sakir."],
+["óskmaga","óskmegir","Kjörsynir, ættleiddir eða fóstraðir."],
+["kveðira","kveðira","Kveði ekki."],
+["vergiarnasta vergiörn","vergjarn","Sólgin í karlmenn."],
+["itrþvegna","itrþveginn","Fagurþveginn."],
+["bróðurbana","bróðurbani","Banamaður bróður."],
+["kveðka","kveðka","Kveð ekki."],
+["biórreifan","bjórreifr","Ölvaður og glaður."],
+["vilkat","vilkat","Vil ekki."],
+["vegiz","vegask","Vegast, berjast."],
+["leikinn","leikinn","Blekktur eða ölvaður; einnig glettinn."],
+["fiörgvall","fjörgvall","Óljóst orð. Ein túlkun: „allt lifandi“ („elskar allt lifandi“); önnur leiðrétt: „örlögin ýta honum áfram“."],
+["friá","frjá","Elska."],
+["glapði","glepja","Tæla."],
+["geði","geð","Hugur."],
+["sigli","sigli","Hálsmen, skartgripur."],
+["ærr","ærr","Vitlaus, óður."],
+["örviti","örviti","Vitlaus, vitstola."],
+["gremi","gremi","Gremja, reiði."],
+["iafngörla","jafngörla","Jafnglöggt."],
+["deila","deila","Skipta, úthluta. „Deila víg“ = skipta sigri."],
+["slævorom","slævr","Sljór, lakari."],
+["mólkandi","mjólka","Mjólka."],
+["args","argr","Argur: karlmaður sem tekur á sig kvenhlutverk; hörð móðgun."],
+["aðal","aðal","Eðli."],
+["síða","síða","Fremja seið."],
+["vétt","vétt","Líklega trumba eða skrín."],
+["völor","völva","Spákona."],
+["vitka","vitki","Galdramaður."],
+["verþjóð","verþjóð","Mannfólk."],
+["ykrom","ykkarr","Ykkar."],
+["seggiom","seggr","Maður."],
+["drýgðuð","drýgja","Fremja, gera."],
+["firriz","firrask","Fjarlægjast, forðast."],
+["rök","rök","Atburðir, saga. „Forn rök“ = fornir atburðir."],
+["fiörgyns","Fjörgynn","Faðir Friggjar."],
+["mær","mær","Mey, dóttir."],
+["viðris","Viðrir","Heiti Óðins sem veðurguðs."],
+["kvæn","kván","Kona, eiginkona."],
+["baðmn","baðmr","Faðmur."],
+["bur","burr","Sonur."],
+["meinstafi","meinstafir","Illvirki."],
+["réd","ráða","Ráða, valda."],
+["sérat","sérat","Sérð ekki."],
+["leiðstafi","leiðstafir","Ljót verk, illvirki."],
+["siálfgi","sjálfgi","Sjálf ekki."],
+["fullgerva","fullgerva","Fullvel."],
+["vamma vömmin","vömm","Löstur, skömm."],
+["hór","hórr","Friðill, ástmaður."],
+["flá","flár","Fláráður, svikull."],
+["ógott","ógott","Illt."],
+["gala","gala","Kveða, gala (oft um galdur)."],
+["hryggr","hryggr","Hryggur, dapur."],
+["fordæða","fordæða","Galdrakona sem beitir illum galdri."],
+["siðo","siðu","Komu að (stóðu að)."],
+["frata","frata","Leysa vind."],
+["válitit","válítit","Lítilfjörlegt."],
+["varðir","varðir","Konur (skáldamál)."],
+["vers","verr","Maður, eiginmaður."],
+["hós","hórs","Friðils."],
+["hvárs","hvárs","Annars hvors."],
+["ragr rög","ragr","Ragur, argur: hörð móðgun um kvenleika."],
+["gíls gísl","gísl","Gísl."],
+["hlandtrogi","hlandtrog","Trog undir hland."],
+["migo","míga","Míga."],
+["líkn","líkn","Huggun, miskunn."],
+["iaðarr","jaðarr","Höfðingi, vernd."],
+["óno","vánu","Vonum. „Era óno verr“ = ekki verri en von var."],
+["ballriða","ballriði","Djarfur reiðmaður."],
+["höptom","höpt","Fjötrar."],
+["tilt","tilt","Sátt. „Bera tilt með tveim“ = sætta tvo."],
+["vitnis","Hróðrsvitnir","Heiti Fenrisúlfs."],
+["þrá","þrá","Harmur, raun."],
+["ragnarökrs","ragnarøkkr","Rökkur goðanna, heimsendir."],
+["öln","alin","Alin af vaðmáli, notuð sem greiðsla."],
+["penning","penningr","Peningur."],
+["vanréttis","vanrétti","Óréttur."],
+["vesall","vesall","Aumingi."],
+["árósi","áróss","Árós."],
+["riúfaz","rjúfask","Rofna, farast."],
+["bölvasmiðr","bölvasmiðr","Smiður bölsins."],
+["veizta","veizta","Veist ekki."],
+["öðli","öðli","Ætt, óðal."],
+["setr","setr","Setur, bústaður."],
+["sælikt","sælikt","Sælt."],
+["mergi","mergr","Mergur."],
+["mölða","mölða","Myndi mala."],
+["meinkráko","meinkráka","Ill kráka."],
+["lemða","lemða","Myndi lemja."],
+["liðo","liðr","Liður, liðamót."],
+["löggra","löggra","Óljóst: dilla sér, dingla."],
+["snapvíst","snapvíss","Snuðrandi."],
+["klaka","klaka","Kvaka, tísta."],
+["kvernom","kvern","Kvörn."],
+["bráðan","bráðr","Fljótur, ákafur."],
+["hróðugr","hróðugr","Hreykinn, stoltur."],
+["hroptz","Hroptr","Heiti Óðins."],
+["megir","megir","Synir."],
+["fletz","flet","Pallur, gólf skála."],
+["strá","strá","Hálmur."],
+["vágo","vega","Berjast."],
+["ölr","ölr","Ölvaður."],
+["lezkaðu","lezkaðu","Lætur þú ekki af."],
+["ofdrykkia","ofdrykkja","Ofdrykkja."],
+["mælgi","mælgi","Málæði."],
+["manat","manat","Man ekki, gætir ekki."],
+["aurgo","aurigr","Leirugur, blautur."],
+["hiörvi","hjörr","Sverð. Sumir telja að hér sé átt við klett eða stein."],
+["hrímkalda","hrímkaldr","Hrímkaldur, ískaldur."],
+["magar","mögr","Sonur."],
+["görnom","görn","Þarmar."],
+["hala","hali","Tagl, hali. „Leika lausum hala“ = ganga laus og óbundinn."],
+["fiörlagi","fjörlag","Dráp."],
+["þrifom þrifuð","þrífa","Grípa, taka."],
+["véom","vé","Helgistaður."],
+["vöngom","vangr","Völlur."],
+["köld","kaldr","Kaldur. „Köld ráð“ = fjandsamleg ráð."],
+["beð","beðr","Rúm."],
+["hrímkálki","hrímkálkr","Hrímkaldur bikar."],
+["vammalausa","vammlauss","Vammlaus, flekklaus."],
+["vör","varr","Varkár, trú."],
+["gröm","gramr","Hér: ströng, fráhverf."],
+["hlorriða hlórriða","Hlórriði","Heiti Þórs."],
+["lævísi","lævíss","Lævís, sviksamur."],
+["fiöll","fjall","Fjall."],
+["skiálfa","skjálfa","Skjálfa."],
+["ró","ró","Friður, kyrrð."],
+["rægir","rægja","Rægja, baktala."],
+["ókynian","ókynja","Ófreskja, ókind."],
+["deigia","deigja","Vinnukona sem sér um mjólk og deig."],
+["dritin","dritinn","Útataður í driti."],
+["vættr","vættr","Vera."],
+["þrúðhamarr","þrúðhamarr","Kraftahamar."],
+["fyrnema","fyrnema","Taka frá."],
+["herða","herðar","Herðar. „Herða klett“ = höfuðið."],
+["iarðar","Jörð","Jörð, móðir Þórs."],
+["burr","burr","Sonur."],
+["þrasir","þrasa","Þrasa, láta ófriðlega."],
+["svelgr","svelgja","Gleypa."],
+["verp","verpa","Kasta."],
+["hnúkðir","hnúka","Hnipra sig."],
+["einheri","einheri","Kappi í Valhöll; hér í háði."],
+["þóttiska","þóttiska","Þóttist ekki."],
+["hætir","hæta","Hóta."],
+["skarpar","skarpr","Harður."],
+["álar","áll","Ól, band."],
+["nesti","nesti","Nesti, matur til ferðar."],
+["svaltz","svelta","Svelta."],
+["nágrindr","nágrindr","Grindur hinna dauðu, hlið Heljar."],
+["logi","logi","Eldur."],
+["aldregi","aldregi","Aldrei."],
+["þyrstr","þyrstr","Þyrstur."],
+["fiörvi","fjör","Líf."],
+["mælti","mæla","Mæla."],
+["kóðo","kveða","Segja."],
+["ér","ér","Þér."]
+];
+
+/*GLOSS*/
+
+const GM={};G.forEach((g,i)=>g[0].split(" ").forEach(f=>GM[f]=i));
+let usedG=[];
+function gl(s){return s.split(/([\p{L}]+(?:-[\p{L}]+)*)/u).map((t,i)=>{if(i%2===0)return esc(t);const k=GM[t.toLowerCase()];if(k===undefined)return esc(t);if(!usedG.includes(k))usedG.push(k);return `<span class="gl" tabindex="0" data-g="${k}">${esc(t)}</span>`}).join("")}
+function wordList(){if(!usedG.length)return "";return `<details class="words" id="words"${wordsOpen?" open":""}><summary>Orðskýringar í erindinu (${usedG.length})</summary><dl>${usedG.map(k=>`<div><dt>${esc(G[k][1])}</dt><dd>${G[k][2]}</dd></div>`).join("")}</dl></details>`}
+let wordsOpen=false;
+const tip=document.createElement("div");tip.id="tip";tip.setAttribute("role","tooltip");tip.hidden=true;document.body.appendChild(tip);
+let tipFor=null;
+function showTip(el){const g=G[+el.dataset.g];tip.innerHTML=`<b>${esc(g[1])}</b>${g[2]}`;tip.hidden=false;
+  document.querySelectorAll(".gl.act").forEach(e=>e.classList.remove("act"));el.classList.add("act");tipFor=el;
+  const r=el.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+  let x=Math.max(8,Math.min(r.left+r.width/2-tw/2,vw-tw-8)),y=r.bottom+8;if(y+th>vh-70)y=r.top-th-8;
+  tip.style.left=x+"px";tip.style.top=Math.max(8,y)+"px"}
+function hideTip(){tip.hidden=true;if(tipFor)tipFor.classList.remove("act");tipFor=null}
+document.addEventListener("mouseover",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el&&el!==tipFor)showTip(el)});
+document.addEventListener("mouseout",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el&&!(e.relatedTarget&&el.contains(e.relatedTarget))&&document.activeElement!==el)hideTip()});
+document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("gl"))showTip(e.target)});
+document.addEventListener("focusout",e=>{if(e.target.classList&&e.target.classList.contains("gl"))hideTip()});
+document.addEventListener("click",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el){if(tipFor===el&&e.pointerType!=="mouse")hideTip();else showTip(el)}else if(!tip.contains(e.target))hideTip()});
+window.addEventListener("scroll",hideTip,{passive:true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")hideTip()},true);
+document.addEventListener("toggle",e=>{if(e.target.id==="words")wordsOpen=e.target.open},true);
+
+const PARTS=[[0,0,"Formáli"],[1,5,"Loki og Eldir"],[6,11,"Loki krefst sætis"],[12,18,"Bragi og Iðunn"],[19,24,"Gefjun og Óðinn"],[25,32,"Frigg og Freyja"],[33,42,"Njörður, Týr og Freyr"],[43,48,"Byggvir og Heimdallur"],[49,56,"Skaði, Sif og Beyla"],[57,65,"Þór kemur"],[66,66,"Niðurlag"]];
+const THEGI=[17,20,22,26,30,32,34,38,40,46,48,56];
+const THOR=[57,59,61,63];
+const LAST=66;
+const partOf=n=>PARTS.find(p=>n>=p[0]&&n<=p[1]);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const isProse=n=>!!PAGES[n].prose;
+const label=n=>n===0?"Formáli":n===LAST?"Niðurlag":n+".";
+
+let cur=-1, tab=0;
+try{const t=parseInt(localStorage.getItem("lks-tab"));if(t>=0&&t<3)tab=t}catch(e){}
+
+const rail=document.getElementById("rail");
+PARTS.forEach(p=>{
+  const d=document.createElement("div");d.className="part";d.dataset.a=p[0];
+  const tk=document.createElement("div");tk.className="ticks";
+  for(let i=p[0];i<=p[1];i++){
+    const pg=PAGES[i],b=document.createElement("button");
+    b.className="tick"+(pg.prose?" prose":pg.sp==="Loki"?" loki":"");
+    const who=pg.prose?"laust mál":pg.sp;
+    b.title=(i===0||i===LAST?label(i):i+".")+" "+D[i].t+" ("+who+")";
+    b.setAttribute("aria-label",b.title);b.dataset.n=i;b.onclick=()=>go(i);tk.appendChild(b)}
+  const l=document.createElement("span");l.className="pl";l.textContent=p[2];
+  d.append(tk,l);rail.appendChild(d);
+});
+
+function renderLines(lines){
+  let out="";
+  for(let i=0;i<lines.length;i+=2){const a=lines[i],b=lines[i+1];
+    out+=b===undefined?`<div class="ll single"><span>${gl(a)}</span></div>`:`<div class="ll"><span>${gl(a)}</span><span>${gl(b)}</span></div>`}
+  return out;
+}
+
+function renderVerse(){
+  usedG=[];hideTip();
+  const p=partOf(cur),d=D[cur],pg=PAGES[cur],v=document.getElementById("verse");
+  const range=p[0]===p[1]?"":` · ${p[0]}.–${p[1]}. erindi`;
+  if(pg.prose){
+    v.className="verse";
+    v.innerHTML=`<div class="eyebrow">${p[2]}${range} · laust mál</div>
+    <div class="numrow"><div class="num word">${label(cur)}</div></div><h2 class="vtitle">${d.t}</h2>
+    <div class="prosebox">${esc(pg.prose)}</div>`;
+  }else{
+    const L=pg.sp==="Loki";
+    v.className="verse "+(L?"is-loki":"is-god");
+    const badges=[];
+    if(THEGI.includes(cur))badges.push("„Þegi þú“ · formúla Loka");
+    if(THOR.includes(cur))badges.push("Stef Þórs · 57., 59., 61., 63.");
+    badges.push(pg.lines.length+" vísuorð");
+    v.innerHTML=`<div class="eyebrow">${p[2]}${range}</div>
+    <div class="numrow"><div class="num">${cur}.</div><div class="who"><span class="sp">${pg.sp} kvað</span><span class="to">við ${pg.to}</span></div></div>
+    <h2 class="vtitle">${d.t}</h2>
+    ${pg.lead?`<p class="lead">${esc(pg.lead)}</p>`:""}
+    <div class="lines">${renderLines(pg.lines)}</div>
+    <div class="meta">${badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>`;
+    v.insertAdjacentHTML("beforeend",wordList());
+  }
+  v.classList.remove("fade");void v.offsetWidth;v.classList.add("fade");
+}
+
+function renderPanel(){
+  const d=D[cur],P=document.getElementById("panel");
+  document.querySelectorAll(".tab").forEach((t,i)=>{t.setAttribute("aria-selected",i===tab);t.tabIndex=i===tab?0:-1});
+  document.getElementById("c1").textContent=d.no.length;
+  document.getElementById("c2").textContent=d.c.length;
+  P.setAttribute("aria-labelledby","t"+tab);
+  if(tab===0)P.innerHTML=`<p class="lead2">${d.s}</p><p class="hint">Sjá einnig: Norrænar heimildir (${d.no.length}) og Samanburð (${d.c.length}).</p>`;
+  else if(tab===1)P.innerHTML=`<ul class="items">${d.no.map(x=>`<li><span class="src">${x[0]}</span><p>${x[1]}</p></li>`).join("")}</ul>`;
+  else P.innerHTML=`<ul class="items">${d.c.map(x=>`<li><span class="src"><span class="chip">${x[0]}</span>${x[1]}</span><p>${x[2]}</p></li>`).join("")}</ul>`;
+  P.classList.remove("fade");void P.offsetWidth;P.classList.add("fade");
+}
+
+function navLabel(n){return (n===0||n===LAST?label(n):n+".")+" "+D[n].t}
+function renderNav(){
+  document.querySelectorAll(".tick").forEach(t=>t.classList.toggle("on",+t.dataset.n===cur));
+  const p=partOf(cur);
+  document.querySelectorAll(".part").forEach(e=>e.classList.toggle("cur",+e.dataset.a===p[0]));
+  const on=document.querySelector(".tick.on");if(on&&on.scrollIntoView)on.scrollIntoView({block:"nearest",inline:"nearest"});
+  document.getElementById("count").textContent=cur===0?"Formáli":cur===LAST?"Niðurlag":cur+" / 65";
+  const pv=document.getElementById("prev"),nx=document.getElementById("next");
+  pv.disabled=cur===0;nx.disabled=cur===LAST;
+  document.getElementById("prevT").textContent=cur>0?navLabel(cur-1):"";
+  document.getElementById("nextT").textContent=cur<LAST?navLabel(cur+1):"";
+  pv.setAttribute("aria-label","Fyrra erindi");nx.setAttribute("aria-label","Næsta erindi");
+}
+
+function go(n,fromHash){
+  n=Math.max(0,Math.min(LAST,n));if(n===cur)return;
+  cur=n;renderVerse();renderPanel();renderNav();
+  if(!fromHash&&location.hash!=="#s"+n){try{history.replaceState(null,"","#s"+n)}catch(e){location.hash="s"+n}}
+  if(!fromHash&&window.innerWidth<=860){const r=document.getElementById("verse").getBoundingClientRect();if(r.top<0)window.scrollTo({top:window.scrollY+r.top-12,behavior:"smooth"})}
+}
+function setTab(i){tab=i;try{localStorage.setItem("lks-tab",i)}catch(e){}renderPanel()}
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>setTab(+t.dataset.i));
+document.querySelector(".tabs").addEventListener("keydown",e=>{if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.stopPropagation();const i=(tab+(e.key==="ArrowRight"?1:2))%3;setTab(i);document.getElementById("t"+i).focus()}});
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){go(cur+1);e.preventDefault()}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){go(cur-1);e.preventDefault()}
+  else if(e.key==="1"||e.key==="2"||e.key==="3")setTab(+e.key-1);
+});
+const ab=document.getElementById("aboutBtn"),abs=document.getElementById("about");
+ab.onclick=()=>{abs.hidden=!abs.hidden;ab.setAttribute("aria-expanded",!abs.hidden)};
+
+function fromHash(){const m=/^#s(\d+)$/.exec(location.hash);return m?+m[1]:0}
+window.addEventListener("hashchange",()=>go(fromHash(),true));
+go(fromHash(),true);
+</script>
+
+</body></html>

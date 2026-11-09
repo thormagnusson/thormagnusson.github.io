@@ -15,6 +15,7 @@
   --gold:#8C6619;        /* gullnar töflur */
   --gold-soft:#E7D8AE;
   --tick:#B9C3B9;
+  --glbg:var(--gold-soft);--glfocus:var(--gold);
   --f-verse:"Alegreya", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --f-body:"Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
   --f-label:"Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
@@ -95,6 +96,20 @@ nav.bar .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justi
 .nb .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:26ch}
 .count{font:500 .9rem var(--f-label);letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 
+
+.gl{border-bottom:1px dotted var(--muted);cursor:help;border-radius:2px;transition:background .12s}
+.gl:hover,.gl.act{background:var(--glbg)}
+.gl:focus-visible{outline:2px solid var(--glfocus);outline-offset:1px}
+#tip{position:fixed;z-index:30;max-width:min(320px,calc(100vw - 16px));background:var(--ink);color:var(--bg);padding:10px 13px 11px;border-radius:6px;font:15px/1.45 var(--f-body);box-shadow:0 6px 24px rgba(0,0,0,.18);pointer-events:none}
+#tip b{display:block;font-family:var(--f-verse);font-style:italic;font-size:1.08rem;font-weight:700;margin-bottom:2px}
+.words{margin-top:16px;max-width:52ch}
+.words summary{cursor:pointer;font:500 .8rem var(--f-label);letter-spacing:.08em;color:var(--muted);padding:4px 0}
+.words summary:hover{color:var(--ink)}
+.words dl{margin:8px 0 0;display:flex;flex-direction:column;gap:8px;font-size:.95rem}
+.words dl div{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:12px;align-items:baseline}
+.words dt{font-family:var(--f-verse);font-style:italic;font-weight:700}
+.words dd{margin:0;color:var(--muted)}
+@media (max-width:520px){.words dl div{grid-template-columns:1fr;gap:0}}
 .fade{animation:fade .28s ease}
 @keyframes fade{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.fade{animation:none}.tick{transition:none}}
@@ -126,7 +141,7 @@ nav.bar .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justi
     <h2>Um kvæðið og skýringarnar</h2>
     <p>Völuspá er varðveitt í Konungsbók Eddukvæða (GKS 2365 4to, skrifuð um 1270) og Hauksbók (AM 544 4to, um 1300–1310), og Snorri Sturluson vitnar mikið í hana í Gylfaginningu. Flestir telja hana ortu um árið 1000, á tíma kristnitökunnar. Handritin tvö eru ekki samhljóða um röð og fjölda erinda, og hér er fylgt þeim texta og þeirri tölusetningu sem lagt var upp með.</p>
     <p>Hverju erindi fylgja þrjár skýringar: <b>Skýring</b> endursegir erindið á nútímamáli, <b>Norrænar heimildir</b> rekja tengsl við aðrar norrænar sagnir (Snorra-Eddu, önnur Eddukvæði, sögur og Saxo), og <b>Samanburður</b> bendir á hliðstæður í grískum, rómverskum, indverskum, persneskum, egypskum, keltneskum og öðrum goðsögum. Samanburðurinn sýnir skyldleika og samsvörun; hann fullyrðir ekki alltaf beinan skyldleika.</p>
-    <p>Örvatakkar flétta milli erinda; tölurnar 1, 2 og 3 skipta um flipa.</p>
+    <p>Undirstrikuð orð í erindunum hafa orðskýringu: bentu á orðið eða smelltu á það. Allar orðskýringar erindisins eru einnig taldar upp undir því. Örvatakkar fletta milli erinda; tölurnar 1, 2 og 3 skipta um flipa.</p>
   </section>
   <div class="rail" id="rail" aria-label="Erindi kvæðisins"></div>
 
@@ -926,6 +941,282 @@ c:[
 ["Egypsk","Apep snýr aftur","Höggormurinn er sigraður á hverri nóttu en kemur alltaf aftur; baráttan við myrkrið er eilíf."],
 ["Grísk","Kassandra","Spákonan sem sá allt fyrir en enginn trúði. Spádómsgáfan sem byrði."],
 ["Indversk","Hringrás kalpa","Hvert nýtt heimsskeið ber í sér fræ hnignunar og nýrra endaloka."]]};
+const G = [
+["hljóðs hljóð","hljóð","Þögn, athygli. „Hljóðs bið ek“ = ég bið um þögn. Í 27. erindi er „hljóð Heimdallar“ annaðhvort Gjallarhorn eða heyrn hans."],
+["kindir kindum","kind","Vera, afkvæmi, ætt. „Helgar kindir“ = heilagar verur; „ljóna kindum“ = mannkyni."],
+["mögu mögr","mögr","Sonur, afkomandi. „Mögu Heimdallar“ = afkomendur Heimdallar, mannkynið."],
+["viltu","viltu","Vilt þú."],
+["valföðr valföðrs","Valföðr","Faðir valsins, hinna föllnu: heiti Óðins."],
+["fyr","fyr","Fyrir."],
+["spjöll","spjöll","Fregnir, frásagnir, sögur."],
+["fira","firar","Menn, lifandi verur."],
+["fremst","fremst","Lengst aftur í tímann; það elsta sem völvan man."],
+["of","of","Áherslulítið smáorð sem fylgir oft sögn í kveðskap og er ekki þýtt. Getur einnig merkt „um“ eða „yfir“."],
+["ár","ár","Snemma, í árdaga. „Ár var alda“ = í upphafi tímanna; „ár of borna“ = fædda í árdaga."],
+["forðum","forðum","Fyrrum, fyrir löngu."],
+["fædda","fædda","Fætt, alið upp."],
+["íviðjur","íviðja","Óljóst orð: tröllkona sem býr í viði, eða rót, viður. Völvan man níu slíkar."],
+["mjötvið","mjötviðr","„Mælitré“, tréð sem markar heiminn og mælir örlögin; líklega Yggdrasill."],
+["mæran mæra mæri","mærr","Frægur, ágætur, dýrlegur."],
+["mold","mold","Jörð."],
+["alda","alda","Eignarfall fleirtölu af öld: „tímanna“ eða „manna“. „Alda börnum“ = mönnunum."],
+["var-a","var-a","Var ekki. Viðskeytið -a er neitun."],
+["unnir","unnr","Alda, bylgja."],
+["fannsk","fannsk","Fannst."],
+["æva","æva","Aldrei, alls ekki."],
+["upphiminn","upphiminn","Himinninn uppi."],
+["ginnunga","Ginnungagap","Hið mikla tóm í upphafi. „Ginn-“ merkir líklega mikill, eða tengist töfrum og blekkingu."],
+["burs","Burr","Borr, faðir Óðins, Vilja og Vés."],
+["bjöðum","bjöð","Land, grunnur."],
+["yppðu","yppa","Lyfta upp."],
+["skópu","skópu","Sköpuðu."],
+["salar","salr","Salur. „Salar steinar“ = steinar salarins, þ.e. jörðin."],
+["grund","grund","Jörð, völlur."],
+["lauki","laukr","Laukur, jurt; gróður almennt. Laukur var tákn frjósemi og heilla."],
+["varp","varp","Kastaði."],
+["sinni","sinni","Förunautur (5. erindi: „sinni mána“). Í 59. erindi merkir „öðru sinni“ annað skipti."],
+["himinjöður","himinjöðurr","Himinjaðar, sjóndeildarhringur."],
+["megins","megin","Afl, máttur."],
+["regin","regin","Goðin, ráðandi öfl."],
+["ragna","ragna","Eignarfall af regin: goðanna. „Ragna rök“ = örlög goðanna."],
+["rökstóla","rökstólar","Dómstólar goðanna, þar sem þau setjast á þing."],
+["ginnheilög","ginnheilagr","Afar heilagur."],
+["gættusk","gætask","Ráðgast, ræða málin."],
+["niðjum","niðr","Minnkandi tungl; „nið ok ný“ = tunglkvartilin."],
+["undorn","undorn","Miður morgunn eða síðdegi, ákveðið tímabil dags."],
+["aftan","aftann","Kvöld."],
+["árum","ár","Ár. „Árum at telja“ = til að telja árin."],
+["hittusk","hittask","Hittast."],
+["hörg","hörgr","Steinaltari undir berum himni."],
+["hof","hof","Helgihús úr timbri."],
+["hátimbruðu","hátimbra","Reisa hátt úr timbri."],
+["afla","afl","Smiðja, eldstó smiðsins."],
+["auð","auðr","Fé, dýrgripir."],
+["tangir","töng","Töng."],
+["tól","tól","Verkfæri."],
+["tefldu","tefla","Leika tafl, borðspil á borð við hnefatafl."],
+["túni","tún","Garður, afgirt svæði."],
+["teitir","teitr","Glaður, kátur."],
+["vettergis","vettergis","Einskis, alls ekki."],
+["vant","vant","Skortur. „Var þeim vettergis vant“ = þau skorti ekkert."],
+["uns unz","unz","Þar til."],
+["þursa","þurs","Jötunn."],
+["ámáttkar","ámáttkr","Afar máttugur."],
+["dróttir","drótt","Fylking, hirð, fólk."],
+["skepja","skepja","Skapa."],
+["leggjum","leggr","Bein."],
+["mæztr","mæztr","Mestur, æðstur."],
+["mannlíkun","mannlíkan","Mannamynd, líkneski."],
+["ljóna","ljónar","Menn."],
+["sjöt","sjöt","Bústaður, heimkynni."],
+["langniðja","langniðjar","Langfeðgar, forfeður."],
+["hafat","hafat","Haft, varðveitt."],
+["öflgir","öflgr","Öflugur."],
+["ástkir","ástkr","Ástríkur, kærleiksríkur."],
+["megandi","megandi","Máttugur. „Lítt megandi“ = máttvana."],
+["örlöglausa","örlöglauss","Án örlaga: án lífs og sögu."],
+["önd","önd","Andi, lífsandi."],
+["óð","óðr","Vit, hugur, ákafi, skáldleg andagift."],
+["lá","lá","Óljóst: líklega blóð eða líkamsvessi."],
+["læti","læti","Hreyfing, rödd, látbragð."],
+["litu","litr","Litarháttur, útlit."],
+["baðmr baðmi","baðmr","Tré."],
+["ausinn","ausa","Ausa, vökva."],
+["auri aurgum","aurr","Leir, leðja. „Aurgr“ = leirugur."],
+["döggvar","dögg","Dögg."],
+["þolli","þollr","Tré."],
+["skíði","skíð","Kefli, fjöl. „Skáru á skíði“ = ristu rúnir á kefli."],
+["kuru","kjósa","Kjósa, velja."],
+["seggja","seggr","Maður."],
+["folkvíg","fólkvíg","Stríð, orrusta milli herja."],
+["geirum","geirr","Spjót."],
+["studdu","styðja","Hér líklega: stinga."],
+["ósjaldan","ósjaldan","Oft."],
+["velspáa","velspár","Sem spáir vel og rétt."],
+["vitti","vitta","Fara með galdur."],
+["ganda","gandr","Töfrasproti, andi, galdur."],
+["seið","seiðr","Galdur sem gaf vitneskju um framtíðina."],
+["angan","angan","Yndi, unaður; ástvinur. „Friggjar angan“ = Óðinn."],
+["brúðar","brúðr","Kona."],
+["afráð","afráð","Skattur, bætur."],
+["gildi","gildi","Veisla; hlutdeild í fórnum."],
+["fleygði","fleygja","Kasta (spjóti)."],
+["folk","fólk","Her, lið."],
+["borðveggr","borðveggr","Veggur úr borðum, borgarveggur."],
+["knáttu kná","kná","Geta (hjálparsögn): „knáttu sporna“ = gátu troðið."],
+["vígspá","vígspá","Bardagagaldur, spá um sigur."],
+["sporna","sporna","Troða, stíga á."],
+["lævi","læ","Svik, eitur, skaði."],
+["þrunginn","þrunginn","Fullur, þrútinn."],
+["móði","móðr","Reiði, ofsi."],
+["fregn","fregna","Frétta, spyrja."],
+["særi","særi","Eiðar, særingar."],
+["meginlig","meginligr","Máttugur."],
+["folgit folgin","fólginn","Falinn."],
+["heiðvönum","heiðvanr","Óljóst: „vanur heiðum himni“, þ.e. bjartur, eða „vanur hæð“."],
+["ausask","ausask","Ausast, streyma."],
+["forsi forsar","fors","Foss."],
+["vituð","vituð","Vitið. „Vituð ér enn, eða hvat?“ = vitið þið nóg, eða viljið þið meira?"],
+["yggjungr","yggjungr","Hinn ógurlegi; heiti Óðins (sbr. Yggr)."],
+["fregnið","fregna","Spyrja."],
+["freistið","freista","Reyna, prófa."],
+["falt","fela","Fela."],
+["valði","velja","Velja; hér: úthluta, gefa."],
+["spaklig","spakligr","Vitur."],
+["nönnur","nanna","Kona (skáldamál)."],
+["herjans","Herjan","Óðinn, „herforinginn“."],
+["herföðr herjaföðrs","Herföðr","Faðir hersins: Óðinn."],
+["goðþjóðar","goðþjóð","Goðin, eða Gotaþjóð."],
+["tívur","tívurr","Goð."],
+["meiði","meiðr","Tré, grein."],
+["mær","mær","Mjór, grannur („er mær sýndisk“)."],
+["harmflaug","harmflaug","Sorgarör."],
+["hættlig","hættligr","Hættulegur."],
+["einnættr","einnættr","Einnar nætur gamall."],
+["kembði","kemba","Greiða."],
+["bál","bál","Bálköstur."],
+["andskota","andskoti","Óvinur."],
+["vá","vá","Ógæfa (33. erindi: „vá Valhallar“). Í 26. erindi: vó, barðist."],
+["vígbönd","vígbönd","Fjötrar."],
+["höft haft","haft","Fjötur; bandingi."],
+["lægjarns","lægjarn","Lævís, sviksamur."],
+["áþekkjan","áþekkr","Líkur."],
+["þeygi","þeygi","Alls ekki."],
+["glýjuð","glýjaðr","Glaður."],
+["söxum","sax","Einseggjað sverð."],
+["bjórsalr","bjórsalr","Salur þar sem bjór er drukkinn."],
+["ljóra","ljóri","Reykop á þaki."],
+["undinn","undinn","Fléttaður, vafinn."],
+["meinsvara","meinsvari","Eiðrofi."],
+["morðvarga","morðvargr","Morðingi."],
+["eyrarúnu","eyrarúna","Trúnaðarvina, eiginkona („sú sem hvíslað er að“)."],
+["glepr","glepja","Tæla."],
+["nái","nár","Lík."],
+["framgengna","framgenginn","Dáinn, látinn."],
+["vargr","vargr","Úlfur."],
+["tjúgari","tjúgari","Sá sem gleypir eða rífur."],
+["tungls","tungl","Tungl."],
+["hami","hamr","Gervi, líki."],
+["fjörvi","fjör","Líf."],
+["feigra","feigr","Feigur, dauðvona."],
+["rýðr","rjóða","Lita rautt."],
+["dreyra","dreyri","Blóð."],
+["válynd","vályndr","Ótryggur, illur."],
+["haugi","haugr","Haugur, grafhaugur."],
+["gýgjar","gýgr","Tröllkona."],
+["galgviði","galgviðr","Gálgatré, skógur."],
+["hölða","höldr","Hetja, góður bóndi."],
+["sótrauðr","sótrauðr","Dökkrauður."],
+["geyr","geyja","Gelta."],
+["festr","festr","Festi, fjötur."],
+["freki freka","freki","Úlfur („hinn gráðugi“)."],
+["fjölð","fjölð","Fjöldi, mikið."],
+["fræða","fræði","Fróðleikur."],
+["rök","rök","Örlög, endalok."],
+["römm","rammr","Sterkur, máttugur, harður."],
+["sigtíva","sigtívar","Sigurgoð."],
+["systrungar","systrungr","Systrabarn, frændi."],
+["sifjum","sifjar","Tengdir, frændsemi."],
+["skeggöld","skeggöld","Öld axa („skegg“ = öxi)."],
+["skalmöld","skalmöld","Öld sverða („skálm“ = sverð)."],
+["vindöld","vindöld","Vindöld, óveðursöld."],
+["vargöld","vargöld","Úlfaöld."],
+["steypisk","steypask","Steypast, hrynja."],
+["þyrma","þyrma","Eira, hlífa."],
+["mjötuðr","mjötuðr","„Mælirinn“: örlögin, eða sá sem ræður örlögum. Sumir túlka orðið hér sem eld."],
+["kyndisk","kyndask","Kvikna."],
+["galla","gallr","Gjallandi."],
+["skelfr","skelfa","Skjálfa."],
+["ymr","ymja","Ymja, stynja."],
+["sefi","sefi","Frændi, ættingi („Surtar sefi“ = frændi Surts); einnig hugur."],
+["gnýr","gnýja","Glymja."],
+["steindurum","steindurr","Steindyr, dyr í bergi."],
+["veggbergs","veggberg","Bergveggur."],
+["vísir","vísir","Leiðtogi; hér: vitringar."],
+["lind","lind","Linditré; skjöldur úr lindi."],
+["ari","ari","Örn."],
+["hlakkar","hlakka","Garga af ákafa."],
+["niðfölr","niðfölr","Fölnefur: örninn."],
+["kjóll","kjóll","Skip."],
+["lýðir","lýðr","Fólk."],
+["fíflmegir","fíflmegir","Synir trölla, ófreskjur."],
+["sviga","svigi","Grein. „Sviga læ“ = bani greinanna: eldurinn."],
+["valtíva","valtívar","Valguðir, goðin."],
+["gnata","gnata","Rekast saman."],
+["gífr","gífr","Tröllkona."],
+["halir","halr","Maður."],
+["hlínar","Hlín","Heiti Friggjar."],
+["valdýri","valdýr","Valdýrið: úlfurinn."],
+["hveðrungs","Hveðrungr","Heiti Loka."],
+["mundum","mund","Hönd."],
+["hjör","hjörr","Sverð."],
+["hlóðynjar","Hlóðyn","Jörð, móðir Þórs."],
+["véurr","véurr","Verndari helgistaðar."],
+["heimstöð","heimstöð","Heimili, heimurinn."],
+["ryðja","ryðja","Rýma, yfirgefa."],
+["fjörgynjar","Fjörgyn","Jörð, móðir Þórs."],
+["neppr","neppr","Örmagna."],
+["naðri naðr","naðr","Naðra, ormur."],
+["ókvíðnum","ókvíðinn","Óhræddur."],
+["tér","téa","Taka að, byrja."],
+["sígr","síga","Síga."],
+["mar","marr","Sjór."],
+["heiðar","heiðr","Bjartur."],
+["eimi","eimr","Gufa, reykur."],
+["aldrnari","aldrnari","„Lífsbani“: eldurinn."],
+["ægi","ægir","Sær, haf."],
+["iðjagræna","iðjagrænn","Sígrænn."],
+["moldþinur","moldþinurr","„Jarðarbandið“: Miðgarðsormur."],
+["megindóma","megindómr","Miklir atburðir, mikill dómur."],
+["fimbultýs","Fimbultýr","„Hinn mikli guð“: Óðinn."],
+["töflur","tafla","Taflmaður."],
+["árdaga","árdagar","Fyrstu dagar heimsins."],
+["ósánir","ósáinn","Ósáður."],
+["böls","böl","Böl, ógæfa."],
+["hrofts","Hroftr","Heiti Óðins."],
+["sigtoftir","sigtóftir","Sigurtóftir, bústaðir."],
+["vé","vé","Helgistaður."],
+["hlautvið","hlautviðr","Spáviður, kvistir sem hlutað er með."],
+["burir burr","burr","Sonur."],
+["vindheim","vindheimr","Himinninn."],
+["dyggvar","dyggr","Dyggur, trúr."],
+["aldrdaga","aldrdagar","Um aldur og ævi."],
+["ynðis","yndi","Yndi, sæla."],
+["regindómi","regindómr","Mikill dómur, dómur goðanna."],
+["fránn","fránn","Glitrandi."],
+["sökkvask","sökkvask","Sökkva."],
+["snýsk","snúask","Snúast."],
+["knýr","knýja","Knýja, ýta."],
+["ekr","aka","Aka."],
+["hefisk","hefjask","Hefjast, lyftast."],
+["óðs","Óðr","Eiginmaður Freyju. „Óðs mær“ = Freyja."],
+["eiðar","eiðr","Eiður."],
+["gjalda","gjalda","Greiða, gjalda."]
+];
+
+/*GLOSS*/
+
+const GM={};G.forEach((g,i)=>g[0].split(" ").forEach(f=>GM[f]=i));
+let usedG=[];
+function gl(s){return s.split(/([\p{L}]+(?:-[\p{L}]+)*)/u).map((t,i)=>{if(i%2===0)return esc(t);const k=GM[t.toLowerCase()];if(k===undefined)return esc(t);if(!usedG.includes(k))usedG.push(k);return `<span class="gl" tabindex="0" data-g="${k}">${esc(t)}</span>`}).join("")}
+function wordList(){if(!usedG.length)return "";return `<details class="words" id="words"${wordsOpen?" open":""}><summary>Orðskýringar í erindinu (${usedG.length})</summary><dl>${usedG.map(k=>`<div><dt>${esc(G[k][1])}</dt><dd>${G[k][2]}</dd></div>`).join("")}</dl></details>`}
+let wordsOpen=false;
+const tip=document.createElement("div");tip.id="tip";tip.setAttribute("role","tooltip");tip.hidden=true;document.body.appendChild(tip);
+let tipFor=null;
+function showTip(el){const g=G[+el.dataset.g];tip.innerHTML=`<b>${esc(g[1])}</b>${g[2]}`;tip.hidden=false;
+  document.querySelectorAll(".gl.act").forEach(e=>e.classList.remove("act"));el.classList.add("act");tipFor=el;
+  const r=el.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+  let x=Math.max(8,Math.min(r.left+r.width/2-tw/2,vw-tw-8)),y=r.bottom+8;if(y+th>vh-70)y=r.top-th-8;
+  tip.style.left=x+"px";tip.style.top=Math.max(8,y)+"px"}
+function hideTip(){tip.hidden=true;if(tipFor)tipFor.classList.remove("act");tipFor=null}
+document.addEventListener("mouseover",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el&&el!==tipFor)showTip(el)});
+document.addEventListener("mouseout",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el&&!(e.relatedTarget&&el.contains(e.relatedTarget))&&document.activeElement!==el)hideTip()});
+document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("gl"))showTip(e.target)});
+document.addEventListener("focusout",e=>{if(e.target.classList&&e.target.classList.contains("gl"))hideTip()});
+document.addEventListener("click",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el){if(tipFor===el&&e.pointerType!=="mouse")hideTip();else showTip(el)}else if(!tip.contains(e.target))hideTip()});
+window.addEventListener("scroll",hideTip,{passive:true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")hideTip()},true);
+document.addEventListener("toggle",e=>{if(e.target.id==="words")wordsOpen=e.target.open},true);
 
 const PARTS=[[1,8,"Upphaf heimsins"],[9,16,"Dvergatal"],[17,20,"Menn og örlög"],[21,30,"Fyrsta stríðið"],[31,36,"Dauði Baldurs"],[37,43,"Undirheimar og fyrirboðar"],[44,58,"Ragnarök"],[59,66,"Nýr heimur"]];
 const REFRAIN=[44,49,54,58];
@@ -949,12 +1240,13 @@ PARTS.forEach(p=>{
 
 function renderLines(lines){
   let out="",buf=[];
-  const flush=()=>{for(let i=0;i<buf.length;i+=2){const a=buf[i],b=buf[i+1];out+=b===undefined?`<div class="ll single"><span>${esc(a)}</span></div>`:`<div class="ll"><span class="a">${esc(a)}</span><span class="b">${esc(b)}</span></div>`}buf=[]};
-  lines.forEach(l=>{if(/^Vituð ér enn/.test(l)||/^Nú mun hon sökkvask/.test(l)){flush();out+=`<div class="refr">${esc(l)}</div>`}else buf.push(l)});
+  const flush=()=>{for(let i=0;i<buf.length;i+=2){const a=buf[i],b=buf[i+1];out+=b===undefined?`<div class="ll single"><span>${gl(a)}</span></div>`:`<div class="ll"><span class="a">${gl(a)}</span><span class="b">${gl(b)}</span></div>`}buf=[]};
+  lines.forEach(l=>{if(/^Vituð ér enn/.test(l)||/^Nú mun hon sökkvask/.test(l)){flush();out+=`<div class="refr">${gl(l)}</div>`}else buf.push(l)});
   flush();return out;
 }
 
 function renderVerse(){
+  usedG=[];hideTip();
   const p=partOf(cur),d=D[cur],v=document.getElementById("verse");
   const badges=[];
   if(REFRAIN.includes(cur))badges.push("Stef · endurtekið í 44., 49., 54. og 58. erindi");
@@ -964,6 +1256,7 @@ function renderVerse(){
   <div class="num">${cur}.</div><h2 class="vtitle">${d.t}</h2>
   <div class="lines">${renderLines(VERSES[cur])}</div>
   <div class="meta">${badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>`;
+    v.insertAdjacentHTML("beforeend",wordList());
   v.classList.remove("fade");void v.offsetWidth;v.classList.add("fade");
 }
 

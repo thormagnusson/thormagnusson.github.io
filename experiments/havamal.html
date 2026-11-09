@@ -1,0 +1,2193 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Hávamál</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans+SC:wght@500;700&display=swap">
+<style>
+/* Layout: two-column reading desk. Verse (the manuscript side) left, three-part commentary right; a 66-tick rail of the poem's eight movements on top; prev/next bar fixed below. */
+:root{
+  --bg:#E8EBE5;          /* lichen grey */
+  --panel:#F4F6F1;
+  --ink:#1B231F;
+  --muted:#5A675F;
+  --rule:#C9D1C8;
+  --gold:#8C6619;        /* gullnar töflur */
+  --gold-soft:#E7D8AE;
+  --tick:#B9C3B9;
+  --glbg:var(--gold-soft);--glfocus:var(--gold);
+  --f-verse:"Alegreya", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-body:"Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --f-label:"Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111613;--panel:#18201C;--ink:#E4E3D6;--muted:#97A39B;--rule:#2B3530;--gold:#D6B160;--gold-soft:#3A3220;--tick:#34403A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111613;--panel:#18201C;--ink:#E4E3D6;--muted:#97A39B;--rule:#2B3530;--gold:#D6B160;--gold-soft:#3A3220;--tick:#34403A;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:0 96px}
+.wrap{max-width:1240px;margin:0 auto}
+
+header.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-block:22px 10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font-family:var(--f-verse);font-style:italic;font-weight:500;font-size:2.4rem;line-height:1;margin:0;letter-spacing:.005em}
+.brand span{font-family:var(--f-label);font-size:.9rem;letter-spacing:.08em;color:var(--muted)}
+.ghost{font:500 .95rem var(--f-label);letter-spacing:.06em;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.ghost:hover{border-color:var(--gold);color:var(--gold)}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* rail */
+.rail{display:flex;gap:10px;align-items:flex-end;padding-block:6px 4px;overflow-x:auto;scrollbar-width:thin}
+.part{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+.part .ticks{display:flex;gap:3px}
+.tick{width:9px;height:22px;border:0;padding:0;border-radius:2px;background:var(--tick);cursor:pointer;transition:background .15s,height .15s}
+.tick.ref{height:14px}
+.tick:hover{background:var(--muted)}
+.tick.on{background:var(--gold);height:28px}
+.part .pl{font:500 .72rem var(--f-label);letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.part.cur .pl{color:var(--gold)}
+
+/* about */
+#about{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:18px 22px;margin-block:12px;max-width:72ch}
+#about h2{font-family:var(--f-verse);font-weight:500;margin:0 0 6px;font-size:1.3rem}
+#about p{margin:.4em 0}
+
+/* desk */
+.desk{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;margin-top:22px;align-items:start}
+.verse{position:sticky;top:16px;min-width:0}
+.eyebrow{font:500 .8rem var(--f-label);letter-spacing:.1em;color:var(--muted)}
+.num{font-family:var(--f-verse);font-weight:700;color:var(--gold);font-size:4.2rem;line-height:.9;font-variant-numeric:oldstyle-nums;margin:6px 0 2px}
+.vtitle{font-family:var(--f-verse);font-weight:500;font-size:1.45rem;margin:0 0 20px;text-wrap:balance}
+.lines{font-family:var(--f-verse);font-size:1.3rem;line-height:1.55;border-left:2px solid var(--gold-soft);padding-left:20px}
+.ll{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:1.6em}
+.ll .b{color:var(--ink)}
+.ll.single{grid-template-columns:1fr}
+.refr{font-style:italic;color:var(--gold);margin-top:.35em}
+.refblock{margin-bottom:.45em}
+.refblock .ll span{color:var(--gold);font-style:italic}
+.meta{margin-top:18px;font:500 .78rem var(--f-label);letter-spacing:.08em;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+.badge{border:1px solid var(--rule);border-radius:999px;padding:1px 9px}
+
+/* commentary */
+.comm{min-width:0;background:var(--panel);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--rule);overflow-x:auto}
+.tab{flex:1 1 0;min-width:max-content;background:none;border:0;border-bottom:3px solid transparent;padding:14px 18px 11px;cursor:pointer;color:var(--muted);font:700 .92rem var(--f-label);letter-spacing:.07em;text-align:left;display:flex;align-items:baseline;gap:8px}
+.tab small{font:400 .82rem var(--f-body);letter-spacing:0;color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
+.tab:hover{color:var(--ink)}
+.panel{padding:24px 28px 30px}
+.panel p.lead{font-size:1.08rem;max-width:68ch;margin:0}
+.items{display:flex;flex-direction:column;gap:20px;margin:0;padding:0;list-style:none}
+.items li{max-width:70ch}
+.src{font-family:var(--f-verse);font-weight:700;font-size:1.06rem;display:block;margin-bottom:2px}
+.items p{margin:0}
+.chip{display:inline-block;font:700 .72rem var(--f-label);letter-spacing:.09em;color:var(--gold);border:1px solid currentColor;border-radius:3px;padding:0 6px;margin-right:8px;vertical-align:2px}
+.hint{font-size:.88rem;color:var(--muted);margin:22px 0 0}
+
+/* bottom nav */
+nav.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px))}
+nav.bar .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nb{display:flex;align-items:center;gap:10px;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:6px;padding:8px 14px;cursor:pointer;min-width:0;font-family:var(--f-body);font-size:.95rem}
+.nb:hover:not(:disabled){border-color:var(--gold)}
+.nb:disabled{opacity:.35;cursor:default}
+.nb .arr{font-family:var(--f-verse);font-size:1.3rem;color:var(--gold);line-height:1}
+.nb .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:26ch}
+.count{font:500 .9rem var(--f-label);letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+
+.gl{border-bottom:1px dotted var(--muted);cursor:help;border-radius:2px;transition:background .12s}
+.gl:hover,.gl.act{background:var(--glbg)}
+.gl:focus-visible{outline:2px solid var(--glfocus);outline-offset:1px}
+#tip{position:fixed;z-index:30;max-width:min(320px,calc(100vw - 16px));background:var(--ink);color:var(--bg);padding:10px 13px 11px;border-radius:6px;font:15px/1.45 var(--f-body);box-shadow:0 6px 24px rgba(0,0,0,.18);pointer-events:none}
+#tip b{display:block;font-family:var(--f-verse);font-style:italic;font-size:1.08rem;font-weight:700;margin-bottom:2px}
+.words{margin-top:16px;max-width:52ch}
+.words summary{cursor:pointer;font:500 .8rem var(--f-label);letter-spacing:.08em;color:var(--muted);padding:4px 0}
+.words summary:hover{color:var(--ink)}
+.words dl{margin:8px 0 0;display:flex;flex-direction:column;gap:8px;font-size:.95rem}
+.words dl div{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:12px;align-items:baseline}
+.words dt{font-family:var(--f-verse);font-style:italic;font-weight:700}
+.words dd{margin:0;color:var(--muted)}
+@media (max-width:520px){.words dl div{grid-template-columns:1fr;gap:0}}
+.fade{animation:fade .28s ease}
+@keyframes fade{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fade{animation:none}.tick{transition:none}}
+
+@media (max-width:860px){
+  .desk{grid-template-columns:1fr;gap:24px}
+  .verse{position:static}
+  .num{font-size:3.2rem}
+  .panel{padding:20px 18px 24px}
+  .nb .t{display:none}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .brand h1{font-size:2rem}
+  .lines{font-size:1.15rem;padding-left:14px}
+  .ll{grid-template-columns:1fr}
+  .ll .b{padding-left:1.4em}
+  .tab{padding:12px 12px 9px;font-size:.84rem}
+  .tab small{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>Hávamál</h1><span>Mál hins háa · 164 erindi með skýringum</span></div>
+    <button class="ghost" id="aboutBtn" aria-expanded="false" aria-controls="about">Um kvæðið</button>
+  </header>
+  <section id="about" hidden>
+    <h2>Um kvæðið og skýringarnar</h2>
+    <p>Hávamál, „mál hins háa“, eru spekikvæði lögð Óðni í munn. Þau eru aðeins varðveitt í Konungsbók Eddukvæða (GKS 2365 4to, um 1270) og eru líklega samsett úr nokkrum eldri kvæðum: lífsspeki gestsins og ferðalangsins, ástarævintýrum Óðins, sögunni af skáldamiðinum, heilræðum til Loddfáfnis, frásögn Óðins af því hvernig hann nam rúnirnar og upptalningu á átján galdraljóðum.</p>
+    <p>Hverju erindi fylgja þrjár skýringar: <b>Skýring</b> endursegir erindið á nútímamáli, <b>Norrænar heimildir</b> rekja tengsl við aðrar norrænar sagnir og sögur, og <b>Samanburður</b> bendir á hliðstæður í spekiritum og goðsögum annarra þjóða: grískum, rómverskum, indverskum, egypskum, kínverskum, biblíulegum og fleiri. Samanburðurinn sýnir samsvörun; hann fullyrðir ekki alltaf beinan skyldleika.</p>
+    <p>Undirstrikuð orð í erindunum hafa orðskýringu: bentu á orðið eða smelltu á það. Allar orðskýringar erindisins eru einnig taldar upp undir því. Örvatakkar fletta milli erinda; tölurnar 1, 2 og 3 skipta um flipa.</p>
+    <p>Textinn fylgir útgáfu Braga, óðfræðivefjar (Ísmús), með samræmdri fornri stafsetningu. Heiti kaflanna eru þau sem fræðimenn nota venjulega.</p>
+  </section>
+  <div class="rail" id="rail" aria-label="Erindi kvæðisins"></div>
+
+  <main class="desk">
+    <article class="verse" id="verse" aria-live="polite"></article>
+    <section class="comm">
+      <div class="tabs" role="tablist" aria-label="Skýringar">
+        <button class="tab" role="tab" id="t0" aria-controls="panel" data-i="0">Skýring</button>
+        <button class="tab" role="tab" id="t1" aria-controls="panel" data-i="1">Norrænar heimildir <small id="c1"></small></button>
+        <button class="tab" role="tab" id="t2" aria-controls="panel" data-i="2">Samanburður <small id="c2"></small></button>
+      </div>
+      <div class="panel" id="panel" role="tabpanel" tabindex="0"></div>
+    </section>
+  </main>
+</div>
+
+<nav class="bar" aria-label="Fletta erindum">
+  <div class="in">
+    <button class="nb" id="prev"><span class="arr">←</span><span class="t" id="prevT"></span></button>
+    <span class="count" id="count"></span>
+    <button class="nb" id="next"><span class="t" id="nextT"></span><span class="arr">→</span></button>
+  </div>
+</nav>
+
+<script>
+const VERSES = {"1": ["Gáttir allar,", "áðr gangi fram,", "um skoðask skyli,", "um skyggnast skyli,", "því at óvíst er at vita,", "hvar óvinir", "sitja á fleti fyrir."], "2": ["Gefendr heilir!", "Gestr er inn kominn,", "hvar skal sitja sjá?", "Mjök er bráðr,", "sá er á bröndum skal", "síns of freista frama."], "3": ["Elds er þörf,", "þeims inn er kominn", "ok á kné kalinn;", "matar ok váða", "er manni þörf,", "þeim er hefr um fjall farit."], "4": ["Vatns er þörf,", "þeim er til verðar kemr,", "þerru ok þjóðlaðar,", "góðs of æðis,", "ef sér geta mætti,", "orðs ok endrþögu."], "5": ["Vits er þörf,", "þeim er víða ratar;", "dælt er heima hvat;", "at augabragði verðr,", "sá er ekki kann", "ok með snotrum sitr."], "6": ["At hyggjandi sinni", "skyli-t maðr hræsinn vera,", "heldr gætinn at geði;", "þá er horskr ok þögull", "kemr heimisgarða til,", "sjaldan verðr víti vörum,", "því at óbrigðra vin", "fær maðr aldregi", "en mannvit mikit."], "7": ["Inn vari gestr,", "er til verðar kemr,", "þunnu hljóði þegir,", "eyrum hlýðir,", "en augum skoðar;", "svá nýsisk fróðra hverr fyrir."], "8": ["Hinn er sæll,", "er sér of getr", "lof ok líknstafi;", "ódælla er við þat,", "er maðr eiga skal", "annars brjóstum í."], "9": ["Sá er sæll,", "er sjalfr of á", "lof ok vit, meðan lifir;", "því at ill ráð", "hefr maðr oft þegit", "annars brjóstum ór."], "10": ["Byrði betri", "berr-at maðr brautu at", "en sé mannvit mikit;", "auði betra", "þykkir þat í ókunnum stað;", "slíkt er válaðs vera."], "11": ["Byrði betri", "berr-at maðr brautu at", "en sé mannvit mikit;", "vegnest verra", "vegr-a hann velli at", "en sé ofdrykkja öls."], "12": ["Er-a svá gótt", "sem gótt kveða", "öl alda sona,", "því at færa veit,", "er fleira drekkr", "síns til geðs gumi."], "13": ["Óminnishegri heitir", "sá er yfir ölðrum þrumir,", "hann stelr geði guma;", "þess fugls fjöðrum", "ek fjötraðr vark", "í garði Gunnlaðar."], "14": ["Ölr ek varð,", "varð ofrölvi", "at ins fróða Fjalars;", "því er ölðr bazt,", "at aftr of heimtir", "hverr sitt geð gumi."], "15": ["Þagalt ok hugalt", "skyli þjóðans barn", "ok vígdjarft vera;", "glaðr ok reifr", "skyli gumna hverr,", "unz sinn bíðr bana."], "16": ["Ósnjallr maðr", "hyggsk munu ey lifa,", "ef hann við víg varask;", "en elli gefr", "hánum engi frið,", "þótt hánum geirar gefi."], "17": ["Kópir afglapi", "er til kynnis kemr,", "þylsk hann um eða þrumir;", "allt er senn,", "ef hann sylg of getr,", "uppi er þá geð guma."], "18": ["Sá einn veit", "er víða ratar", "ok hefr fjölð of farit,", "hverju geði", "stýrir gumna hverr,", "sá er vitandi er vits."], "19": ["Haldi-t maðr á keri,", "drekki þó at hófi mjöð,", "mæli þarft eða þegi,", "ókynnis þess", "vár þik engi maðr,", "at þú gangir snemma at sofa."], "20": ["Gráðugr halr,", "nema geðs viti,", "etr sér aldrtrega;", "oft fær hlægis,", "er með horskum kemr,", "manni heimskum magi."], "21": ["Hjarðir þat vitu,", "nær þær heim skulu,", "ok ganga þá af grasi;", "en ósviðr maðr", "kann ævagi", "síns of mál maga."], "22": ["Vesall maðr", "ok illa skapi", "hlær at hvívetna;", "hittki hann veit,", "er hann vita þyrfti,", "at hann er-a vamma vanr."], "23": ["Ósviðr maðr", "vakir um allar nætr", "ok hyggr at hvívetna;", "þá er móðr,", "er at morgni kemr,", "allt er víl sem var."], "24": ["Ósnotr maðr", "hyggr sér alla vera", "viðhlæjendr vini;", "hittki hann fiðr,", "þótt þeir um hann fár lesi,", "ef hann með snotrum sitr."], "25": ["Ósnotr maðr", "hyggr sér alla vera", "viðhlæjendr vini;", "þá þat finnr,", "er at þingi kemr,", "at hann á formælendr fáa."], "26": ["Ósnotr maðr", "þykkisk allt vita,", "ef hann á sér í vá veru;", "hittki hann veit,", "hvat hann skal við kveða,", "ef hans freista firar."], "27": ["Ósnotr maðr,", "er með aldir kemr,", "þat er bazt, at hann þegi;", "engi þat veit,", "at hann ekki kann,", "nema hann mæli til margt;", "veit-a maðr,", "hinn er vettki veit,", "þótt hann mæli til margt."], "28": ["Fróðr sá þykkisk,", "er fregna kann", "ok segja it sama;", "eyvitu leyna", "megu ýta synir,", "því er gengr um guma."], "29": ["Ærna mælir,", "sá er æva þegir,", "staðlausu stafi;", "hraðmælt tunga,", "nema haldendr eigi,", "oft sér ógótt of gelr."], "30": ["At augabragði", "skal-a maðr annan hafa,", "þótt til kynnis komi;", "margr þá fróðr þykkisk,", "ef hann freginn er-at", "ok nái hann þurrfjallr þruma."], "31": ["Fróðr þykkisk,", "sá er flótta tekr,", "gestr at gest hæðinn;", "veit-a görla,", "sá er of verði glissir,", "þótt hann með grömum glami."], "32": ["Gumnar margir", "erusk gagnhollir,", "en at virði vrekask;", "aldar róg", "þat mun æ vera,", "órir gestr við gest."], "33": ["Árliga verðar", "skyli maðr oft fáa,", "nema til kynnis komi:", "sitr ok snópir,", "lætr sem solginn sé", "ok kann fregna at fáu."], "34": ["Afhvarf mikit", "er til ills vinar,", "þótt á brautu búi,", "en til góðs vinar", "liggja gagnvegir,", "þótt hann sé firr farinn."], "35": ["Ganga skal,", "skal-a gestr vera", "ey í einum stað;", "ljúfr verðr leiðr,", "ef lengi sitr", "annars fletjum á."], "36": ["Bú er betra,", "þótt lítit sé,", "halr er heima hverr;", "þótt tvær geitr eigi", "ok taugreftan sal,", "þat er þó betra en bæn."], "37": ["Bú er betra,", "þótt lítit sé,", "halr er heima hverr;", "blóðugt er hjarta,", "þeim er biðja skal", "sér í mál hvert matar."], "38": ["Vápnum sínum", "skal-a maðr velli á", "feti ganga framar,", "því at óvíst er at vita,", "nær verðr á vegum úti", "geirs of þörf guma."], "39": ["Fannk-a ek mildan mann", "eða svá matar góðan,", "at væri-t þiggja þegit,", "eða síns féar", "svági [glöggvan],", "at leið sé laun, ef þægi."], "40": ["Féar síns,", "er fengit hefr,", "skyli-t maðr þörf þola;", "oft sparir leiðum,", "þats hefr ljúfum hugat;", "margt gengr verr en varir."], "41": ["Vápnum ok váðum", "skulu vinir gleðjask;", "þat er á sjalfum sýnst;", "viðrgefendr ok endrgefendr", "erusk lengst vinir,", "ef þat bíðr at verða vel."], "42": ["Vin sínum", "skal maðr vinr vera", "ok gjalda gjöf við gjöf;", "hlátr við hlátri", "skyli hölðar taka", "en lausung við lygi."], "43": ["Vin sínum", "skal maðr vinr vera,", "þeim ok þess vin;", "en óvinar síns", "skyli engi maðr", "vinar vinr vera."], "44": ["Veiztu, ef þú vin átt,", "þann er þú vel trúir,", "ok vill þú af hánum gótt geta,", "geði skaltu við þann blanda", "ok gjöfum skipta,", "fara at finna oft."], "45": ["Ef þú átt annan,", "þanns þú illa trúir,", "vildu af hánum þó gótt geta,", "fagrt skaltu við þann mæla", "en flátt hyggja", "ok gjalda lausung við lygi."], "46": ["Það er enn of þann", "er þú illa trúir", "ok þér er grunr at hans geði,", "hlæja skaltu við þeim", "ok um hug mæla;", "glík skulu gjöld gjöfum."], "47": ["Ungr var ek forðum,", "fór ek einn saman,", "þá varð ek villr vega;", "auðigr þóttumk,", "er ek annan fann,", "maðr er manns gaman."], "48": ["Mildir, fræknir", "menn bazt lifa,", "sjaldan sút ala;", "en ósnjallr maðr", "uggir hotvetna,", "sýtir æ glöggr við gjöfum."], "49": ["Váðir mínar", "gaf ek velli at", "tveim trémönnum;", "rekkar þat þóttusk,", "er þeir rift höfðu;", "neiss er nökkviðr halr."], "50": ["Hrörnar þöll,", "sú er stendr þorpi á,", "hlýr-at henni börkr né barr;", "svá er maðr,", "sá er manngi ann.", "Hvat skal hann lengi lifa?"], "51": ["Eldi heitari", "brennr með illum vinum", "friðr fimm daga,", "en þá sloknar,", "er inn sétti kemr,", "ok versnar allr vinskapr."], "52": ["Mikit eitt", "skal-a manni gefa;", "oft kaupir sér í litlu lof,", "með halfum hleif", "ok með höllu keri", "fekk ek mér félaga."], "53": ["Lítilla sanda", "lítilla sæva", "lítil eru geð guma;", "því allir menn", "urðu-t jafnspakir;", "half er öld hvar."], "54": ["Meðalsnotr", "skyli manna hverr;", "æva til snotr sé;", "þeim er fyrða", "fegrst at lifa,", "er vel margt vitu."], "55": ["Meðalsnotr", "skyli manna hverr,", "æva til snotr sé;", "því at snotrs manns hjarta", "verðr sjaldan glatt,", "ef sá er alsnotr, er á."], "56": ["Meðalsnotr", "skyli manna hverr,", "æva til snotr sé;", "örlög sín", "viti engi fyrir,", "þeim er sorgalausastr sefi."], "57": ["Brandr af brandi", "brenn, unz brunninn er,", "funi kveikisk af funa;", "maðr af manni", "verðr at máli kuðr,", "en til dælskr af dul."], "58": ["Ár skal rísa,", "sá er annars vill", "fé eða fjör hafa;", "sjaldan liggjandi ulfr", "lær of getr", "né sofandi maðr sigr."], "59": ["Ár skal rísa,", "sá er á yrkjendr fáa,", "ok ganga síns verka á vit;", "margt of dvelr,", "þann er um morgin sefr,", "hálfr er auðr und hvötum."], "60": ["Þurra skíða", "ok þakinna næfra,", "þess kann maðr mjöt,", "þess viðar,", "er vinnask megi", "mál ok misseri."], "61": ["Þveginn ok mettr", "ríði maðr þingi at,", "þótt hann sé-t væddr til vel;", "skúa ok bróka", "skammisk engi maðr", "né hests in heldr,", "þótt hann hafi-t góðan"], "62": ["Snapir ok gnapir,", "er til sævar kemr,", "örn á aldinn mar;", "svá er maðr,", "er með mörgum kemr", "ok á formælendr fáa."], "63": ["Fregna ok segja", "skal fróðra hverr,", "sá er vill heitinn horskr;", "einn vita", "né annarr skal,", "þjóð veit, ef þrír ro."], "64": ["Ríki sitt", "skyli ráðsnotra", "hverr í hófi hafa;", "þá hann þat finnr,", "er með fræknum kemr", "at engi er einna hvatastr."], "65": ["– – – –", "orða þeira,", "er maðr öðrum segir", "oft hann gjöld of getr."], "66": ["Mikilsti snemma", "kom ek í marga staði,", "en til síð í suma;", "öl var drukkit,", "sumt var ólagat,", "sjaldan hittir leiðr í líð."], "67": ["Hér ok hvar", "myndi mér heim of boðit,", "ef þyrftak at málungi mat,", "eða tvau lær hengi", "at ins tryggva vinar,", "þars ek hafða eitt etit."], "68": ["Eldr er beztr", "með ýta sonum", "ok sólar sýn,", "heilyndi sitt,", "ef maðr hafa náir,", "án við löst at lifa."], "69": ["Er-at maðr alls vesall,", "þótt hann sé illa heill;", "sumr er af sonum sæll,", "sumr af frændum,", "sumr af fé ærnu,", "sumr af verkum vel."], "70": ["Betra er lifðum", "en sé ólifðum,", "ey getr kvikr kú;", "eld sá ek upp brenna", "auðgum manni fyrir,", "en úti var dauðr fyr durum."], "71": ["Haltr ríðr hrossi,", "hjörð rekr handar vanr,", "daufr vegr ok dugir,", "blindr er betri", "en brenndr séi,", "nýtr manngi nás."], "72": ["Sonr er betri,", "þótt sé síð of alinn", "eftir genginn guma;", "sjaldan bautarsteinar", "standa brautu nær,", "nema reisi niðr at nið."], "73": ["Tveir ro eins herjar,", "tunga er höfuðs bani;", "er mér í heðin hvern", "handar væni."], "74": ["Nótt verðr feginn", "sá er nesti trúir,", "skammar ro skips ráar;", "hverf er haustgríma;", "fjölð of viðrir", "á fimm dögum", "en meira á mánuði."], "75": ["Veit-a hinn,", "er vettki veit,", "margr verðr af aurum api;", "maðr er auðigr,", "annar óauðigr,", "skyli-t þann vítka váar."], "76": ["Deyr fé,", "deyja frændr,", "deyr sjalfr it sama,", "en orðstírr", "deyr aldregi,", "hveim er sér góðan getr."], "77": ["Deyr fé,", "deyja frændr,", "deyr sjalfr it sama,", "ek veit einn,", "at aldrei deyr:", "dómr um dauðan hvern."], "78": ["Fullar grindr", "sá ek fyr Fitjungs sonum,", "nú bera þeir vánar völ;", "svá er auðr", "sem augabragð,", "hann er valtastr vina."], "79": ["Ósnotr maðr,", "ef eignask getr", "fé eða fljóðs munuð,", "metnaðr hánum þróask,", "en mannvit aldregi,", "fram gengr hann drjúgt í dul."], "80": ["Þat er þá reynt,", "er þú að rúnum spyrr", "inum reginkunnum,", "þeim er gerðu ginnregin", "ok fáði fimbulþulr,", "þá hefir hann bazt, ef hann þegir."], "81": ["At kveldi skal dag leyfa,", "konu, er brennd er,", "mæki, er reyndr er,", "mey, er gefin er,", "ís, er yfir kemr,", "öl, er drukkit er."], "82": ["Í vindi skal við höggva,", "veðri á sjó róa,", "myrkri við man spjalla,", "mörg eru dags augu;", "á skip skal skriðar orka,", "en á skjöld til hlífar,", "mæki höggs,", "en mey til kossa."], "83": ["Við eld skal öl drekka,", "en á ísi skríða,", "magran mar kaupa,", "en mæki saurgan,", "heima hest feita,", "en hund á búi."], "84": ["Meyjar orðum", "skyli manngi trúa", "né því, er kveðr kona,", "því at á hverfanda hvéli", "váru þeim hjörtu sköpuð,", "brigð í brjóst of lagið."], "85": ["Brestanda boga,", "brennanda loga,", "gínanda ulfi,", "galandi kráku,", "rýtanda svíni,", "rótlausum viði,", "vaxanda vági,", "vellanda katli,"], "86": ["Fljúganda fleini,", "fallandi báru,", "ísi einnættum,", "ormi hringlegnum,", "brúðar beðmálum", "eða brotnu sverði,", "bjarnar leiki", "eða barni konungs."], "87": ["Sjúkum kalfi,", "sjalfráða þræli,", "völu vilmæli,", "val nýfelldum."], "88": ["Akri ársánum", "trúi engi maðr", "né til snemma syni,", "- veðr ræðr akri.", "en vit syni;", "hætt er þeira hvárt."], "89": ["Bróðurbana sínum", "þótt á brautu mæti,", "húsi hálfbrunnu,", "hesti alskjótum,", "- þá er jór ónýtr,", "ef einn fótr brotnar -,", "verði-t maðr svá tryggr", "at þessu trúi öllu."], "90": ["Svá er friðr kvenna,", "þeira er flátt hyggja,", "sem aki jó óbryddum", "á ísi hálum,", "teitum, tvévetrum", "ok sé tamr illa,", "eða í byr óðum", "beiti stjórnlausu,", "eða skyli haltr henda", "hrein í þáfjalli."], "91": ["Bert ek nú mæli,", "því at ek bæði veit,", "brigðr er karla hugr konum;", "þá vér fegrst mælum,", "er vér flást hyggjum:", "þat tælir horska hugi."], "92": ["Fagrt skal mæla", "ok fé bjóða,", "sá er vill fljóðs ást fá,", "líki leyfa", "ins ljósa mans,", "sá fær, er fríar."], "93": ["Ástar firna", "skyli engi maðr", "annan aldregi;", "oft fá á horskan,", "er á heimskan né fá,", "lostfagrir litir."], "94": ["Eyvitar firna", "er maðr annan skal,", "þess er um margan gengr guma;", "heimska ór horskum", "gerir hölða sonu", "sá inn máttki munr."], "95": ["Hugr einn þat veit,", "er býr hjarta nær,", "einn er hann sér of sefa;", "öng er sótt verri", "hveim snotrum manni", "en sér engu at una."], "96": ["Þat ek þá reynda,", "er ek í reyri sat,", "ok vættak míns munar;", "hold ok hjarta", "var mér in horska mær;", "þeygi ek hana at heldr hefik."], "97": ["Billings mey", "ek fann beðjum á", "sólhvíta sofa;", "jarls ynði", "þótti mér ekki vera", "nema við þat lík at lifa."], "98": ["Auk nær aftni", "skaltu, Óðinn, koma,", "ef þú vilt þér mæla man;", "allt eru ósköp,", "nema einir viti", "slíkan löst saman."], "99": ["Aftr ek hvarf", "ok unna þóttumk", "vísum vilja frá;", "hitt ek hugða,", "at ek hafa mynda", "geð hennar allt ok gaman."], "100": ["Svá kom ek næst,", "at in nýta var", "vígdrótt öll of vakin", "með brennandum ljósum", "ok bornum viði,", "svá var mér vílstígr of vitaðr."], "101": ["Auk nær morgni,", "er ek var enn of kominn,", "þá var saldrótt of sofin;", "grey eitt ek þá fann", "innar góðu konu", "bundit beðjum á."], "102": ["Mörg er góð mær,", "ef görva kannar,", "hugbrigð við hali;", "þá ek þat reynda,", "er it ráðspaka", "teygða ek á flærðir fljóð;", "háðungar hverrar", "leitaði mér it horska man,", "ok hafða ek þess vettki vífs."], "103": ["Heima glaðr gumi", "ok við gesti reifr,", "sviðr skal um sig vera,", "minnigr ok málugr,", "ef hann vill margfróðr vera,", "oft skal góðs geta;", "fimbulfambi heitir,", "sá er fátt kann segja,", "þat er ósnotrs aðal."], "104": ["Inn aldna jötun ek sótta,", "nú em ek aftr of kominn:", "fátt gat ek þegjandi þar;", "mörgum orðum", "mælta ek í minn frama", "í Suttungs sölum."], "105": ["Gunnlöð mér of gaf", "gullnum stóli á", "drykk ins dýra mjaðar;", "ill iðgjöld", "lét ek hana eftir hafa", "síns ins heila hugar,", "síns ins svára sefa."], "106": ["Rata munn", "létumk rúms of fá", "ok um grjót gnaga;", "yfir ok undir", "stóðumk jötna vegir,", "svá hætta ek höfði til."], "107": ["Vel keypts litar", "hefi ek vel notit,", "fás er fróðum vant,", "því at Óðrerir", "er nú upp kominn", "á alda vés jaðar."], "108": ["Ifi er mér á,", "at ek væra enn kominn", "jötna görðum ór,", "ef ek Gunnlaðar né nytak,", "innar góðu konu,", "þeirar er lögðumk arm yfir."], "109": ["Ins hindra dags", "gengu hrímþursar", "Háva ráðs at fregna", "Háva höllu í;", "at Bölverki þeir spurðu,", "ef hann væri með böndum kominn", "eða hefði hánum Suttungr of sóit."], "110": ["Baugeið Óðinn,", "hygg ek, at unnit hafi;", "hvat skal hans tryggðum trúa?", "Suttung svikinn", "hann lét sumbli frá", "ok grætta Gunnlöðu."], "111": ["Mál er at þylja", "þular stóli á", "Urðarbrunni at,", "sá ek ok þagðak,", "sá ek ok hugðak,", "hlýdda ek á manna mál;", "of rúnar heyrða ek dæma,", "né of ráðum þögðu", "Háva höllu at,", "Háva höllu í,", "heyrða ek segja svá:"], "112": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "nótt þú rís-at", "nema á njósn séir", "eða þú leitir þér innan út staðar."], "113": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "fjölkunnigri konu", "skal-at-tu í faðmi sofa,", "svá at hon lyki þik liðum."], "114": ["Hon svá gerir,", "at þú gáir eigi", "þings né þjóðans máls;", "mat þú vill-at", "né mannskis gaman,", "ferr þú sorgafullr at sofa."], "115": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "annars konu", "teygðu þér aldregi", "eyrarúnu at."], "116": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "á fjalli eða firði,", "ef þik fara tíðir,", "fásktu at virði vel."], "117": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "illan mann", "láttu aldregi", "óhöpp at þér vita,", "því at af illum manni", "fær þú aldregi", "gjöld ins góða hugar."], "118": ["Ofarla bíta", "ek sá einum hal", "orð illrar konu;", "fláráð tunga", "varð hánum at fjörlagi", "ok þeygi of sanna sök."], "119": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "veistu, ef þú vin átt,", "þann er þú vel trúir,", "far þú at finna oft,", "því at hrísi vex", "ok hávu grasi", "vegr, er vættki treðr."], "120": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "góðan mann", "teygðu þér at gamanrúnum", "ok nem líknargaldr, meðan þú lifir."], "121": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "vin þínum", "ver þú aldregi", "fyrri at flaumslitum;", "sorg etr hjarta,", "ef þú segja né náir", "einhverjum allan hug."], "122": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "orðum skipta", "þú skalt aldregi", "við ósvinna apa,"], "123": ["Því at af illum manni", "mundu aldregi", "góðs laun of geta,", "en góðr maðr", "mun þik gerva mega", "líknfastan at lofi."], "124": ["Sifjum er þá blandat,", "hver er segja ræðr", "einum allan hug;", "allt er betra", "en sé brigðum at vera;", "er-a sá vinr öðrum, er vilt eitt segir."], "125": ["Ráðumk, þér Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "þrimr orðum senna", "skal-at-tu þér við verra mann", "oft inn betri bilar,", "þá er inn verri vegr."], "126": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "skósmiðr þú verir", "né skeftismiðr,", "nema þú sjalfum þér séir:", "skór er skapaðr illa", "eða skaft sé rangt,", "þá er þér böls beðit."], "127": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "hvars þú böl kannt,", "kveð þú þér bölvi at", "ok gef-at þínum fjándum frið."], "128": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "illu feginn", "ver þú aldregi,", "en lát þér at góðu getit."], "129": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "upp líta", "skal-at-tu í orrustu,", "- gjalti glíkir", "verða gumna synir, -", "síðr þitt of heilli halir."], "130": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "ef þú vilt þér góða konu", "kveðja at gamanrúnum", "ok fá fögnuð af,", "fögru skaltu heita", "ok láta fast vera;", "leiðisk manngi gótt, ef getr."], "131": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "varan bið ek þik vera", "ok eigi ofvaran;", "ver þú við öl varastr", "ok við annars konu", "ok við þat it þriðja,", "at þjófar né leiki."], "132": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "at háði né hlátri", "hafðu aldregi", "gest né ganganda."], "133": ["Oft vitu ógörla,", "þeir er sitja inni fyrir,", "hvers þeir ro kyns, er koma;", "er-at maðr svá góðr", "at galli né fylgi,", "né svá illr, at einugi dugi."], "134": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "at hárum þul", "hlæ þú aldregi,", "oft er gótt, þat er gamlir kveða;", "oft ór skörpum belg", "skilin orð koma", "þeim er hangir með hám", "ok skollir með skrám", "ok váfir með vílmögum."], "135": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "gest þú né geyja", "né á grind hrekir;", "get þú váluðum vel."], "136": ["Rammt er þat tré,", "er ríða skal", "öllum at upploki;", "baug þú gef,", "eða þat biðja mun", "þér læs hvers á liðu."], "137": ["Ráðumk þér, Loddfáfnir,", "en þú ráð nemir, -", "njóta mundu, ef þú nemr,", "þér munu góð, ef þú getr -:", "hvars þú öl drekkir,", "kjós þér jarðar megin,", "því at jörð tekr við ölðri,", "en eldr við sóttum,", "eik við abbindi,", "ax við fjölkynngi,", "höll við hýrógi,", "- heiftum skal mána kveðja, -", "beiti við bitsóttum,", "en við bölvi rúnar,", "fold skal við flóði taka."], "138": ["Veit ek, at ek hekk", "vindga meiði á", "nætr allar níu,", "geiri undaðr", "ok gefinn Óðni,", "sjalfr sjalfum mér,", "á þeim meiði,", "er manngi veit", "hvers af rótum renn."], "139": ["Við hleifi mik sældu", "né við hornigi;", "nýsta ek niðr,", "nam ek upp rúnar,", "æpandi nam,", "fell ek aftr þaðan."], "140": ["Fimbulljóð níu", "nam ek af inum frægja syni", "Bölþorns, Bestlu föður,", "ok ek drykk of gat", "ins dýra mjaðar,", "ausinn Óðreri."], "141": ["Þá nam ek frævask", "ok fróðr vera", "ok vaxa ok vel hafask,", "orð mér af orði", "orðs leitaði,", "verk mér af verki", "verks leitaði."], "142": ["Rúnar munt þú finna", "ok ráðna stafi,", "mjök stóra stafi,", "mjök stinna stafi,", "er fáði fimbulþulr", "ok gerðu ginnregin", "ok reist hroftr rögna."], "143": ["Óðinn með ásum,", "en fyr alfum Dáinn,", "Dvalinn ok dvergum fyrir,", "Ásviðr jötnum fyrir,", "ek reist sjalfr sumar."], "144": ["Veistu, hvé rísta skal?", "Veistu, hvé ráða skal?", "Veistu, hvé fáa skal?", "Veistu, hvé freista skal?", "Veistu, hvé biðja skal?", "Veistu, hvé blóta skal?", "Veistu, hvé senda skal?", "Veistu, hvé sóa skal?"], "145": ["Betra er óbeðit", "en sé ofblótit,", "ey sér til gildis gjöf;", "betra er ósent", "en sé ofsóit.", "Svá Þundr of reist", "fyr þjóða rök,", "þar hann upp of reis,", "er hann aftr of kom."], "146": ["Ljóð ek þau kann,", "er kann-at þjóðans kona", "ok mannskis mögr.", "Hjalp heitir eitt,", "en þat þér hjalpa mun", "við sökum ok sorgum", "ok sútum görvöllum."], "147": ["Þat kann ek annat,", "er þurfu ýta synir,", "þeir er vilja læknar lifa."], "148": ["Það kann ek þriðja:", "ef mér verðr þörf mikil", "hafts við mína heiftmögu,", "eggjar ek deyfi", "minna andskota,", "bíta-t þeim vápn né velir."], "149": ["Þat kann ek it fjórða:", "ef mér fyrðar bera", "bönd að boglimum,", "svá ek gel,", "at ek ganga má,", "sprettr mér af fótum fjöturr,", "en af höndum haft."], "150": ["Þat kann ek it fimmta:", "ef ek sé af fári skotinn", "flein í folki vaða,", "fýgr-a hann svá stinnt,", "at ek stöðvig-a-k,", "ef ek hann sjónum of sék."], "151": ["Þat kann ek it sétta:", "ef mik særir þegn", "á vrótum hrás viðar,", "ok þann hal", "er mik heifta kveðr,", "þann eta mein heldr en mik."], "152": ["Þat kann ek it sjaunda:", "ef ek sé hávan loga", "sal of sessmögum,", "brennr-at svá breitt,", "at ek hánum bjargig-a-k;", "þann kann ek galdr at gala."], "153": ["Þat kann ek it átta,", "er öllum er", "nytsamligt at nema:", "hvars hatr vex", "með hildings sonum", "þat má ek bæta brátt."], "154": ["Þat kann ek it níunda:", "ef mik nauðr of stendr", "at bjarga fari mínu á floti,", "vind ek kyrri", "vági á", "ok svæfik allan sæ."], "155": ["Þat kann ek it tíunda:", "ef ek sé túnriður", "leika lofti á,", "ek svá vinnk,", "at þær villar fara", "sinna heimhama,", "sinna heimhuga."], "156": ["Þat kann ek it ellifta:", "ef ek skal til orrostu", "leiða langvini,", "und randir ek gel,", "en þeir með ríki fara", "heilir hildar til,", "heilir hildi frá,", "koma þeir heilir hvaðan."], "157": ["Þat kann ek it tolfta:", "ef ek sé á tré uppi", "váfa virgilná,", "svá ek ríst", "ok í rúnum fák,", "at sá gengr gumi", "ok mælir við mik."], "158": ["Þat kann ek it þrettánda:", "ef ek skal þegn ungan", "verpa vatni á,", "mun-at hann falla,", "þótt hann í folk komi,", "hnígr-a sá halr fyr hjörum."], "159": ["Þat kann ek it fjögurtánda:", "ef ek skal fyrða liði", "telja tíva fyrir,", "ása ok alfa", "ek kann allra skil;", "fár kann ósnotr svá."], "160": ["Þat kann ek it fimmtánda", "er gól Þjóðrerir", "dvergr fyr Dellings durum:", "afl gól hann ásum,", "en alfum frama,", "hyggju Hroftatý."], "161": ["Þat kann ek it sextánda:", "ef ek vil ins svinna mans", "hafa geð allt ok gaman,", "hugi ek hverfi", "hvítarmri konu,", "ok sný ek hennar öllum sefa."], "162": ["Þat kann ek it sjautjánda", "at mik mun seint firrask", "it manunga man.", "Ljóða þessa", "mun þú, Loddfáfnir,", "lengi vanr vera;", "þó sé þér góð, ef þú getr,", "nýt ef þú nemr,", "þörf ef þú þiggr."], "163": ["Þat kann ek it átjánda,", "er ek æva kennik", "mey né manns konu,", "- allt er betra,", "er einn of kann;", "þat fylgir ljóða lokum, -", "nema þeiri einni,", "er mik armi verr,", "eða mín systir sé."], "164": ["Nú eru Háva mál", "kveðin Háva höllu í,", "allþörf ýta sonum,", "óþörf jötna sonum;", "heill sá, er kvað,", "heill sá, er kann,", "njóti sá, er nam,", "heilir, þeirs hlýddu."]};
+const D = {};
+
+D[1] = {t:"Gáttir allar",
+s:"Hávamál hefjast á varúð: áður en maður gengur inn í ókunnugt hús skal hann skoða og skyggnast um allar dyr, því að aldrei er víst hvar óvinir kunna að sitja fyrir á fletinu (bekkjunum). Fyrsti hluti kvæðisins (Geðspeki) er siðfræði ferðalangsins og gestsins, og hér hefst hún á öryggi.",
+no:[
+["Gylfaginning 2","Snorri lætur Gylfa konung koma í Valhöll og vitnar beint í þetta erindi: hann sá mann í dyrunum og spurði hvað hann héti. Gylfaginning hefst því á orðum Hávamála."],
+["Sögurnar","Launsátur og árásir í skálum eru algengar í Íslendingasögum, t.d. Flugumýrarbrenna (Sturlunga) og víg í Gísla sögu, þar sem Vésteinn er veginn í rúmi sínu."],
+["Hávamál sem heild","Kvæðið er líklega samsett úr nokkrum eldri kvæðum. Það er aðeins varðveitt í Konungsbók Eddukvæða (um 1270)."]],
+c:[
+["Egypsk","Kenningar Ptahhoteps","Egypskar spekiritningar frá um 2400 f.Kr. gefa ungum mönnum ráð um hegðun í annarra húsum og við borð höfðingja. Spekibókmenntir með fyrirmælum eru meðal elstu texta heims."],
+["Írsk","Tecosca Cormaic","Í „Kenningum Cormaks“ svarar konungurinn Cormac mac Airt syni sínum með stuttum heilræðum um hegðun. Írsk hliðstæða við Hávamál, bæði að formi og efni."],
+["Biblíuleg","Orðskviðirnir","Orðskviðir Salómons eru safn spakmæla handa ungum manni (Orðskv. 1:8: „Heyr, son minn, áminning föður þíns“)."]]};
+
+D[2] = {t:"Gestur er inn kominn",
+s:"Gesturinn heilsar gestgjöfunum: „Heilir gefendur! Gestur er inn kominn, hvar á hann að sitja?“ Sá sem þarf að sitja við brandana, þ.e. nærri dyrum eða eldinum, er bráður að reyna frama sinn. Erindið er óljóst, en flestir lesa það sem svo að gesturinn sem fær lélegt sæti eigi erfitt með að sanna sig.",
+no:[
+["Sætaskipan","Í sögum ræður sæti virðingu manna. Í Egils sögu og Laxdælu er sæti gestsins mælikvarði á heiður hans."],
+["Lokasenna 7–8","Loki krefst sætis í veislu Ægis og Bragi neitar honum. Sama spurning, hvar gesturinn skuli sitja, verður kveikja deilna."],
+["Gefendur","Gestgjafinn er „gefandi“: hann gefur mat, drykk og skjól. Gjöf og endurgjöf eru grunnstef í Hávamálum."]],
+c:[
+["Grísk","Xenia","Í Ódysseifskviðu fær gesturinn sæti, mat og drykk áður en hann er spurður nafns. Gestrisni var heilög skylda undir vernd Seifs Xeniosar."],
+["Biblíuleg","Lúkas 14:8–10","„Þegar einhver býður þér til brúðkaups, þá set þig ekki í efsta sæti.“ Dæmisaga Jesú um sætaskipan í veislu."],
+["Indversk","Taittiriya Upanishad","„Atithi devo bhava“: gesturinn er guð. Gesturinn skal hljóta virðingu óháð stöðu."]]};
+
+D[3] = {t:"Elds er þörf",
+s:"Sá sem kemur inn kalinn á hnjám þarf eld. Maður sem hefur farið yfir fjöll þarf mat og föt. Hávamál lýsa grunnþörfum ferðalangsins af hlýju og raunsæi, sem hæfir norrænu loftslagi.",
+no:[
+["Íslenskt samhengi","Ferðir yfir heiðar og fjöll að vetri voru lífshættulegar. Í Íslendingasögum segir oft frá mönnum sem koma kaldir og hraktir til bæja."],
+["Grágás","Lög gerðu ráð fyrir skyldu til að hýsa ferðamenn og skýla þeim í óveðri."]],
+c:[
+["Grísk","Ódysseifur hjá Faíökum","Ódysseifur kemur nakinn og hrakinn úr sjónum. Nausikaa gefur honum föt og mat áður en nokkuð annað er gert (Ódysseifskviða 6)."],
+["Biblíuleg","Matteus 25:35–36","„Hungraður var ég og þér gáfuð mér að eta, gestur var ég og þér hýstuð mig, nakinn og þér klædduð mig.“"]]};
+
+D[4] = {t:"Vatns er þörf",
+s:"Sá sem kemur til máltíðar þarf vatn (til að þvo sér), þerru (handklæði) og vinsamlegt boð. Hann þarf góða framkomu, ef hann getur fengið hana, og orð og endurþögn: að fá að tala og að á hann sé hlustað. Gestrisni felst ekki aðeins í mat heldur einnig í samtali og virðingu.",
+no:[
+["Rígsþula","Rígur (Heimdallur) kemur til þriggja bæja og fær þar mat og gistingu. Hver gestgjafi tekur á móti honum eftir efnum sínum."],
+["Handþvottur","Í lýsingum á veislum í sögum þvo gestir hendur sínar áður en sest er að borði."]],
+c:[
+["Biblíuleg","Abraham og gestirnir","Abraham býður þremur ókunnugum vatn til að þvo fætur sína og mat (1. Mós. 18:4). Þeir reynast vera sendiboðar Guðs."],
+["Grísk","Baukis og Fílemon","Fátæku hjónin taka á móti dulbúnum Seifi og Hermesi, þvo þeim og gefa þeim það besta sem þau eiga (Ummyndanir Óvidíusar 8)."]]};
+
+D[5] = {t:"Vits er þörf",
+s:"Sá sem ferðast víða þarf vit. Heima er allt auðvelt. Sá sem ekkert kann og situr með vitrum mönnum verður að augabragði, að athlægi. Vit er það sem ferðalangurinn þarf mest, því að á ókunnum stöðum er hann prófaður.",
+no:[
+["Augabragð","„Að verða að augabragði“ merkir að verða að athlægi, að menn gefi hver öðrum augnagot."],
+["Vafþrúðnismál","Óðinn ferðast til jötunsins Vafþrúðnis og keppir við hann í visku. Vitið bjargar lífi hans."],
+["Konungs skuggsjá","Norskt fræðirit frá um 1250 ráðleggur ungum mönnum að ferðast og læra siði annarra þjóða."]],
+c:[
+["Grísk","Ódysseifur","„Margra manna borgir sá hann og kynntist hugsun þeirra“ (Ódysseifskviða 1.3). Ferðalangurinn sem lærir af reynslu."],
+["Kínversk","Konfúsíus","„Þegar þrír ganga saman er einn þeirra ávallt kennari minn“ (Rit Konfúsíusar 7.22). Lærdómur af öðrum á ferðum."],
+["Persnesk","Sa'di","Í Gulistan (Rósagarðinum, 1258) segir Sa'di frá ferðum sínum og þeirri visku sem hann hlaut af þeim."]]};
+
+D[6] = {t:"Gætinn að geði",
+s:"Maður á ekki að hreykja sér af viti sínu heldur vera gætinn í huga. Þegar vitur og þögull maður kemur á heimili verður varkárum sjaldan að víti (verður sjaldan fyrir áfalli). Því að betri vin fær maður aldrei en mikið mannvit. Vitið er hér persónugert sem tryggasti vinurinn.",
+no:[
+["Hugsvinnsmál","Íslensk þýðing á latneska spekiritinu Disticha Catonis frá 13. öld, ort undir ljóðahætti eins og Hávamál. Þar er sama áhersla á hógværð og varkárni."],
+["Hávamál 10–11","„Byrði betri berr-at maðr brautu at en sé mannvit mikit.“ Mannvitið er dýrmætasta eignin."]],
+c:[
+["Rómversk","Disticha Catonis","Latneskt safn heilræða frá 3. eða 4. öld sem var kennt um alla Evrópu á miðöldum. Það var þýtt á íslensku sem Hugsvinnsmál."],
+["Biblíuleg","Orðskviðirnir 4:7","„Upphaf spekinnar er: afla þér spekinnar.“ Spekin er mikilvægari en allt annað."],
+["Indversk","Hitopadesha","Í sanskrít-dæmisögum er vitið (buddhi) sagt besti vinur mannsins og eina eignin sem ekki verður tekin frá honum."]]};
+
+D[7] = {t:"Inn vari gestur",
+s:"Varkár gestur sem kemur til máltíðar þegir með hljóðu tali, hlustar með eyrunum og skoðar með augunum. Þannig kannar hver vitur maður aðstæður fyrst. Hlustun og athygli eru vopn gestsins.",
+no:[
+["Hávamál 27","„Ósnotr maðr, er með aldir kemr, þat er bazt, at hann þegi.“ Þögn sem dyggð."],
+["Grettis saga","Grettir og aðrar hetjur sagnanna þegja oft og fylgjast með áður en þeir láta til sín taka."]],
+c:[
+["Grísk","Epiktetos","„Náttúran gaf okkur tvö eyru og einn munn, svo að við heyrum tvöfalt meira en við tölum“ (eignað Zenoni frá Kítíon hjá Díógenesi Laertíosi)."],
+["Biblíuleg","Jakobsbréf 1:19","„Sérhver maður sé fljótur til að heyra, seinn til að tala.“"],
+["Egypsk","Amenemope","Egypsk spekirit hrósa hinum „þögla manni“ (ger) sem andstæðu hins heita og ákafa."]]};
+
+D[8] = {t:"Lof og líknstafir",
+s:"Sá er sæll sem getur aflað sér lofs og vinsemdar (líknstafa). Erfiðara er við það að eiga sem maður verður að treysta á í brjósti annars. Það er ótryggt að eiga orðstír sinn undir mati annarra.",
+no:[
+["Hávamál 76–77","Orðstírinn deyr aldrei. Hávamál vita bæði að orðstír er mikils virði og að hann er háður öðrum."],
+["Líknstafir","„Líknstafir“ eru vinsamleg orð. Andstæðan er „lastastafir“ í Lokasennu."]],
+c:[
+["Rómversk","Seneca","Seneca varar við því að eiga hamingju sína undir dómi annarra (Bréf til Lúcilíusar)."],
+["Indversk","Bhagavad Gíta","Hinn vitri er óháður lofi og lasti (Gíta 12.18–19)."]]};
+
+D[9] = {t:"Sá er sæll",
+s:"Sá er sæll sem sjálfur á lof og vit meðan hann lifir. Því að illt ráð hefur maður oft þegið úr brjósti annars. Ráðið er sjálfstæði: að treysta á eigið vit fremur en ráð annarra.",
+no:[
+["Sögurnar","Í Íslendingasögum leiða ill ráð oft til ógæfu: Hallgerður eggjar til víga í Njálu og Guðrún eggjar menn sína í Laxdælu."],
+["Hávamál 8","Erindin 8 og 9 eru par: hið fyrra um lof annarra, hið síðara um eigið vit."]],
+c:[
+["Grísk","Delfíspekin","„Þekktu sjálfan þig“ (gnōthi seauton) var letrað á hof Apollons í Delfí."],
+["Búddísk","Dhammapada 160","„Maðurinn er sjálfs sín herra; hver annar gæti verið herra hans?“"]]};
+
+D[10] = {t:"Byrði betri I",
+s:"Betri byrði ber maður ekki á vegi en mikið mannvit. Það þykir betra en auður á ókunnum stað: slíkt er athvarf hins vesæla. Þegar maður er fjarri heimili sínu kemur vitið að meiri notum en peningar.",
+no:[
+["Paraerindi","Erindin 10 og 11 hefjast á sömu orðum. Endurtekningin er einkenni munnlegrar spekihefðar."],
+["Hugsvinnsmál","Sama hugsun: viskan er betri en gull."]],
+c:[
+["Biblíuleg","Orðskviðirnir 16:16","„Hversu miklu betra er að eignast visku en gull.“"],
+["Grísk","Simonídes","Sagt var að skáldið Simonídes hefði lent í skipbroti og bjargast með það eitt sem hann bar í huga sér, meðan aðrir misstu allt."],
+["Tamílsk","Tirukkural","Í tamílska spekiritinu Tirukkural (um 5. öld) er lærdómur sagður eina eignin sem fylgir manni í sjö lífum."]]};
+
+D[11] = {t:"Byrði betri II",
+s:"Betri byrði ber maður ekki á vegi en mikið mannvit. Verra vegarnesti ber hann ekki en ofdrykkju öls. Seinni hlutinn snýr hugsuninni við: hið besta á ferðum er vitið, hið versta er ölvunin sem rænir mann því.",
+no:[
+["Hávamál 12–14","Næstu erindi fjalla um öl og ofdrykkju. Óðinn segir frá eigin reynslu."],
+["Lokasenna 47","Heimdallur segir Loka að ofdrykkja valdi því að menn gæti ekki málæðis síns."]],
+c:[
+["Grísk","Þeognis","Grískt spekiskáld frá 6. öld f.Kr. ráðleggur hófsemi í drykkju og varar við því sem vínið lætur menn segja."],
+["Biblíuleg","Orðskviðirnir 20:1","„Vínið er spottari, sterkur drykkur glaumgosi; hver sá sem lætur ginnast af því verður ekki vitur.“"]]};
+
+D[12] = {t:"Er-a svo gott",
+s:"Öl er ekki svo gott sem af er látið fyrir menn, því að því meira sem maður drekkur, því minna veit hann um eigið geð. Ölið rænir manninn vitinu sem Hávamál meta mest.",
+no:[
+["Egils saga 44","Egill Skallagrímsson drekkur Bárð í Atley ofurölvi og drepur hann síðan. Ölvun og vopn fara illa saman."],
+["Hávamál 19","„Haldi-t maðr á keri, drekki þó at hófi mjöð.“"]],
+c:[
+["Indversk","Manusmriti","Lögbók Manu bannar bramínum að drekka áfengi, því það spillir dómgreindinni."],
+["Íslömsk","Kóraninn 5:90–91","Vín og teningaspil eru sögð verk Satans sem vekja fjandskap og hindra menn í að minnast Guðs."],
+["Grísk","Platón","Í Lögunum ræðir Platón hvernig drykkjuveislur geti prófað hófsemi manna, ef þær eru undir stjórn."]]};
+
+D[13] = {t:"Óminnishegri",
+s:"Óminnishegri heitir sá sem þrumir (vofir) yfir ölveislum og stelur geði manna. Óðinn talar nú í fyrsta sinn í eigin persónu: „Í fjöðrum þess fugls var ég fjötraður í garði Gunnlaðar.“ Hér er vísað til sögunnar af skáldamiðinum, þegar Óðinn drakk ofurölvi hjá Gunnlöðu.",
+no:[
+["Skáldskaparmál 57–58","Óðinn (Bölverkur) kemst inn í fjallið Hnitbjörg, sefur þrjár nætur hjá Gunnlöðu, dóttur Suttungs, og fær að drekka þrisvar af miðinum. Hann tæmir öll kerin og flýr í arnarham."],
+["Hávamál 104–110","Sagan af miðinum er sögð nánar í Mansöng."],
+["Óminnishegri","Hegrinn kemur hvergi annars staðar fyrir. Hegri var tákn gleymsku, ef til vill vegna þess hve hann stendur hreyfingarlaus."]],
+c:[
+["Grísk","Lethe","Fljót gleymskunnar í undirheimum. Þeir sem drekka af því gleyma fyrri lífi sínu."],
+["Grísk","Lótusætur","Ódysseifsmenn sem éta lótus gleyma heimför sinni (Ódysseifskviða 9). Fæða sem rænir minninu."],
+["Indversk","Soma","Soma er helgur vímudrykkur guðanna sem veitir innblástur en getur líka ært."]]};
+
+D[14] = {t:"Ölur eg varð",
+s:"Óðinn heldur áfram: „Ölvaður varð ég, varð ofurölvi, hjá hinum fróða Fjalari.“ Því er ölveisla best að hver maður heimti aftur geð sitt, þ.e. að menn nái áttum á ný eftir drykkjuna. Óðinn notar eigin mistök sem víti til varnaðar.",
+no:[
+["Fjalar","Fjalar er ýmist dvergur sem drap Kvasi (Skáldskaparmál 57) eða, hér, líklega Suttungur sjálfur."],
+["Skáldskaparmál 57","Dvergarnir Fjalar og Galar drápu Kvasi og blönduðu blóð hans hunangi. Úr því varð skáldamjöðurinn. Suttungur tók hann síðar af þeim."]],
+c:[
+["Grísk","Díónýsos","Vínguðinn gefur bæði gleði og æði. Bakkynjur Evrípídesar sýna hættuna af ölvun guðsins."],
+["Biblíuleg","Nói","Nói verður ölvaður og liggur nakinn (1. Mós. 9). Jafnvel hinn réttláti fellur fyrir víninu."]]};
+
+D[15] = {t:"Þagalt og hugalt",
+s:"Konungsbarn á að vera þögult og hugsandi og djarft í vígum. Hver maður á að vera glaður og reifur þar til hann bíður bana. Hugsjónin er jafnaðargeð: að vera kátur og hugrakkur hvað sem örlögin bera í skauti sér.",
+no:[
+["Sögurnar","Hetjur sagnanna deyja oft með spaugsyrði á vörum. Þormóður Kolbrúnarskáld dregur ör úr hjarta sér og segir að vel hafi konungurinn alið sig (Fóstbræðra saga)."],
+["Krákumál","Ragnar loðbrók á að hafa kveðið í ormagarðinum: „Hlæjandi skal ek deyja.“"]],
+c:[
+["Rómversk","Stóuspeki","Markús Árelíus og Seneca kenndu að taka dauðanum með ró og jafnaðargeði."],
+["Japönsk","Bushido","Samúræjinn á að vera tilbúinn að deyja á hverri stundu, eins og segir í Hagakure."],
+["Grísk","Sókrates","Sókrates tekur eitrinu með ró og gamansemi (Platón, Faídón)."]]};
+
+D[16] = {t:"Ósnjallur maður",
+s:"Huglaus maður heldur að hann muni lifa að eilífu ef hann forðast bardaga. En ellin gefur honum engan frið, þótt spjótin geri það. Dauðinn kemur hvort sem er, og þá er betra að lifa með sæmd.",
+no:[
+["Hávamál 76","„Deyr fé, deyja frændr.“ Dauðinn er óumflýjanlegur en orðstírinn lifir."],
+["Eiríksmál og Hákonarmál","Kvæði um konunga sem falla í bardaga og fara til Valhallar. Dauði í bardaga var heiðvirður."]],
+c:[
+["Grísk","Sarpedon","Sarpedon segir við Glákos: ef við yrðum ódauðlegir með því að forðast stríð myndi ég ekki berjast, en þar sem dauðinn kemur hvort sem er, skulum við fara fram (Ilíonskviða 12.322–328)."],
+["Indversk","Bhagavad Gíta 2","Krishna segir Arjuna að hika ekki við að berjast, því dauðinn er óumflýjanlegur og sá sem flýr skyldu sína hlýtur smán."],
+["Rómversk","Hóratíus","„Dulce et decorum est pro patria mori ... mors et fugacem persequitur virum“: dauðinn eltir einnig þann sem flýr (Óður 3.2)."]]};
+
+D[17] = {t:"Kópir afglapi",
+s:"Fíflið glápir þegar það kemur í heimsókn, þylur fyrir munni sér eða þegir. En um leið og það fær sopa er geð þess opinbert. Ölið afhjúpar heimskuna.",
+no:[
+["Hávamál 12","„Færa veit, er fleira drekkr.“"],
+["Hávamál 24–27","Röð erinda um „ósnotran mann“ lýsir heimskunni frá mörgum hliðum."]],
+c:[
+["Rómversk","In vino veritas","„Í víninu er sannleikurinn“, latneskt spakmæli sem rakið er til Alkaíosar og Pliníusar."],
+["Biblíuleg","Orðskviðirnir 17:28","„Jafnvel afglapinn er talinn vitur meðan hann þegir.“"]]};
+
+D[18] = {t:"Sá einn veit",
+s:"Sá einn veit, sem víða ratar og hefur farið um margt, hverju geði hver maður stýrir. Hann er vitandi vits. Ferðalög og reynsla kenna manni að skilja hugsun annarra.",
+no:[
+["Víðförli","Íslendingasögur segja oft frá ungum mönnum sem fara utan til að kynnast konungum og öðrum þjóðum, t.d. Egill, Gunnar á Hlíðarenda og Kjartan."],
+["Hávamál 5","„Vits er þörf þeim er víða ratar.“"]],
+c:[
+["Grísk","Ódysseifur","„Margra manna borgir sá hann og kynntist hugsun þeirra.“"],
+["Kínversk","Laozi","„Sá sem þekkir aðra er vitur; sá sem þekkir sjálfan sig er upplýstur“ (Daodejing 33)."]]};
+
+D[19] = {t:"Drekki að hófi",
+s:"Maður á ekki að halda í kerið (bikarinn) en drekka mjöð í hófi, tala það sem þarf eða þegja. Enginn mun lá þér ókurteisi þótt þú gangir snemma að sofa. Hagnýtt ráð um hófsemi í veislum.",
+no:[
+["Hávamál 11–14","Fyrri erindi um öl og óminnishegrann."],
+["Konungs skuggsjá","Ráðleggur ungum hirðmönnum að drekka varlega og ganga snemma til hvílu."]],
+c:[
+["Grísk","Meden agan","„Ekkert of mikið“, áletrun á hofi Apollons í Delfí."],
+["Grísk","Evbúlos","Díónýsos segir í broti eftir Evbúlos að vitrir menn drekki þrjá bikara: fyrir heilsuna, ástina og svefninn. Fjórði bikarinn tilheyrir hroka."]]};
+
+D[20] = {t:"Gráðugur halur",
+s:"Gráðugur maður sem ekki kann sér hóf étur sér til ævilangrar sorgar. Oft verður magi heimsks manns að athlægi þegar hann kemur meðal vitra. Græðgi í mat er jafnmikil heimska og ofdrykkja.",
+no:[
+["Hávamál 21","Næsta erindi ber græðgina saman við hjarðir sem vita hvenær þær eigi að hætta að bíta."],
+["Þrymskviða 24–25","Þór (dulbúinn sem Freyja) étur heilan uxa og átta laxa og drekkur þrjú ker mjaðar. Græðgin er hér gamansöm."]],
+c:[
+["Grísk","Ofátsmenn í gamanleikjum","Í grískum gamanleikjum er mathákurinn algeng háðsmynd."],
+["Indversk","Dhammapada 325","„Sá sem er latur og gráðugur, sefur og veltir sér eins og alinn grís, fæðist aftur og aftur.“"]]};
+
+D[21] = {t:"Hjarðir það vitu",
+s:"Hjarðirnar vita hvenær þær eiga að fara heim og ganga þá af grasinu. En ósvinnur (óvitur) maður veit aldrei hvað maga hans hæfir. Dýrin eru vitrari en heimskinginn.",
+no:[
+["Búskaparmál","Myndin af hjörðinni sem gengur heim er tekin úr daglegu lífi bænda."],
+["Hávamál 20","Erindið skýrir það fyrra með dæmi úr náttúrunni."]],
+c:[
+["Biblíuleg","Jesaja 1:3","„Uxinn þekkir eiganda sinn og asninn jötu húsbónda síns, en Ísrael þekkir ekki.“ Dýr sem fyrirmynd skilnings."],
+["Kínversk","Daoismi","Zhuangzi bendir á að dýrin lifi í samræmi við náttúruna, en mennirnir brjóti gegn henni."]]};
+
+D[22] = {t:"Vesall maður",
+s:"Vesall maður með illt skap hlær að öllu. Það veit hann ekki, sem hann þyrfti að vita, að hann er ekki laus við galla sjálfur. Sá sem hæðist að öðrum gleymir eigin vömmum.",
+no:[
+["Lokasenna","Loki telur upp vamma annarra en þolir ekki að sínir séu taldir. Erindið lýsir honum vel."],
+["Hávamál 132","„Að háði né hlátri hafðu aldregi gest né ganganda.“"]],
+c:[
+["Biblíuleg","Matteus 7:3","„Hví sérðu flísina í auga bróður þíns, en tekur ekki eftir bjálkanum í auga sjálfs þín?“"],
+["Rómversk","Esópos og Phaedrus","Í dæmisögu bera menn tvo poka: galla annarra framan á sér, eigin galla á bakinu."]]};
+
+D[23] = {t:"Ósvinnur vakir",
+s:"Óvitur maður vakir allar nætur og hugsar um allt. Þá er hann þreyttur þegar morgnar og allt er jafnslæmt og áður. Áhyggjur leysa ekkert.",
+no:[
+["Gísla saga","Gísli Súrsson liggur andvaka og dreymir illa á útlegðarárum sínum. Áhyggjur og draumar fylgja feigum manni."]],
+c:[
+["Biblíuleg","Matteus 6:34","„Verið ekki áhyggjufullir um morgundaginn, því að morgundagurinn mun hafa sínar áhyggjur.“"],
+["Rómversk","Seneca","„Við þjáumst oftar í ímyndun en í veruleika“ (Bréf til Lúcilíusar 13)."]]};
+
+D[24] = {t:"Viðhlæjendur I",
+s:"Heimskur maður heldur að allir sem hlæja með honum séu vinir hans. Hann tekur ekki eftir því, þótt þeir tali illa um hann, þegar hann situr með vitrum. Erindið hefur fjórum sinnum sama upphaf, „Ósnotur maður“ (24–27), og lýsir heimskunni frá ýmsum hliðum.",
+no:[
+["Viðhlæjendur","Orðið „viðhlæjandi“ er orðið að máltæki í íslensku: maður sem hlær með manni en er ekki vinur hans."],
+["Njáls saga","Mörður Valgarðsson þykist vera vinur Höskuldar Hvítanessgoða en rægir hann. Falskur vinur í framkvæmd."]],
+c:[
+["Biblíuleg","Orðskviðirnir 26:24–25","„Hatursmaðurinn gerir sér upp blíðmæli ... þótt hann tali fagurt, treystu honum ekki.“"],
+["Grísk","Plútarkos","Ritgerðin „Hvernig greina má smjaðrara frá vini“ fjallar nákvæmlega um þetta."]]};
+
+D[25] = {t:"Viðhlæjendur II",
+s:"Heimskur maður heldur að allir sem hlæja með honum séu vinir hans. Það finnur hann þegar hann kemur á þing, að hann á fáa formælendur (stuðningsmenn). Þingið er prófsteinn vináttu.",
+no:[
+["Alþingi","Í Íslendingasögum ráðast mál á þingi af því hve marga stuðningsmenn hver aðili hefur. Í Njálu og Hrafnkels sögu leita menn að liðsinni höfðingja."],
+["Hrafnkels saga","Sámur fær stuðning Þjóstarssona á Alþingi af tilviljun, eftir að enginn höfðingi vildi styðja hann."]],
+c:[
+["Rómversk","Clientes","Rómverskir höfðingjar mældu völd sín í fjölda skjólstæðinga (clientes) sem fylgdu þeim á Forum."],
+["Grísk","Aþenskur dómstóll","Í málaferlum í Aþenu skipti stuðningur vina við vitnisburð og meðmæli miklu máli."]]};
+
+D[26] = {t:"Ósnotur þykist allt vita",
+s:"Heimskur maður þykist vita allt ef hann á sér skjól í horni. Hann veit ekki hverju hann á að svara ef menn reyna hann. Heimskinginn er öruggur aðeins meðan hann er ekki prófaður.",
+no:[
+["Vafþrúðnismál","Þekkingarkeppni þar sem sá sem ekki getur svarað tapar höfði sínu."],
+["Alvíssmál","Dvergurinn Alvís (sem þykist vita allt) svarar spurningum Þórs þar til sólin rís og hann verður að steini."]],
+c:[
+["Grísk","Sókrates","Sókrates sagðist vitrari en aðrir því hann vissi að hann vissi ekkert (Málsvörn Sókratesar 21d)."],
+["Kínversk","Konfúsíus","„Að vita það sem maður veit og vita að maður veit ekki það sem maður veit ekki, það er þekking“ (Rit Konfúsíusar 2.17)."]]};
+
+D[27] = {t:"Best að hann þegi",
+s:"Þegar heimskur maður kemur meðal fólks er best að hann þegi. Enginn veit að hann kann ekkert nema hann tali of mikið. En sá sem ekkert veit, veit ekki heldur að hann talar of mikið. Heimskinginn kemst upp með heimsku sína með því að þegja.",
+no:[
+["Hávamál 7","Varkár gestur þegir og hlustar."],
+["Hávamál 29","„Ærna mælir sá er æva þegir staðlausu stafi.“"]],
+c:[
+["Biblíuleg","Orðskviðirnir 17:28","„Jafnvel afglapinn er talinn vitur meðan hann þegir, skynsamur meðan hann lokar vörum sínum.“ Nær orðrétt sama hugsun."],
+["Rómversk","Publilius Syrus","„Saepe tacere quam loqui utilius“: oft er gagnlegra að þegja en tala."]]};
+
+D[28] = {t:"Fróður sá þykist",
+s:"Sá þykir fróður sem kann að spyrja og segja frá. Synir manna geta engu leynt af því sem gengur um þá. Orðrómur fer hratt og leyndarmál eru illa geymd.",
+no:[
+["Hávamál 63","„Einn vita né annar skal. Þjóð veit, ef þrír eru.“"],
+["Sögurnar","Kjaftasögur valda oft deilum í Íslendingasögum, t.d. orðrómurinn um Kjartan og Guðrúnu í Laxdælu."]],
+c:[
+["Rómversk","Fama","Virgill lýsir Orðróminum (Fama) sem ófreskju með ótal augum, tungum og eyrum sem vex við hverja ferð (Eneasarkviða 4.173 o.áfr.)."],
+["Biblíuleg","Prédikarinn 10:20","„Fugl himinsins ber hljóðið og vængjað dýr segir frá orðunum.“"]]};
+
+D[29] = {t:"Staðlausir stafir",
+s:"Sá sem aldrei þegir segir nóg af staðlausum stöfum (merkingarlausu bulli). Hraðmælt tunga, nema henni sé haldið í skefjum, galar sér oft illt. Tungan er hættuleg þeim sem ekki kann að stjórna henni.",
+no:[
+["Lokasenna 31","Freyja segir við Loka: „Flá er þér tunga, hygg ek at þér fremr myni ógott um gala.“ Nær sama orðalag."],
+["Málsháttur","„Staðlausir stafir“ er orðið að föstu orðasambandi í íslensku."]],
+c:[
+["Biblíuleg","Jakobsbréf 3:5–8","„Tungan er lítill limur en lætur mikið yfir sér ... enginn maður getur tamið tunguna.“"],
+["Egypsk","Ptahhotep","„Tungan er sverð mannsins og orðið er máttugra en allur bardagi.“"]]};
+
+D[30] = {t:"Að augabragði",
+s:"Enginn á að hafa annan að augabragði (spotti) þótt hann komi í heimsókn. Margur þykist fróður ef hann er ekki spurður og fær að sitja í friði með þurra fætur. Sá sem hæðist að gestinum veit ekki hvað gesturinn kann.",
+no:[
+["Hávamál 5","Sá sem ekkert kann verður að augabragði."],
+["Hávamál 132–133","„Að háði né hlátri hafðu aldregi gest né ganganda.“"]],
+c:[
+["Grísk","Xenia","Að hæðast að gesti var brot á helgri skyldu. Biðlarnir í Ódysseifskviðu hæðast að Ódysseifi dulbúnum og deyja fyrir það."],
+["Biblíuleg","Hebreabréfið 13:2","„Gleymið ekki gestrisninni, því að vegna hennar hafa sumir hýst engla án þess að vita.“"]]};
+
+D[31] = {t:"Sá er flótta tekur",
+s:"Sá gestur þykist vitur sem flýr undan þegar annar gestur hæðist að honum. Sá sem glottir yfir máltíð veit ekki gjörla hvort hann er að gaspra við óvini. Erindið er óljóst; það varar annaðhvort við því að hæðast að gesti eða ráðleggur að forðast deilur.",
+no:[
+["Lokasenna","Senna í veislu er bókmenntagreinin sem erindið virðist lýsa."],
+["Hárbarðsljóð","Þór og Hárbarður (Óðinn) skiptast á háðsyrðum yfir sund."]],
+c:[
+["Grísk","Samdrykkjan","Grískir gestgjafar settu reglur um samræður í samdrykkjum til að forðast deilur og háð."]]};
+
+D[32] = {t:"Órir gestur við gest",
+s:"Margir menn eru gagnhollir (vinsamlegir hvor við annan) en verða ósáttir við máltíðina. Það mun alltaf verða rógur meðal manna: gestur deilir við gest. Átök í veislum eru eilíf.",
+no:[
+["Lokasenna","Öll Lokasenna lýsir deilum gesta í veislu."],
+["Sögurnar","Veislur leiða oft til víga í Íslendingasögum, t.d. í Laxdælu og Egils sögu."]],
+c:[
+["Írsk","Fled Bricrend","Í Veislu Bricriu er veisla skipulögð til að vekja deilur milli hetjanna."],
+["Grísk","Lapítar og Kentárar","Brúðkaupsveisla Peiriþóss endar í blóðugum bardaga þegar Kentárarnir drekka sig fulla (Ummyndanir Óvidíusar 12)."]]};
+
+D[33] = {t:"Árlega verðar",
+s:"Maður á að fá sér mat snemma nema hann fari í heimsókn. Annars situr hann og snópir (snuðrar) og lætur eins og hann sé sólginn og getur ekki talað um neitt. Svangur gestur er lélegur félagi.",
+no:[
+["Hagnýt speki","Mörg erindi Hávamála fjalla um einfaldar daglegar venjur. Það gerir kvæðið einstakt meðal goðakvæða."]],
+c:[
+["Grísk","Hesíódos","Verk og dagar eru full af hagnýtum ráðum um daglegt líf, tímasetningu verka og hegðun."],
+["Egypsk","Ptahhotep","„Ef þú situr við borð þér æðri manns, taktu það sem fram er borið ... ekki stara á það.“"]]};
+
+D[34] = {t:"Afhvarf mikið",
+s:"Langur krókur er til ills vinar, þótt hann búi við veginn. En til góðs vinar liggja gagnvegir (beinar leiðir), þótt hann búi langt í burtu. Fjarlægðin ræðst af hug, ekki af vegalengd.",
+no:[
+["Hávamál 119","„Því at hrísi vex ok hávu grasi vegr, er vættki treðr.“ Vinir verða að hittast."],
+["Málshættir","Erindið lifir sem málsháttur: „Til góðs vinar liggja gagnvegir.“"]],
+c:[
+["Kínversk","Konfúsíus","„Er það ekki gleði að vinur komi úr fjarlægð?“ (Rit Konfúsíusar 1.1)."],
+["Rómversk","Cicero","Í De amicitia segir Cicero að sannir vinir séu nálægir jafnvel þegar þeir eru fjarverandi."]]};
+
+D[35] = {t:"Ganga skal",
+s:"Gestur á að fara og ekki dvelja alltaf á sama stað. Kær verður leiður ef hann situr lengi á annars bekk. Gesturinn á að kunna að fara.",
+no:[
+["Hávamál 66","Óðinn segist sjálfur oft hafa komið of snemma eða of seint. Gesturinn á að kunna bæði að koma og fara."]],
+c:[
+["Rómversk","Plautus","„Enginn gestur er svo góður að hann verði ekki leiður eftir þrjá daga“ (Miles Gloriosus). Frægt máltæki: gestir og fiskur fara að lykta eftir þrjá daga."],
+["Biblíuleg","Orðskviðirnir 25:17","„Kom sjaldan í hús náunga þíns, svo að hann verði ekki leiður á þér og fari að hata þig.“"]]};
+
+D[36] = {t:"Bú er betra I",
+s:"Betra er að eiga eigið bú þótt lítið sé; hver maður er herra heima hjá sér. Þótt hann eigi aðeins tvær geitur og sal þakinn tágum er það betra en að betla. Sjálfstæði er dýrmætara en allsnægtir annarra.",
+no:[
+["Íslenskt samhengi","Sjálfstæður bóndi var grundvöllur íslensks samfélags. Lausamenn án eigin bús höfðu lítil réttindi."],
+["Hávamál 37","Paraerindi með sama upphafi."]],
+c:[
+["Rómversk","Hóratíus","Hóratíus lofar litla búið sitt í Sabínahæðum fram yfir auð og glaum Rómar (Satírur 2.6)."],
+["Rómversk","Cincinnatus","Rómverjinn Cincinnatus sneri aftur að plógi sínum á litla búinu eftir að hafa verið alræðismaður."]]};
+
+D[37] = {t:"Bú er betra II",
+s:"Betra er að eiga eigið bú þótt lítið sé; hver maður er herra heima hjá sér. Blæðir hjarta þess sem þarf að biðja um mat við hverja máltíð. Sá sem þarf að betla tapar sæmd sinni.",
+no:[
+["Grágás","Lög ákváðu hverjir skyldu framfæra ómaga og förumenn. Að vera ómagi var þung staða."]],
+c:[
+["Biblíuleg","Síraksbók 29:22–28","„Betra er líf hins fátæka undir eigin þaki en ríkuleg veisla í annarra húsum.“"],
+["Indversk","Hitopadesha","„Að biðja er að deyja“; betlarinn missir allan heiður."]]};
+
+D[38] = {t:"Vopnin á vegum",
+s:"Maður á ekki að fara fet frá vopnum sínum á víðavangi, því að óvíst er að vita hvenær hann þarf á spjóti að halda á vegum úti. Ferðalangurinn á að vera viðbúinn.",
+no:[
+["Sögurnar","Margir eru vegnir vopnlausir í Íslendingasögum, t.d. Höskuldur Hvítanessgoði sem var að sá korni."],
+["Hávamál 1","Varúðin heldur áfram frá fyrsta erindi."]],
+c:[
+["Biblíuleg","Nehemía 4:17","Þeir sem reistu múra Jerúsalem héldu á verkfæri í annarri hendi og vopni í hinni."],
+["Grísk","Ódysseifur","Ódysseifur felur vopn sín í salnum áður en hann ræðst á biðlana."]]};
+
+D[39] = {t:"Fann'g-a eg mildan mann",
+s:"Óðinn segist aldrei hafa fundið svo örlátan mann eða svo gestrisinn að hann vildi ekki þiggja gjöf á móti, né svo fúsan að gefa af fé sínu að honum þætti laun leið ef hann fengi þau. Gjafir krefjast endurgjalds; það er eðli samskipta manna.",
+no:[
+["Hávamál 41–46","Röð erinda um gjafir og vináttu."],
+["Egils saga","Egill fær gullhring frá Aðalsteini konungi og yrkir um hann. Konungleg gjöf krefst kvæðis að launum."]],
+c:[
+["Frönsk mannfræði","Marcel Mauss: Gjöfin","Mauss vitnaði beint í Hávamál í upphafi bókar sinnar Essai sur le don (1925) sem dæmi um að gjöfum fylgi skylda til endurgjalds."],
+["Rómversk","Do ut des","„Ég gef til að þú gefir“, rómversk regla um fórnir og samninga."]]};
+
+D[40] = {t:"Fjár síns",
+s:"Maður á ekki að líða skort af fé sínu sem hann hefur aflað. Oft sparar maður handa óvinum það sem hann hafði ætlað vinum sínum. Margt fer verr en ætlað er. Nísku fylgir sú hætta að aðrir njóti auðsins.",
+no:[
+["Egils saga","Egill sökkvir silfri sínu í mýri í ellinni frekar en að láta erfingjana fá það."],
+["Hávamál 78","„Fullar grindr sá ek fyr Fitjungs sonum, nú bera þeir vánar völ.“ Auður er hverfull."]],
+c:[
+["Biblíuleg","Prédikarinn 2:18–19","„Ég hataði allt strit mitt ... því að ég verð að eftirláta það manninum sem kemur á eftir mér, og hver veit hvort hann verður vitur eða heimskur?“"],
+["Biblíuleg","Lúkas 12:20","Dæmisagan um ríka bóndann: „Heimskingi, í nótt verður líf þitt af þér heimtað, og hver fær þá það sem þú hefur aflað?“"]]};
+
+D[41] = {t:"Vopnum og voðum",
+s:"Vinir eiga að gleðja hvorn annan með vopnum og klæðum, sem sjá má á þeim sjálfum. Þeir sem gefa hvor öðrum og endurgjalda eru lengst vinir, ef það gengur vel. Gagnkvæmar gjafir viðhalda vináttunni.",
+no:[
+["Laxdæla saga","Ólafur pái og Kjartan þiggja dýrar gjafir af konungum. Gjafir sýna stöðu og bönd."],
+["Gunnlaugs saga","Gunnlaugur fær skikkju frá Aðalráði konungi fyrir kvæði sitt."]],
+c:[
+["Grísk","Glákos og Díómedes","Í Ilíonskviðu 6 skiptast óvinirnir Glákos og Díómedes á herklæðum þegar þeir komast að því að afar þeirra voru gestavinir. Gjafaskipti mynda vináttu."],
+["Pólýnesísk","Kula","Mannfræðingurinn Malinowski lýsti Kula-skiptunum á Trobriand-eyjum, þar sem skartgripum er skipt í hring milli eyja til að viðhalda tengslum."]]};
+
+D[42] = {t:"Gjöf við gjöf",
+s:"Maður á að vera vinur vinar síns og gjalda gjöf við gjöf. Hlátri á að mæta með hlátri en lygi með lausung (svikum). Hávamál kenna gagnkvæmni: gott fyrir gott, svik fyrir svik.",
+no:[
+["Hávamál 45–46","Hvernig skal fara með þann sem maður treystir ekki."],
+["Sögurnar","Hefnd og endurgjald eru grunnur samfélagsins í Íslendingasögum."]],
+c:[
+["Biblíuleg","Andstæða í fjallræðunni","Jesús kennir hið gagnstæða: „Elskið óvini yðar“ (Matteus 5:44). Hávamál endurspegla heiðna siðfræði gagnkvæmninnar."],
+["Babýlonsk","Hammúrabí","„Auga fyrir auga“, lögmál endurgjaldsins (lex talionis), er í lögum Hammúrabís frá um 1750 f.Kr."]]};
+
+D[43] = {t:"Vinar vinur",
+s:"Maður á að vera vinur vinar síns, og einnig vinar hans. En enginn á að vera vinur vinar óvinar síns. Vinátta myndar net bandalaga.",
+no:[
+["Sögurnar","Vinátta (vinfengi) var pólitískt bandalag í Íslendingasögum, oft innsiglað með gjöfum og veislum."]],
+c:[
+["Indversk","Arthashastra","Kautilya lýsir hring bandalaga (mandala): vinur minn, vinur vinar míns, óvinur minn, vinur óvinar míns."],
+["Arabísk","Máltæki","„Óvinur óvinar míns er vinur minn“, algengt máltæki sem á rætur í sanskrít og arabískri hefð."]]};
+
+D[44] = {t:"Vin sem þú treystir",
+s:"Ef þú átt vin sem þú treystir vel og vilt fá gott af honum, skaltu blanda geði við hann (deila hugsunum), skiptast á gjöfum og heimsækja hann oft. Vináttu þarf að rækta.",
+no:[
+["Hávamál 119","„Farðu að finna oft“ er endurtekið í Loddfáfnismálum."],
+["Fóstbræður","Í Fóstbræðra sögu og Gísla sögu er bandið milli fóstbræðra sterkara en blóðbönd."]],
+c:[
+["Grísk","Aristóteles","Aristóteles segir í Siðfræði Níkomakkosar (8. bók) að vinátta krefjist samvista og tíma: menn þurfi að „borða saltið saman“."],
+["Rómversk","Cicero","De amicitia: vinátta byggist á því að vilja það sama og hafna því sama."]]};
+
+D[45] = {t:"Fagurt skaltu mæla",
+s:"Ef þú átt annan vin sem þú treystir illa en vilt samt fá gott af honum, skaltu mæla fagurt við hann en hugsa flátt og gjalda lausung við lygi. Hávamál kenna raunsæja kænsku gegn óvinum.",
+no:[
+["Hávamál 91","„Þá vér fegurst mælum, er vér flást hyggjum.“ Óðinn játar að karlar beiti sömu aðferð við konur."],
+["Sögurnar","Snorri goði og Njáll eru frægir fyrir kænsku sína."]],
+c:[
+["Ítölsk","Machiavelli","Furstinn á að kunna að vera bæði ljón og refur og þykjast vera dyggðugur (Furstinn, 18. kafli)."],
+["Indversk","Panchatantra","Dæmisögur kenna konungssonum að beita kænsku og blekkingu gegn óvinum."]]};
+
+D[46] = {t:"Hlæja skaltu",
+s:"Um þann sem þú treystir illa og grunar um græsku: hlæja skaltu með honum og tala annað en þú hugsar. Lík skulu gjöld gjöfum. Endurgjaldið skal vera sömu gerðar og það sem gefið var.",
+no:[
+["Hávamál 24","Viðhlæjendur eru ekki vinir. Hér er ráðlagt að nota sama vopn."]],
+c:[
+["Kínversk","Sun Tzu","„Allur hernaður byggist á blekkingu“ (List hernaðarins 1.18)."],
+["Grísk","Þeognis","Spekiskáldið ráðleggur að laga sig að hverjum vini eins og kolkrabbi að steini."]]};
+
+D[47] = {t:"Maður er manns gaman",
+s:"„Ungur var ég forðum og fór einn saman; þá villtist ég af leið. Auðugur þóttist ég þegar ég fann annan: maður er manns gaman.“ Einveran er fátækt; félagsskapurinn er auður.",
+no:[
+["Málsháttur","„Maður er manns gaman“ er einn þekktasti málsháttur íslenskunnar."],
+["Óðinn sem förumaður","Óðinn ferðast oft einn og dulbúinn, t.d. sem Gangráður, Grímnir og Vegtamur."]],
+c:[
+["Biblíuleg","Prédikarinn 4:9–10","„Betri eru tveir en einn ... því að ef þeir falla getur annar reist félaga sinn á fætur.“"],
+["Grísk","Aristóteles","„Maðurinn er í eðli sínu félagsvera“ (zōon politikon, Stjórnmálin 1.2)."],
+["Mesópótamísk","Gilgames og Enkídú","Gilgames finnur sér loks jafningja og vin í Enkídú."]]};
+
+D[48] = {t:"Mildir, fræknir",
+s:"Örlátir og hugrakkir menn lifa best og ala sjaldan sorg. En huglaus maður óttast allt, og nískur maður kvíðir alltaf gjöfum. Gjafmildi og hugrekki fara saman; níska og ótti fara saman.",
+no:[
+["Konungsdyggðir","Mildi og frækni voru helstu dyggðir konunga í dróttkvæðum. Konungar eru lofaðir sem „gullbrjótar“."]],
+c:[
+["Grísk","Aristóteles","Örlæti (eleutheriotēs) er dyggð milli nísku og eyðslusemi (Siðfræði Níkomakkosar 4)."],
+["Indversk","Dana","Gjafmildi er ein mikilvægasta dyggðin í hindúisma og búddisma."]]};
+
+D[49] = {t:"Tveir trémenn",
+s:"„Föt mín gaf ég tveimur trémönnum úti á velli. Rekkar (hetjur) þóttust þeir þegar þeir höfðu fengið klæði: neis (skammaður) er nakinn maður.“ Trémennirnir eru líklega skurðgoð eða fuglahræður úr tré. Fötin skapa manninn.",
+no:[
+["Völuspá 17–18","Óðinn og bræður hans finna tvö tré, Ask og Emblu, og gefa þeim líf. Erindið kann að endurspegla sömu goðsögn."],
+["Trégoð","Trélíkneski hafa fundist á Norðurlöndum, t.d. Broddenbjerg-líkneskið í Danmörku. Í Gautreks sögu og Ögmundar þætti er sagt frá klæddum trégoðum."]],
+c:[
+["Dönsk","Andersen","Saga H.C. Andersens um Nýju fötin keisarans er nútímaleg hliðstæða: klæðin skapa virðinguna."],
+["Grísk","Hermes-súlur","Í Aþenu stóðu trégoð (hermai) við vegi og voru stundum klædd og skreytt."],
+["Rómversk","Fuglahræður","Rómverjar settu tréstyttur af Príapusi í garða til að fæla burt fugla og þjófa."]]};
+
+D[50] = {t:"Hrörnar þöll",
+s:"Fura sem stendur ein á berangri hrörnar; hvorki börkur né barr skýlir henni. Svo er maður sem enginn elskar. Hvernig á hann að lifa lengi? Einmana maður er eins og deyjandi tré.",
+no:[
+["Þorp","„Þorp“ merkir hér berangur eða ber hæð, ekki þorp í nútímamerkingu."],
+["Sonatorrek","Egill Skallagrímsson líkir sér við tré sem missir greinar sínar þegar hann hefur misst syni sína."]],
+c:[
+["Biblíuleg","Sálmur 1:3","Hinn réttláti er „sem tré, gróðursett hjá rennandi lækjum“. Sama mynd, öfugt."],
+["Biblíuleg","Prédikarinn 4:10","„Vei þeim sem er einn, þegar hann fellur.“"],
+["Fornensk","Flakkarinn","The Wanderer lýsir einmana manni sem hefur misst höfðingja sinn og félaga."]]};
+D[51] = {t:"Eldi heitari",
+s:"Heitari en eldur brennur friður milli illra vina í fimm daga, en hann slokknar þegar sá sjötti kemur og öll vinátta versnar. Skyndivinátta er skammlíf.",
+no:[
+["Hávamál 34","Andstæða: til góðs vinar liggja gagnvegir."],
+["Fimm dagar","„Fimm dagar“ er föst tímalengd í kvæðinu, sbr. 74. erindi: „Fjöld um viðrir á fimm dögum.“"]],
+c:[
+["Rómversk","Cicero","Vinátta sem byggist á hagsmunum endist aðeins meðan hagsmunirnir endast (De amicitia)."],
+["Biblíuleg","Orðskviðirnir 18:24","„Til eru vinir sem verða manni að tjóni, en til er vinur sem er tryggari en bróðir.“"]]};
+
+D[52] = {t:"Mikið eitt",
+s:"Maður þarf ekki að gefa mikið: oft kaupir maður sér lof með litlu. „Með hálfum hleif og hálfu keri fékk ég mér félaga.“ Smá gjöf af einlægni dugar til vináttu.",
+no:[
+["Hávamál 39–48","Gjafir eru grunnur vináttu, en þær þurfa ekki að vera stórar."]],
+c:[
+["Biblíuleg","Eyrir ekkjunnar","Fátæka ekkjan gefur tvo smápeninga og Jesús segir að hún hafi gefið meira en allir hinir (Markús 12:41–44)."],
+["Grísk","Baukis og Fílemon","Fátæku hjónin gefa guðunum það litla sem þau eiga og hljóta mikil laun."]]};
+
+D[53] = {t:"Lítilla sanda",
+s:"Lítilla sanda, lítilla sæva, lítil eru geð manna. Því að allir menn urðu ekki jafnvitrir; hálf er öld hvar (mannkynið er alls staðar hálfvitið). Erindið er torskilið. Fyrri helmingurinn ber mannshugann saman við litlar strendur og lítil höf: hann er takmarkaður.",
+no:[
+["Túlkanir","Fræðimenn hafa deilt um merkinguna. Ein túlkun: eins og smá strönd tilheyrir litlu hafi, eins er hugur manna takmarkaður. Önnur: hver maður hefur sinn eigin litla heim."],
+["Hávamál 54–56","Næstu erindi kenna að hófleg viska sé best."]],
+c:[
+["Grísk","Sókrates","Mannleg viska er lítils virði í samanburði við visku guðanna (Málsvörn Sókratesar 23a)."],
+["Biblíuleg","Jesaja 55:8–9","„Mínar hugsanir eru ekki yðar hugsanir ... svo miklu sem himinninn er hærri en jörðin.“"]]};
+
+D[54] = {t:"Meðalsnotur I",
+s:"Hver maður á að vera hóflega vitur, aldrei of vitur. Fegurst lifa þeir sem vita vel margt. Þrjú erindi (54–56) hefjast eins og kenna að hófleg viska sé best. Of mikil viska veldur sorg.",
+no:[
+["Paraerindi","Þrjú erindi með sama upphafi mynda heild sem rökstyður hugsunina frá þremur hliðum."],
+["Vafþrúðnismál","Vafþrúðnir er fróðasti jötunninn en deyr fyrir þekkingarkeppni sína."]],
+c:[
+["Grísk","Meden agan","„Ekkert of mikið“, Delfíspekin."],
+["Rómversk","Aurea mediocritas","„Hinn gullni meðalvegur“ (Hóratíus, Óður 2.10)."],
+["Grísk","Aristóteles","Dyggðin er meðalvegur milli tveggja öfga (Siðfræði Níkomakkosar 2)."]]};
+
+D[55] = {t:"Meðalsnotur II",
+s:"Hver maður á að vera hóflega vitur, aldrei of vitur. Því að hjarta vitra manna verður sjaldan glatt ef hann er alvitur. Of mikil þekking veldur depurð.",
+no:[
+["Hávamál 56","Rökin halda áfram: of mikil vitneskja um framtíðina er byrði."],
+["Óðinn","Óðinn sjálfur veit örlög sín og ber þá vitneskju þungt (Völuspá, Baldrs draumar)."]],
+c:[
+["Biblíuleg","Prédikarinn 1:18","„Því að mikilli speki fylgir mikil gremja og sá sem eykur þekkingu eykur kvöl.“ Nær nákvæmlega sama hugsun."],
+["Grísk","Ödípús","Ödípús leitar sannleikans og hann tortímir honum (Sófókles, Ödípús konungur)."]]};
+
+D[56] = {t:"Meðalsnotur III",
+s:"Hver maður á að vera hóflega vitur, aldrei of vitur. Enginn skyldi vita örlög sín fyrir; þá er hugurinn sorglausastur. Sá sem veit framtíðina getur ekki lifað áhyggjulaus.",
+no:[
+["Baldrs draumar","Óðinn vekur upp völvu til að vita örlög Baldurs, en það færir honum aðeins sorg."],
+["Gísla saga","Gísli fær draumspár um dauða sinn og lifir í ótta þeirra vegna."]],
+c:[
+["Grísk","Kassandra","Kassandra veit örlög Tróju en getur ekki breytt þeim; vitneskjan er bölvun hennar."],
+["Rómversk","Hóratíus","„Tu ne quaesieris, scire nefas“: spyr þú ekki, því bannað er að vita hver endalok guðirnir hafa ætlað okkur (Óður 1.11, sama kvæði og „carpe diem“)."]]};
+
+D[57] = {t:"Brandur af brandi",
+s:"Brandur brennur af brandi þar til hann er brunninn; eldur kviknar af eldi. Maður verður kunnur að máli af öðrum manni, en of heimskur af því að halda sig fyrir sig. Þekking kviknar í samræðum, eins og eldur af eldi.",
+no:[
+["Hávamál 47","„Maður er manns gaman.“"],
+["Hávamál 141","„Orð mér af orði orðs leitaði.“ Sama hugsun: þekking fæðir þekkingu."]],
+c:[
+["Grísk","Platón","Í sjöunda bréfinu lýsir Platón því hvernig þekking kviknar í sálinni eftir langar samræður, „eins og ljós sem kviknar af neista“."],
+["Biblíuleg","Orðskviðirnir 27:17","„Járn brýnir járn, og maður brýnir mann.“"]]};
+
+D[58] = {t:"Ár skal rísa I",
+s:"Sá á að rísa snemma sem vill ná fé eða lífi annars manns. Sjaldan nær liggjandi úlfur lambslæri né sofandi maður sigri. Hinn árvökuli sigrar.",
+no:[
+["Sögurnar","Mörg víg í Íslendingasögum eru unnin snemma morguns meðan menn sofa, t.d. dráp Höskuldar Hvítanessgoða og Njálsbrenna að kvöldi."],
+["Málsháttur","„Morgunstund gefur gull í mund“ er síðari íslensk hliðstæða."]],
+c:[
+["Ensk","Fyrsti fuglinn","„Árrisull fugl fær orminn“, enskt máltæki sem rakið er til 17. aldar."],
+["Biblíuleg","Orðskviðirnir 6:9–11","„Hversu lengi ætlar þú að liggja, letingi? ... þá kemur fátæktin yfir þig.“"]]};
+
+D[59] = {t:"Ár skal rísa II",
+s:"Sá á að rísa snemma sem á fáa verkamenn og ganga sjálfur til verka sinna. Margt tefur þann sem sefur á morgnana. Hálfur er auður undir hraðanum. Bóndinn sem vinnur sjálfur verður að vera iðinn.",
+no:[
+["Búskapur","Erindið speglar líf bænda sem höfðu fá vinnuhjú og urðu sjálfir að vinna."]],
+c:[
+["Grísk","Hesíódos","„Morgunninn tekur þriðjung verksins“ (Verk og dagar 578)."],
+["Biblíuleg","Orðskviðirnir 10:4","„Hönd hins lata gerir fátækan, en hönd hins iðna gerir ríkan.“"]]};
+
+D[60] = {t:"Þurra skíða",
+s:"Maður kann mælinn (magnið) á þurrum skíðum (eldiviði) og næfrum (birkiberki) til að þekja þak, og þeim viði sem endast megi tíð og misseri. Fyrirhyggja: að vita hve mikils maður þarf til vetrarins.",
+no:[
+["Næfrar","Birkibörkur var notaður undir torf á þökum til að verja þau vatni."],
+["Misseri","Misseri er hálft ár; íslenska árið skiptist í sumar og vetur."]],
+c:[
+["Grísk","Esópos","Dæmisagan um maurinn og engisprettuna: maurinn safnar til vetrarins en engisprettan syngur."],
+["Biblíuleg","Orðskviðirnir 6:6–8","„Far þú til maursins, letingi ... hann aflar sér fæðu á sumrin.“"]]};
+
+D[61] = {t:"Þveginn og mettur",
+s:"Þveginn og saddur skal maður ríða til þings, þótt hann sé ekki vel klæddur. Enginn skal skammast sín fyrir skó og buxur, né heldur fyrir hest, þótt hann eigi ekki góðan. Erindið er óheilt í handritinu. Hreinlæti og framkoma skipta meiru en skart.",
+no:[
+["Alþingi","Þingið var helsti samkomustaður Íslendinga. Þar sýndu menn sig og öðluðust virðingu."],
+["Óheilt erindi","Síðasta línan er ófullgerð í Konungsbók og hefur verið bætt við af útgefendum."]],
+c:[
+["Biblíuleg","1. Samúelsbók 16:7","„Maðurinn lítur á útlitið, en Drottinn lítur á hjartað.“"],
+["Grísk","Sókrates","Sókrates gekk berfættur og illa klæddur um Aþenu en var virtur fyrir vit sitt."]]};
+
+D[62] = {t:"Örn á aldinn mar",
+s:"Örninn snapir og gnapir (teygir háls og hnusar) þegar hann kemur að hafinu, á aldinn mar. Svo er maður sem kemur meðal margra og á fáa stuðningsmenn. Einmana maður í fjölmenni er eins og örn sem horfir hjálparvana yfir hafið.",
+no:[
+["Hávamál 25","„Þá þat finnr, er at þingi kemr, at hann á formælendr fáa.“"]],
+c:[
+["Fornensk","Flakkarinn","Einmana maður á hafi úti sér sjófugla og minnist félaga sinna."],
+["Kínversk","Ljóð Tang-tímans","Í ljóðum Du Fu og Li Bai er einmana fugl tákn útlaga fjarri heimili sínu."]]};
+
+D[63] = {t:"Þjóð veit ef þrír eru",
+s:"Hver vitur maður á að spyrja og segja frá, ef hann vill heita horskur (vitur). Einn á að vita, ekki annar; ef þrír vita veit þjóðin öll. Leyndarmál skal aðeins einn maður vita.",
+no:[
+["Málsháttur","„Þjóð veit ef þrír vita“ er orðinn málsháttur."],
+["Sögurnar","Leyndarmál koma oft upp í Íslendingasögum vegna þess að of margir vita, t.d. um vígið á Vésteini í Gísla sögu."]],
+c:[
+["Ensk","Benjamin Franklin","„Þrír geta haldið leyndarmáli ef tveir þeirra eru dauðir“ (Poor Richard's Almanack, 1735)."],
+["Egypsk","Spekirit","Egypsk spekirit vara ítrekað við því að segja öðrum það sem þeir eigi ekki að vita."]]};
+
+D[64] = {t:"Ríki sitt",
+s:"Hver ráðsnjall maður skal fara með vald sitt í hófi. Þá finnur hann það, þegar hann kemur meðal hugrakkra, að enginn er einn hvatastur (bestur af öllum). Hroki valdhafa hefnir sín.",
+no:[
+["Fáfnismál 17","Nær sama erindi: „Þá það finnr er með fræknum kemr, at engi er einna hvatastr.“ Fáfnir lærir þetta of seint."],
+["Sögurnar","Ofstopamenn eins og Hrafnkell Freysgoði eru niðurlægðir í sögunum."]],
+c:[
+["Grísk","Hybris og nemesis","Hroki (hybris) kallar á refsingu guðanna (nemesis). Grunnstef grískra harmleikja."],
+["Biblíuleg","Orðskviðirnir 16:18","„Drambsemi er undanfari tortímingar.“"]]};
+
+D[65] = {t:"Orða þeirra",
+s:"Fyrir þau orð sem maður segir við annan fær hann oft endurgjald. Erindið er aðeins hálft í handritinu. Orð hafa afleiðingar.",
+no:[
+["Óheilt erindi","Aðeins þrjár línur eru varðveittar. Líklega hefur hinn helmingurinn glatast í uppskrift."],
+["Lokasenna","Loki fær endurgjald orða sinna þegar hann er bundinn."]],
+c:[
+["Biblíuleg","Matteus 12:36","„Á degi dómsins munu menn verða að gera grein fyrir hverju ónytjuorði sem þeir mæla.“"],
+["Indversk","Karma","Orð eru verk og bera ávöxt sinn eins og önnur verk."]]};
+
+D[66] = {t:"Mikilsti snemma",
+s:"Óðinn segist hafa komið of snemma á marga staði en of seint á suma. Ölið var drukkið eða ekki tilbúið. Sjaldan hittir óvelkominn maður á réttan tíma. Gamansöm sjálfslýsing förumannsins.",
+no:[
+["Óðinn sem förumaður","Óðinn birtist sem gestur í mörgum sögum, t.d. í Grímnismálum, Vafþrúðnismálum og Völsunga sögu."],
+["Lið","„Lið“ merkir hér öl eða veislu („sjaldan hittir leiður í lið“)."]],
+c:[
+["Grísk","Hermes","Hermes, sendiboði og ferðaguð, kemur og fer milli heima, oft óvænt."],
+["Rómversk","Plautus","Í rómverskum gamanleikjum er óboðni gesturinn (parasitus) sem alltaf kemur á röngum tíma algeng persóna."]]};
+
+D[67] = {t:"Hér og hvar",
+s:"Hér og hvar myndi mér vera boðið heim ef ég þyrfti ekki mat við máltíð, eða þar sem ég hafði etið eitt læri hjá tryggum vini myndu tvö hanga. Fólki er boðið þegar það þarf þess ekki. Kaldhæðni um gestrisni.",
+no:[
+["Lær","Kjötlæri héngu til reykingar í eldhúsum. Myndin er tekin úr daglegu lífi."]],
+c:[
+["Biblíuleg","Matteus 25:29","„Hverjum sem hefur mun gefið verða.“ Hinum ríka er gefið meira."],
+["Rómversk","Ovidíus","„Meðan þú ert heppinn áttu marga vini; þegar ský dregur fyrir sólu verður þú einn“ (Tristia 1.9)."]]};
+
+D[68] = {t:"Eldur er bestur",
+s:"Eldur er bestur meðal manna, og sólarsýn, heilbrigði sitt ef maður getur haldið henni, og að lifa án lasts. Upptalning á því besta í lífinu: hlýja, birta, heilsa og heiðarleiki.",
+no:[
+["Hávamál 3","„Elds er þörf.“ Eldurinn er grunnur lífsins á Norðurlöndum."],
+["Sólin","Sólin var dýrmæt á norðlægum slóðum þar sem veturinn er dimmur."]],
+c:[
+["Grísk","Pindar","„Best er vatnið“, upphaf fyrsta Ólympíuóðs Pindars. Upptalning á bestu hlutunum."],
+["Persnesk","Zóróastrismi","Eldurinn og sólin eru helgust í zóróastrískri trú, tákn Ahura Mazda."]]};
+
+D[69] = {t:"Era-t maður alls vesall",
+s:"Enginn maður er alveg vesall þótt hann sé illa heill. Einn er sæll af sonum sínum, annar af frændum, einn af nægu fé, annar af góðum verkum. Hver hefur sína huggun.",
+no:[
+["Sonatorrek","Egill Skallagrímsson missir syni sína en finnur huggun í skáldskapargáfunni sem Óðinn gaf honum."]],
+c:[
+["Grísk","Sólon og Krösos","Sólon segir Krösosi konungi að enginn sé sæll fyrr en hann deyr, og nefnir venjulegt fólk sem sælla en hann (Heródótos 1.30–32)."],
+["Rómversk","Seneca","Huggunarrit Seneca kenna að hver maður eigi sér einhverja gæfu."]]};
+
+D[70] = {t:"Ey getur kvikur kú",
+s:"Betra er að vera lifandi og sæll; lifandi maður getur alltaf eignast kú. „Ég sá eld brenna fyrir ríkum manni, en hann lá dauður úti fyrir dyrum.“ Lífið er dýrmætara en allur auður.",
+no:[
+["Bálför","Erindið gæti lýst bálför auðugs manns. Bálfarir voru stundaðar á víkingaöld."],
+["Málsháttur","„Ey getur kvikur kú“: lifandi maður getur alltaf byrjað upp á nýtt."]],
+c:[
+["Grísk","Akkilles í Hadesi","Akkilles segir við Ódysseif í undirheimum að hann vildi frekar vera fátækur vinnumaður á jörðu en konungur allra dauðra (Ódysseifskviða 11.489–491)."],
+["Biblíuleg","Prédikarinn 9:4","„Lifandi hundur er betri en dautt ljón.“"]]};
+
+D[71] = {t:"Haltur ríður hrossi",
+s:"Haltur maður ríður hesti, handarvana maður rekur hjörð, heyrnarlaus maður berst og dugir. Blindur maður er betri en brenndur (dauður): enginn hefur gagn af líki. Hver lifandi maður hefur sitt notagildi.",
+no:[
+["Týr","Týr er einhendur en samt guð hernaðar. Óðinn er eineygður. Fötlun útilokar ekki gildi."],
+["Sögurnar","Önundur tréfótur í Grettis sögu berst þrátt fyrir tréfót."]],
+c:[
+["Grísk","Hefaistos","Smiðsguðinn er haltur en mesti hagleiksmaður guðanna."],
+["Biblíuleg","Prédikarinn 9:5","„Hinir lifandi vita að þeir eiga að deyja, en hinir dauðu vita ekki neitt.“"]]};
+
+D[72] = {t:"Bautasteinar",
+s:"Sonur er betri þótt hann fæðist seint, eftir að faðirinn er látinn. Sjaldan standa bautasteinar við veg nema niðji reisi þá eftir niðja. Sonurinn tryggir minningu föðurins.",
+no:[
+["Rúnasteinar","Þúsundir rúnasteina í Svíþjóð og Danmörku eru reistir af sonum eftir feður: „N.N. reisti stein þennan eftir föður sinn.“"],
+["Ynglinga saga 8","Óðinn setti þau lög að reisa skyldi bautasteina eftir mikla menn."]],
+c:[
+["Rómversk","Grafsteinar við vegi","Rómverjar grófu hina dauðu meðfram vegum, t.d. við Via Appia, svo að vegfarendur læsu nöfn þeirra."],
+["Kínversk","Forfeðradýrkun","Sonurinn ber ábyrgð á fórnum til forfeðra sinna; án sonar týnist minning ættarinnar."],
+["Indversk","Putra","Samkvæmt Manu bjargar sonurinn (putra) föður sínum frá helvíti sem heitir Put."]]};
+
+D[73] = {t:"Tunga er höfuðs bani",
+s:"Tveir eru herir eins manns: tungan er bani höfuðsins. Undir hverri skikkju býst ég við hendi. Erindið er torskilið. Það varar við því að orð geti kostað mann lífið og að undir hverjum feldi geti leynst vopnuð hönd.",
+no:[
+["Málsháttur","„Tunga er höfuðs bani“ lifir sem málsháttur."],
+["Lokasenna","Tunga Loka verður honum að falli."]],
+c:[
+["Biblíuleg","Orðskviðirnir 18:21","„Dauði og líf eru á valdi tungunnar.“"],
+["Arabísk","Máltæki","„Tungan er ljón; ef þú sleppir henni étur hún þig“ (eignað Ali ibn Abi Talib)."]]};
+
+D[74] = {t:"Hverf er haustgríma",
+s:"Sá fagnar nóttinni sem treystir á nesti sitt. Skammar eru skipsrár. Hverful er haustnóttin. Mikið breytist á fimm dögum, en meira á mánuði. Ferðalangurinn þarf að vera viðbúinn breytingum.",
+no:[
+["Haustgríma","„Gríma“ er nótt eða myrkur. Haustnætur á Íslandi eru óútreiknanlegar."],
+["Sjóferðir","Íslendingasögur segja frá mönnum sem hrakti í hafi, t.d. í Laxdælu og Grænlendinga sögu."]],
+c:[
+["Grísk","Hesíódos","Hesíódos varar við sjóferðum að hausti (Verk og dagar 618–694)."],
+["Biblíuleg","Jakobsbréf 4:14","„Þér vitið ekki hvað morgundagurinn ber í skauti sér.“"]]};
+
+D[75] = {t:"Margur verður af aurum api",
+s:"Sá veit ekki sem ekkert veit: margur verður að fífli af peningum. Einn er auðugur, annar fátækur; á ekki að álasa honum fyrir það. Auður gerir menn heimska, og fátækt er ekki skömm.",
+no:[
+["Málsháttur","„Margur verður af aurum api“ er einn þekktasti málsháttur íslensku."],
+["Hrafnkels saga","Auður og völd gera Hrafnkel hrokafullan áður en hann er niðurlægður."]],
+c:[
+["Biblíuleg","1. Tímóteusarbréf 6:10","„Fégirndin er rót alls ills.“"],
+["Grísk","Mídas","Mídas konungur óskaði að allt sem hann snerti yrði að gulli og svalt næstum í hel."]]};
+
+D[76] = {t:"Deyr fé I",
+s:"Fé deyr, frændur deyja, maður deyr sjálfur á sama hátt. En orðstírinn deyr aldrei hjá þeim sem sér góðan getur. Frægasta erindi Hávamála: allt er forgengilegt nema gott orð.",
+no:[
+["Hákonarmál","Eyvindur skáldaspillir lýkur erfidrápu um Hákon góða á orðunum: „Deyr fé, deyja frændr, eyðisk land ok láð.“ Sama formúla."],
+["Sögurnar","Leitin að orðstír er drifkraftur hetjanna í Íslendingasögum."]],
+c:[
+["Fornensk","Bjólfskviða 1386–1389","„Hver maður verður að bíða endaloka lífs síns; sá sem getur skal vinna sér orðstír fyrir dauðann.“"],
+["Grísk","Kleos aphthiton","Akkilles velur stutta ævi og ódauðlega frægð (Ilíonskviða 9.413)."],
+["Rómversk","Hóratíus","„Non omnis moriar“: ég mun ekki allur deyja, því kvæði mín lifa (Óður 3.30)."]]};
+
+D[77] = {t:"Deyr fé II",
+s:"Fé deyr, frændur deyja, maður deyr sjálfur á sama hátt. „Ég veit einn hlut sem aldrei deyr: dómurinn um hvern dauðan mann.“ Seinna erindið er dekkra en hið fyrra: ekki aðeins góður orðstír lifir, heldur dómurinn, hvort sem hann er góður eða illur.",
+no:[
+["Paraerindi","Erindin 76 og 77 eru par. Hið fyrra er bjartsýnt, hið síðara raunsætt."],
+["Níð","Níðvísur gátu fylgt manni eftir dauðann. Slæmur orðstír var jafn varanlegur og góður."]],
+c:[
+["Egypsk","Vigtun hjartans","Í Bók hinna dauðu er hjarta hins látna vegið á móti fjöður Maat. Dómurinn yfir hinum dauða ræður eilífð hans."],
+["Grísk","Sólon","„Kallaðu engan sælan fyrr en hann er dáinn“ (Heródótos 1.32)."],
+["Kínversk","Saga","Kínverskir sagnaritarar eins og Sima Qian dæmdu látna menn um aldur og ævi."]]};
+
+D[78] = {t:"Fitjungs synir",
+s:"Óðinn sá fullar grindur (fjárhús) hjá sonum Fitjungs (hins feita, auðuga). Nú bera þeir betlistaf. Svo er auður eins og augnablik: hann er valtastur vina. Auðurinn er hverfull.",
+no:[
+["Fitjungur","„Fitjungur“ merkir hinn feiti, ríki maður; nafnið er líklega táknrænt."],
+["Hávamál 75","„Margur verður af aurum api.“"]],
+c:[
+["Biblíuleg","Job","Job missir allan auð sinn, börn og heilsu á einum degi."],
+["Rómversk","Fortúna","Gæfugyðjan snýr hjóli sínu og hinir ríku falla (Boethius, Huggun heimspekinnar 2)."],
+["Grísk","Krösos","Ríkasti konungur heims missir ríki sitt og er nær brenndur á báli (Heródótos 1)."]]};
+
+D[79] = {t:"Metnaður þróast",
+s:"Heimskur maður sem eignast fé eða ást konu verður sífellt drambsamari, en mannvit eykst honum aldrei. Hann gengur drjúgur í hroka sínum. Gæfan gerir heimskingjann verri.",
+no:[
+["Hávamál 75 og 78","Auður og heimska fara saman."]],
+c:[
+["Grísk","Hybris","Gæfa sem leiðir til hroka er grunnstef grískra harmleikja."],
+["Biblíuleg","Orðskviðirnir 30:8–9","„Gef mér hvorki fátækt né auð ... svo að ég verði ekki of saddur og afneiti þér.“"]]};
+
+D[80] = {t:"Rúnar reginkunnar",
+s:"Það er þá reynt þegar þú spyrð um rúnir, þær sem eru af goðum komnar, sem ginnregin (hin miklu goð) gerðu og fimbulþulur (hinn mikli þulur, Óðinn) litaði. Þá er best að hann þegi. Fyrsti hluti kvæðisins lýkur með vísun til rúnanna sem Rúnatal fjallar um síðar.",
+no:[
+["Hávamál 142","„Er fáði fimbulþulur og gerðu ginnregin.“ Sama orðalag í Rúnatali."],
+["Sparlösa-steinninn","Á sænska rúnasteininum frá Sparlösa (um 800) stendur „rúnar þær hinar reginkunnu“. Sama orðasamband á steini."],
+["Noleby-steinninn","Á Noleby-steininum frá um 600 stendur „runo fahi raginakudo“: ég rita reginkunna rún. Elsta dæmi um orðasambandið."]],
+c:[
+["Indversk","Vedurnar","Vedurnar eru taldar „apaurusheya“, ekki af mönnum gerðar heldur opinberaðar guðlega."],
+["Egypsk","Thoth","Egyptar töldu ritmálið (híeróglýfur) gjöf Thoths, guðs viskunnar: „orð guðsins“."]]};
+
+D[81] = {t:"Að kveldi skal dag leyfa",
+s:"Að kvöldi skal lofa daginn, konu þegar hún er brennd (dáin), sverð þegar það er reynt, mey þegar hún er gefin (gift), ís þegar komist er yfir hann, öl þegar það er drukkið. Ekkert skal lofa fyrr en reynt er.",
+no:[
+["Málsháttur","„Að kvöldi skal dag lofa“ er enn notað."],
+["Bálfarir","Brennd kona vísar til bálfarar heiðninnar."]],
+c:[
+["Grísk","Sólon","„Líttu á endalokin“ (Heródótos 1.32). Enginn er sæll fyrr en hann er dáinn."],
+["Biblíuleg","1. Konungabók 20:11","„Sá sem gyrðir sig skal ekki hrósa sér eins og sá sem leysir af sér beltið.“"],
+["Ensk","Máltæki","„Ekki telja kjúklingana fyrr en þeir eru klaktir.“"]]};
+
+D[82] = {t:"Í vindi skal við höggva",
+s:"Í vindi skal höggva við, róa á sjó í góðu veðri, tala við stúlku í myrkri: mörg eru augu dagsins. Á skip skal treysta til skriðar, á skjöld til hlífðar, á sverð til höggs, á mey til kossa. Hver hlutur hefur sitt rétta not og sinn rétta tíma.",
+no:[
+["Mörg eru dags augu","Málsháttur um að margir sjái það sem gert er að degi til."]],
+c:[
+["Biblíuleg","Prédikarinn 3:1–8","„Öllu er afmörkuð stund ... að fæðast hefur sinn tíma og að deyja hefur sinn tíma.“"],
+["Grísk","Hesíódos","Verk og dagar kenna réttan tíma fyrir hvert verk."]]};
+
+D[83] = {t:"Við eld skal öl drekka",
+s:"Við eld skal drekka öl, en renna sér á ís, kaupa magran hest og ryðgað sverð, ala hest heima en hund á búinu. Hagnýt ráð: kaupa ódýrt og bæta, nota hvern hlut á réttum stað.",
+no:[
+["Hrossakaup","Hestar voru mikilvæg verðmæti. Hestavíg og hrossakaup koma víða fyrir í sögum."]],
+c:[
+["Rómversk","Cato eldri","De agri cultura gefur hagnýt ráð um búskap: „kauptu ekki það sem þú þarft ekki“."],
+["Grísk","Xenofon","Oikonomikos fjallar um búskap og heimilisstjórn."]]};
+
+D[84] = {t:"Meyjar orðum",
+s:"Annar hluti, Mansöngur, hefst. Enginn skal trúa orðum meyjar né því sem kona segir, því að á hverfandi hjóli voru hjörtu þeirra sköpuð og hverflyndi lagt í brjóst þeirra. Hörð alhæfing um konur, en í 91. erindi viðurkennir Óðinn að karlar séu ekki betri.",
+no:[
+["Hávamál 91","„Brigður er karla hugur konum.“ Kvæðið jafnar metin."],
+["Óðinn og konur","Í Mansöng segir Óðinn frá tveimur ástarævintýrum: annað mistekst (Billings mey), hitt tekst (Gunnlöð)."]],
+c:[
+["Rómversk","Virgill","„Varium et mutabile semper femina“: kona er alltaf hverflynd og breytileg (Eneasarkviða 4.569)."],
+["Grísk","Hesíódos","Hesíódos lýsir Pandóru sem „fallegu böli“ og varar við konum (Goðakyn 570–612)."],
+["Indversk","Hitopadesha","Indversk spekirit innihalda svipaðar alhæfingar um hverflyndi kvenna, sem voru algengar í karlmiðuðum spekibókmenntum."]]};
+
+D[85] = {t:"Brestanda boga",
+s:"Upptalning hefst á því sem ekki skal treysta: brestandi boga, brennandi loga, gínandi úlfi, galandi kráku, rýtandi svíni, rótlausum viði, vaxandi vogi, vellandi katli. Upptalningin nær yfir þrjú erindi (85–87) og heldur áfram í 88–89.",
+no:[
+["Þulur","Löng upptalning er einkenni þulna, fornrar kveðskapartegundar."],
+["Kráka","Krákan var fyrirboðafugl. Í Rígsþulu talar kráka við Konung unga."]],
+c:[
+["Biblíuleg","Orðskviðirnir 30:18–31","„Þrennt er mér of undursamlegt, já, fernt skil ég ekki ...“ Upptalning sem form spekinnar."],
+["Fornensk","Maxims","Fornenskar spakmælaþulur (Maxims I og II) telja upp eiginleika hluta á sama hátt."]]};
+
+D[86] = {t:"Fljúganda fleini",
+s:"Upptalningin heldur áfram: fljúgandi spjóti, fallandi báru, eins nætur ís, hringlögðum ormi, rúmtali brúðar, brotnu sverði, leik bjarnar eða barni konungs. Allt er þetta hættulegt eða ótryggt.",
+no:[
+["Konungsbarn","Barn konungs er ótryggt því það getur orðið hættulegur óvinur þegar það vex upp."],
+["Bjarnarleikur","Birnir voru stundum hafðir í haldi við hirðir konunga, eins og í Auðunar þætti vestfirska."]],
+c:[
+["Persnesk","Sa'di","Gulistan varar við að treysta konungum, sem eru hverflyndir eins og veðrið."],
+["Grísk","Esópos","Dæmisagan um bóndann og höggorminn: bóndinn yljar frosnum ormi sem bítur hann síðan."]]};
+
+D[87] = {t:"Sjúkum kálfi",
+s:"Upptalningin lýkur: sjúkum kálfi, sjálfráða þræli, vilmæli völvu (fögrum orðum spákonu) og nýfelldum val (hinum föllnu á vígvellinum). Ekkert af þessu skal maður treysta.",
+no:[
+["Völur","Spákonur sögðu oft það sem fólk vildi heyra. Eiríks saga rauða lýsir spádómi Þorbjargar lítilvölvu."],
+["Nýfelldur valur","Hinn fallni getur risið upp aftur, eins og í Hjaðningavígum, þar sem Hildur vekur hina dauðu upp á hverri nóttu."]],
+c:[
+["Grísk","Véfréttir","Véfréttin í Delfí gaf tvíræð svör. Krösos túlkaði spá um að „mikið ríki myndi falla“ sér í hag, en það var hans eigið."],
+["Rómversk","Cicero","Í De divinatione efast Cicero um spádómsgáfu."]]};
+
+D[88] = {t:"Akri ársánum",
+s:"Enginn skal treysta snemmsánum akri né syni of snemma. Veður ræður akri, en vit syni; hvort tveggja er hættulegt. Ungur sonur er eins óviss og ung uppskera.",
+no:[
+["Kornrækt","Korn var ræktað á Íslandi á þjóðveldisöld, en uppskeran var ótrygg í köldu loftslagi."]],
+c:[
+["Biblíuleg","Dæmisagan um sáðmanninn","Sum fræ falla í grýtta jörð og spretta fljótt en visna (Matteus 13:5–6)."],
+["Grísk","Hesíódos","Hesíódos ráðleggur að sá á réttum tíma og bíða uppskerunnar þolinmóður."]]};
+
+D[89] = {t:"Bróðurbani",
+s:"Né banamanni bróður síns, þótt maður mæti honum á vegi, hálfbrunnu húsi, eða hesti sem er mjög fljótur (hesturinn er ónýtur ef einn fótur brotnar). Enginn skyldi vera svo trúgjarn að treysta þessu öllu. Upptalningunni lýkur.",
+no:[
+["Hefnd","Bróðurbana skyldi aldrei treysta; hefndarskyldan var sterk. Í Gísla sögu og Njálu eru sættir við banamenn ótryggar."],
+["Völuspá 45","„Bræður munu berjast og að bönum verðast.“"]],
+c:[
+["Biblíuleg","Kain og Abel","Fyrsta morðið er bróðurmorð (1. Mós. 4)."],
+["Grísk","Eteókles og Pólýneikes","Synir Ödípúsar drepa hvor annan í Þebuborg (Eskýlos, Sjö gegn Þebu)."]]};
+
+D[90] = {t:"Svo er friður kvenna",
+s:"Friður (ást) kvenna sem hugsa flátt er eins og að aka óskeifuðum hesti á hálum ís, kátum, tvævetrum og illa tömdum; eða sigla stjórnlausu skipi í ofsavindi; eða að haltur maður reyni að elta hreindýr í þiðnuðu fjalli. Röð mynda af hinu ómögulega.",
+no:[
+["Hreindýr","Hreindýr voru ekki á Íslandi fyrr en á 18. öld. Myndin bendir á norskan uppruna erindisins."],
+["Hávamál 84","Áframhald hugsunarinnar um hverflyndi."]],
+c:[
+["Rómversk","Catullus","„Það sem kona segir við elskhuga sinn skal rita í vindinn og rennandi vatn“ (Catullus 70)."],
+["Biblíuleg","Orðskviðirnir 30:19","„Vegur arnarins í loftinu, vegur höggormsins á klettinum ... og vegur karls hjá konu.“ Hið óskiljanlega."]]};
+
+D[91] = {t:"Brigður er karla hugur",
+s:"Nú segir Óðinn berum orðum, því að hann þekkir hvort tveggja: hverflyndur er hugur karla gagnvart konum. Þegar við mælum fegurst hugsum við flást; það blekkir vitra huga. Óðinn jafnar metin og viðurkennir að karlar séu ekki betri en konur.",
+no:[
+["Hávamál 84","Fyrst var konum lýst sem hverflyndum. Nú sýnir Óðinn að karlar eru jafnsvikulir."],
+["Óðinn","Óðinn sjálfur svíkur Gunnlöðu (st. 105–110) og reynir að tæla Billings mey."]],
+c:[
+["Grísk","Medea","Medea ásakar Jason og karlmenn almennt um svik (Evrípídes, Medea)."],
+["Rómversk","Óvidíus","Ars amatoria kennir körlum að tæla konur með fögrum orðum og loforðum."]]};
+
+D[92] = {t:"Fagurt skal mæla",
+s:"Sá sem vill fá ást konu skal mæla fagurt og bjóða fé, lofa líkama hinnar ljósu meyjar. Sá fær sem biður. Ráð til biðils, með kaldhæðnislegum undirtón.",
+no:[
+["Skírnismál","Skírnir býður Gerði gullepli og hringinn Draupni fyrir hönd Freys. Þegar það dugar ekki hótar hann henni."],
+["Mansöngvar","Mansöngur (ástarkvæði) var bannaður í Grágás og gat varðað skóggang."]],
+c:[
+["Rómversk","Óvidíus","Ars amatoria: „Lofaðu óhikað; loforð kosta ekkert.“"],
+["Indversk","Kama Sutra","Lýsir aðferðum til að vinna ástir með gjöfum, hrósi og samræðum."]]};
+
+D[93] = {t:"Ástar firna",
+s:"Enginn skal nokkru sinni ásaka annan fyrir ást. Oft fá fagrir litir sem vekja girnd vald yfir vitrum manni sem ekki ná valdi yfir heimskum. Ástin getur gripið hvern sem er.",
+no:[
+["Skírnismál","Freyr, vitrasti og besti ása, verður sjúkur af ást á Gerði."],
+["Sögurnar","Ást leiðir til harmleiks í Laxdælu (Kjartan og Guðrún) og Gunnlaugs sögu (Gunnlaugur og Helga)."]],
+c:[
+["Grísk","Eros","Eros sigrar bæði guði og menn, jafnvel Seif (Sófókles, Antígóna 781–800)."],
+["Rómversk","Virgill","„Omnia vincit Amor“: ástin sigrar allt (Sveitaljóð 10.69)."]]};
+
+D[94] = {t:"Hinn máttki munur",
+s:"Enginn skal ásaka annan fyrir það sem hendir marga menn. Hin máttuga ást gerir vitra syni manna að heimskingjum. Óðinn talar af eigin reynslu.",
+no:[
+["Hávamál 96–102","Óðinn segir strax á eftir frá því hvernig ástin gerði hann að fífli."]],
+c:[
+["Grísk","Herakles og Omfale","Mesta hetja Grikkja þjónar drottningu í kvenfötum af ást."],
+["Indversk","Shiva og Kama","Ástarguðinn Kama hittir jafnvel hinn íhugula Shiva með ör sinni og vekur ást hans á Parvati."]]};
+
+D[95] = {t:"Hugur einn það veit",
+s:"Hugurinn einn veit það sem býr nærri hjartanu; hann er einn með sjálfum sér. Engin sótt er verri hverjum vitrum manni en að hafa ekkert að unna. Einmanaleikinn er versti sjúkdómurinn.",
+no:[
+["Hávamál 50","Fura sem enginn elskar hrörnar."]],
+c:[
+["Biblíuleg","1. Mósebók 2:18","„Ekki er það gott að maðurinn sé einsamall.“"],
+["Grísk","Sapfó","Ljóð Sapfóar lýsa einmanaleika og þrá sem líkamlegum sjúkdómi."]]};
+
+D[96] = {t:"Í reyri sat",
+s:"„Það reyndi ég þegar ég sat í reyrnum og beið ástar minnar. Hin vitra mær var mér hold og hjarta, en ég fékk hana samt ekki.“ Óðinn byrjar söguna af Billings mey.",
+no:[
+["Billings mey","Sagan er aðeins sögð í Hávamálum. Billingur er nefndur í Dvergatali Völuspár."],
+["Saxo, 3. bók","Óðinn reynir að vinna Rindu og fær ítrekað höfnun áður en hann nær henni með brögðum. Svipuð saga."]],
+c:[
+["Grísk","Apollon og Dafne","Apollon eltir vatnadísina Dafne, sem breytist í lárviðartré til að sleppa (Ummyndanir Óvidíusar 1)."],
+["Grísk","Pan og Syrinx","Pan eltir dísina Syrinx, sem verður að reyr. Reyrinn tengist misheppnaðri ást."]]};
+
+D[97] = {t:"Billings mey",
+s:"„Billings mey fann ég sofa í rúmi sínu, sólhvíta. Mér þótti ekkert jarlsyndi vera nema að lifa við þann líkama.“ Óðinn lýsir ást sinni við fyrstu sýn.",
+no:[
+["Sólhvít","Ljós húð var fegurðarímynd í norrænum kveðskap. Gerður í Skírnismálum lýsir svo að armar hennar hafi ljómað af."],
+["Skírnismál","Freyr sér Gerði og verður sjúkur af ást."]],
+c:[
+["Grísk","Selene og Endymíon","Mánagyðjan sér hinn sofandi Endymíon og verður ástfangin af honum."],
+["Biblíuleg","Ljóðaljóðin","Ljóðaljóð Salómons lýsa fegurð ástmeyjar af sama ákafa."]]};
+
+D[98] = {t:"Auk nær aftni",
+s:"Mærin svarar: „Komdu nær kvöldi, Óðinn, ef þú vilt vinna mig. Allt fer illa ef aðrir en við ein vita af slíkri synd.“ Hún lætur sem hún samþykki en ætlar að blekkja hann.",
+no:[
+["Óðinn nefndur","Hér er Óðinn nefndur með nafni. Hávamál eru í fyrstu persónu og Óðinn er mælandinn."]],
+c:[
+["Grísk","Penelópa","Penelópa blekkir biðlana með því að rekja upp vefinn á hverri nóttu. Kona sem leikur á þá sem sækjast eftir henni."]]};
+
+D[99] = {t:"Aftur ég hvarf",
+s:"„Aftur hvarf ég og þóttist unna, frá vísum vilja (fullviss um vilja hennar). Ég hélt að ég myndi fá allan hug hennar og gaman.“ Óðinn fer í góðri trú.",
+no:[
+["Kaldhæðni","Óðinn, vitrastur goða, er blekktur. Erindið sýnir hvernig ástin gerir vitra að heimskingjum (st. 94)."]],
+c:[
+["Grísk","Seifur","Jafnvel Seifur er stundum blekktur, t.d. af Heru sem tælir hann til svefns til að hjálpa Grikkjum (Ilíonskviða 14)."]]};
+
+D[100] = {t:"Vígdrótt öll um vakin",
+s:"„Svo kom ég næst þegar öll hin röska vígdrótt (allir hirðmennirnir) var vakin, með brennandi ljósum og bornum viði (blysum). Svo var mér vísað á vílstíg (eymdarveg).“ Óðinn kemur og mætir vopnuðum vörðum.",
+no:[
+["Billingur","Billingur gætir dóttur sinnar með vopnuðu liði."]],
+c:[
+["Grísk","Akrisíos og Danae","Akrisíos læsir dóttur sína Danae í turni til að hindra að hún eignist barn; Seifur kemst samt til hennar sem gullregn."]]};
+D[101] = {t:"Grey eitt",
+s:"„Og nær morgni, þegar ég kom aftur, svaf hirðin. Þá fann ég aðeins tík bundna í rúmi hinnar góðu konu.“ Mærin hefur leikið á Óðin og skilið eftir hund í sinn stað. Niðurlæging hins vitrasta goðs.",
+no:[
+["Grey","„Grey“ er tík. Að vera kallaður grey var mikil móðgun (sbr. vísu Hjalta Skeggjasonar: „grey þykki mér Freyja“)."],
+["Óðinn blekktur","Óðinn er sjaldan blekktur í norrænum sögnum. Erindið sýnir hann í óvenjulegri, gamansamri stöðu."]],
+c:[
+["Biblíuleg","Mikal og Davíð","Mikal hjálpar Davíð að flýja og leggur líkneski í rúmið hans með geitarhár við höfðalagið til að blekkja menn Sáls (1. Samúelsbók 19:13)."],
+["Grísk","Hera og Ixíon","Seifur býr til ský í líki Heru til að blekkja Ixíon, sem reynir að tæla hana. Svik í rúminu."]]};
+
+D[102] = {t:"Mörg er góð mær",
+s:"Mörg góð mær er hverflynd gagnvart körlum ef vel er að gáð. Það reyndi ég þegar ég reyndi að tæla hina ráðsnjöllu konu til lauslætis. Hin vitra mær lagði á mig alls konar háðung og ég fékk ekkert af konunni. Óðinn viðurkennir ósigur sinn og hrósar um leið visku hennar.",
+no:[
+["Saxo, 3. bók","Rinda hafnar Óðni ítrekað og gefur honum kinnhest. Hann nær henni loks með galdri."],
+["Annar hluti endar","Í þessari útgáfu lýkur öðrum hluta hér. Næst kemur sagan af Gunnlöðu, þar sem Óðni gengur betur."]],
+c:[
+["Grísk","Artemis og Aktaion","Gyðja sem lætur ekki undan og refsar þeim sem sækist eftir henni."],
+["Indversk","Sita og Ravana","Ravana rænir Situ og reynir að vinna hana en hún hafnar honum staðfastlega (Ramayana)."]]};
+
+D[103] = {t:"Heima glaðr gumi",
+s:"Maður á að vera glaður heima og reifur við gesti, vitur um sjálfan sig, minnugur og málugur ef hann vill verða margfróður; oft skal hann geta góðs. Fimbulfambi (mikill fábjáni) heitir sá sem fátt kann að segja; það er eðli heimskingjans. Þriðji hluti, sagan af skáldamiðinum, hefst á lofi um mælsku.",
+no:[
+["Inngangur að Gunnlöðu","Erindið tengir spekina um mælsku við söguna um skáldamjöðinn: Óðinn vann miðinn með orðum."],
+["Bragi","Bragi er guð skáldskapar og mælsku (Gylfaginning 26)."]],
+c:[
+["Grísk","Hermes","Guð mælsku og orðkyngi sem leikur á aðra með orðum sínum."],
+["Rómversk","Cicero","Cicero taldi mælsku (eloquentia) æðstu dyggð borgarans (De oratore)."]]};
+
+D[104] = {t:"Inn aldna jötun",
+s:"„Ég sótti hinn aldna jötun heim; nú er ég kominn aftur. Fátt fékk ég með því að þegja þar. Með mörgum orðum talaði ég mér til frama í sölum Suttungs.“ Óðinn segir frá ferð sinni til Suttungs.",
+no:[
+["Skáldskaparmál 58","Óðinn kemur undir nafninu Bölverkur, vinnur sumarlangt hjá Bauga, bróður Suttungs, og krefst eins drykkjar af miðinum að launum."],
+["Suttungur","Suttungur er jötunn sem tók skáldamjöðinn af dvergunum Fjalari og Galari í bætur fyrir föður sinn."]],
+c:[
+["Indversk","Indra og soma","Í Rigveda 4.26–27 sækir fálki (eða Indra í fálkalíki) soma, guðadrykkinn, úr virki á fjalli."],
+["Grísk","Prómeþeifur","Prómeþeifur stelur eldinum frá guðunum handa mönnum. Gjöf sem er rænd frá öflum handan."]]};
+
+D[105] = {t:"Gunnlöð gaf",
+s:"„Gunnlöð gaf mér á gullnum stóli drykk hins dýra mjaðar. Ill laun lét ég hana síðan fá fyrir heilan hug hennar, fyrir þungan sefa hennar.“ Óðinn játar að hafa svikið Gunnlöðu, sem treysti honum.",
+no:[
+["Skáldskaparmál 58","Óðinn liggur hjá Gunnlöðu í þrjár nætur. Hún leyfir honum að drekka þrisvar, og hann tæmir öll þrjú kerin: Óðreri, Boðn og Són."],
+["Gunnlöð","Gunnlöð merkir líklega „sú sem býður til bardaga“. Hún er dóttir Suttungs."]],
+c:[
+["Grísk","Medea og Jason","Medea hjálpar Jason að ná gullna reyfinu frá föður sínum, og hann svíkur hana síðar."],
+["Grísk","Aríadne og Þeseifur","Aríadne hjálpar Þeseifi út úr völundarhúsinu, og hann skilur hana eftir á Naxos."]]};
+
+D[106] = {t:"Rata munn",
+s:"„Ég lét munn Rata (borsins) fá rúm og naga grjótið. Yfir mér og undir lágu vegir jötna; svo hætti ég höfði mínu.“ Óðinn lét bora gat í fjallið og skreið inn um það í ormslíki.",
+no:[
+["Skáldskaparmál 58","Baugi borar gat á fjallið Hnitbjörg með bornum Rata. Óðinn breytir sér í orm og skríður inn, en Baugi reynir að stinga hann með bornum."]],
+c:[
+["Indversk","Garuda","Fuglinn Garuda kemst inn í virkið þar sem amrita er geymt með því að minnka sig og smjúga milli snúandi hnífa."],
+["Grísk","Seifur í hamskiptum","Seifur tekur á sig ýmis dýrsform til að komast til kvenna: naut (Evrópa), svan (Leda), gullregn (Danae)."]]};
+
+D[107] = {t:"Óðrerir upp kominn",
+s:"„Vel keypts litar (útlits, eða ávinnings) hef ég vel notið; fátt skortir vitran mann. Því að Óðrerir er nú upp kominn á jaðar helgistaðar manna.“ Óðrerir er mjöðurinn eða kerið sem hann var geymdur í. Óðinn hefur fært mönnum skáldskapinn.",
+no:[
+["Skáldskaparmál 58","Óðinn flýgur heim í arnarham með Suttung á eftir sér. Hann spýtir miðinum í ker sem æsir hafa sett fram. Sumt fer aftur úr honum, og það er „skáldfífla hlutr“."],
+["Óðrerir","Óðrerir merkir „sá sem hrærir óð (andagift)“. Snorri segir það heiti á katlinum, en í Hávamálum 140 virðist það vera mjöðurinn sjálfur."]],
+c:[
+["Indversk","Soma til jarðar","Fálkinn færir soma niður til manna og guða. Rigveda 4.26–27 líkist mjög sögunni af Óðni í arnarham."],
+["Grísk","Ambrósía","Guðadrykkurinn sem veitir ódauðleika. Tantalos stal honum og gaf mönnum, og var refsað."]]};
+
+D[108] = {t:"Ifi er mér á",
+s:"„Ég efast um að ég væri kominn aftur úr görðum jötna ef ég hefði ekki notið Gunnlaðar, hinnar góðu konu, sem ég lagði arm minn yfir.“ Óðinn viðurkennir að Gunnlöð bjargaði honum.",
+no:[
+["Ifi","„Ifi“ (eða efi) merkir vafi."],
+["Gunnlöð","Án hjálpar Gunnlaðar hefði Óðinn ekki komist að miðinum."]],
+c:[
+["Grísk","Aríadne","Án þráðar Aríadne hefði Þeseifur ekki ratað út úr völundarhúsinu."],
+["Mesópótamísk","Siduri","Ölkonan Siduri leiðbeinir Gilgamesi á leið hans til Utnapishtims."]]};
+
+D[109] = {t:"Hrímþursar spyrja",
+s:"Daginn eftir gengu hrímþursar til að spyrja ráða Háva (Óðins) í höll Háva. Þeir spurðu um Bölverk, hvort hann væri kominn til goðanna eða hvort Suttungur hefði drepið hann. Jötnarnir leita hins horfna þjófs, án þess að vita að hann er Óðinn sjálfur.",
+no:[
+["Bölverkur","Bölverkur („sá sem vinnur böl“) er nafnið sem Óðinn notar hjá jötnum (Skáldskaparmál 58)."],
+["Hávi","Hár eða Hávi er heiti Óðins. Hávamál eru „mál Háva“, orð hins háa."]],
+c:[
+["Grísk","Ódysseifur og Kýklópinn","Ódysseifur segist heita „Enginn“. Þegar Pólýfemos kallar á hjálp segist hann vera særður af „Engum“. Dulnefni sem villir um fyrir risum."]]};
+
+D[110] = {t:"Baugeiðr Óðins",
+s:"„Ég hygg að Óðinn hafi unnið baugeið (heilagan eið við baug). Hvernig á að treysta tryggðum hans? Hann sveik Suttung frá sumblinu og grætti Gunnlöðu.“ Kvæðið gagnrýnir Óðin: hann rauf heilagan eið.",
+no:[
+["Baugeiður","Eiðar voru svarnir við heilagan baug sem geymdur var í hofinu, sbr. Eyrbyggja sögu 4 og Víga-Glúms sögu."],
+["Lokasenna 22","Loki ber Óðni á brýn að vera óréttlátur. Hávamál sýna sjálf Óðin sem eiðrofa."]],
+c:[
+["Grísk","Seifur svíkur","Seifur svíkur Heru margsinnis og rýfur loforð sín. Guðir eru ekki bundnir sömu siðferðislögmálum og menn."],
+["Indversk","Indra og Namuchi","Indra rýfur eið sinn við asúruna Namuchi og ber sekt eiðrofa."]]};
+
+D[111] = {t:"Þular stóli á",
+s:"Fjórði hluti, Loddfáfnismál, hefst. „Mál er að þylja á þular stóli við Urðarbrunn. Ég sá og þagði, ég sá og hugsaði, ég hlýddi á mál manna. Ég heyrði rætt um rúnir, og þeir þögðu ekki um ráð í höll Háva; þar heyrði ég segja svo.“ Þulurinn situr á helgum stað við brunn örlaganna.",
+no:[
+["Urðarbrunnur","Brunnur örlaganna undir Yggdrasli þar sem goðin halda dóm (Völuspá 19, Gylfaginning 15)."],
+["Þulur","Þulur var sá sem kunni og flutti fróðleik, eins konar spekingur eða prestur. Þulur Hróðgars konungs í Bjólfskviðu heitir Unferð (þyle)."],
+["Loddfáfnir","Loddfáfnir er nemandi sem ráðin eru gefin. Nafnið er óljóst; það hefur verið tengt „loddari“ (förumaður) og „fáfnir“ (fábjáni)."]],
+c:[
+["Írsk","Fili","Írsku fræðaskáldin (filid) sátu á sérstökum stólum og fluttu lög og fróðleik."],
+["Grísk","Delfí","Pýþía sat á þrífæti yfir sprungu í jörðinni og flutti spádóma Apollons."]]};
+
+D[112] = {t:"Ráðumk þér, Loddfáfnir",
+s:"„Ég ræð þér, Loddfáfnir, að þú takir ráð; þú munt njóta þeirra ef þú tekur þau, þau munu þér góð ef þú færð þau.“ Þetta er stef sem endurtekið er í flestum erindum Loddfáfnismála. Fyrsta ráðið: rístu ekki upp um nótt nema til njósna eða þú þurfir að fara út (á kamar).",
+no:[
+["Stefið","Stefið birtist í 112.–137. erindi og gefur hlutanum hátíðlegan og kennslulegan brag."],
+["Sigrdrífumál 22–37","Valkyrjan Sigurdrífa gefur Sigurði ráð í röð heilræða með svipuðum hætti."]],
+c:[
+["Egypsk","Kenningar Ptahhoteps","Hvert ráð byrjar á „Ef þú ert ...“. Faðir talar við son sinn."],
+["Biblíuleg","Orðskviðirnir","Stefið „Heyr, son minn“ er endurtekið í Orðskviðunum 1–9."],
+["Súmersk","Kenningar Shuruppaks","Eitt elsta spekirit heims (um 2600 f.Kr.): „Shuruppak gaf syni sínum ráð.“ Hvert ráð hefst á sömu formúlu."]]};
+
+D[113] = {t:"Fjölkunnig kona",
+s:"Ráðið: skaltu ekki sofa í faðmi fjölkunnugrar konu (galdrakonu), svo að hún læsi þig í limum sínum. Varað er við valdi galdrakvenna.",
+no:[
+["Grágás","Galdrar voru bannaðir og gátu varðað skóggang."],
+["Sögurnar","Galdrakonur valda mönnum ógæfu í mörgum sögum, t.d. Katla í Eyrbyggju og Þórdís spákona."]],
+c:[
+["Grísk","Kirke","Kirke breytir mönnum Ódysseifs í svín. Ódysseifur verður að vara sig á henni (Ódysseifskviða 10)."],
+["Grísk","Kalypsó","Kalypsó heldur Ódysseifi hjá sér í sjö ár svo að hann gleymir heimförinni."]]};
+
+D[114] = {t:"Hon svá gerir",
+s:"Hún gerir það að þú gætir hvorki þings né máls konungs. Þú vilt hvorki mat né gaman nokkurs manns og ferð sorgmæddur að sofa. Galdurinn tekur frá manninum vilja hans og félagslíf.",
+no:[
+["Áframhald","Erindið skýrir ráðið í 113. erindi. Það hefur ekki stefið."],
+["Skírnismál 29–36","Skírnir hótar Gerði galdri sem mun gera hana óhamingjusama, matlausa og einmana. Sami galdur í öfugri mynd."]],
+c:[
+["Grísk","Lótusætur","Ódysseifsmenn sem éta lótus missa löngunina til að fara heim."],
+["Keltnesk","La Belle Dame sans Merci","Í síðari þjóðsögum (og ljóði Keats) heillar álfkona riddara sem visnar síðan upp."]]};
+
+D[115] = {t:"Annars konu",
+s:"Ráðið: tældu aldrei konu annars manns til að verða trúnaðarvina þín (eyrarúna). Hórdómur leiðir til ógæfu.",
+no:[
+["Völuspá 39","„Þann er annars glepr eyrarúnu.“ Sá sem tælir konu annars er meðal hinna verstu á Náströndum."],
+["Sögurnar","Tæling annars manns konu leiðir til víga í mörgum sögum, t.d. í Gísla sögu."]],
+c:[
+["Biblíuleg","Tíunda boðorðið","„Þú skalt ekki girnast konu náunga þíns“ (2. Mós. 20:17)."],
+["Grísk","París og Helena","Rán Parísar á konu Menelásar leiðir til Trójustríðsins."]]};
+
+D[116] = {t:"Á fjalli eða firði",
+s:"Ráðið: ef þú þarft að ferðast á fjalli eða firði, skaltu fá þér nóg að borða. Hagnýtt ferðaráð.",
+no:[
+["Hávamál 3","„Matar og váða er manni þörf, þeim er hefr um fjall farit.“"]],
+c:[
+["Grísk","Hesíódos","Ráð um að undirbúa ferðir vel."],
+["Biblíuleg","Elía","Engill gefur Elía mat og segir: „Rís upp og et, því að annars verður leiðin þér of löng“ (1. Konungabók 19:7)."]]};
+
+D[117] = {t:"Illan mann",
+s:"Ráðið: láttu aldrei illan mann vita af óhöppum þínum, því að af illum manni færðu aldrei laun fyrir góðan hug. Óvinir nota veikleika manns gegn honum.",
+no:[
+["Sögurnar","Í Njálu notar Mörður Valgarðsson þekkingu sína á veikleikum manna til að vekja deilur."]],
+c:[
+["Kínversk","Sun Tzu","Sá sem þekkir veikleika óvinar síns sigrar."],
+["Biblíuleg","Matteus 7:6","„Kastið ekki perlum yðar fyrir svín.“"]]};
+
+D[118] = {t:"Orð illrar konu",
+s:"„Ég sá orð illrar konu bíta einn mann hátt (í hálsinn). Fláráð tunga varð honum að bana, og það án sannrar sakar.“ Rógur getur kostað mann lífið.",
+no:[
+["Sögurnar","Rógur kvenna leiðir til víga í Íslendingasögum, t.d. eggjanir Hallgerðar í Njálu og Guðrúnar í Laxdælu."],
+["Völsunga saga","Brynhildur ber lygar um Sigurð, sem leiðir til dauða hans."]],
+c:[
+["Biblíuleg","Jósef og kona Pótífars","Kona Pótífars ber Jósef rangri sök og hann er fangelsaður (1. Mós. 39)."],
+["Grísk","Fædra og Hippolýtos","Fædra sakar stjúpson sinn ranglega og hann deyr fyrir bölvun föður síns (Evrípídes)."]]};
+
+D[119] = {t:"Far þú at finna oft",
+s:"Ráðið: ef þú átt vin sem þú treystir vel, farðu oft að hitta hann, því að vegur sem enginn gengur vex hrísi og háu grasi. Vináttu verður að viðhalda.",
+no:[
+["Hávamál 44","„Fara at finna oft.“ Sama ráð."],
+["Hávamál 34","„Til góðs vinar liggja gagnvegir.“"]],
+c:[
+["Kínversk","Konfúsíus","Vináttu skal rækta af alúð (Rit Konfúsíusar)."],
+["Rómversk","Cicero","Vináttu verður að endurnýja reglulega eins og víni."]]};
+
+D[120] = {t:"Gamanrúnar",
+s:"Ráðið: dragðu góðan mann að þér í gamanrúnum (glöðum samræðum) og lærðu líknargaldur (græðandi galdur) meðan þú lifir. Leitaðu félagsskapar góðra manna og lærðu af þeim.",
+no:[
+["Gamanrúnar","„Gamanrúnar“ eru glaðar samræður eða trúnaðarmál. „Rún“ merkir hér leyndarmál eða samtal."],
+["Líknargaldur","Græðandi galdrar, sbr. annað ljóðið í Ljóðatali (147. erindi): „er þurfu ýta synir, þeir er vilja læknar lifa“."]],
+c:[
+["Biblíuleg","Orðskviðirnir 13:20","„Sá sem umgengst vitra menn verður vitur.“"],
+["Indversk","Satsang","Félagsskapur hinna vitru og góðu (satsang) er talinn leið til visku í hindúisma."]]};
+
+D[121] = {t:"Flaumslit",
+s:"Ráðið: vertu aldrei fyrstur til að slíta vináttu (flaumslit). Sorgin étur hjartað ef þú getur ekki sagt einhverjum allan hug þinn. Einangrun særir.",
+no:[
+["Sonatorrek","Egill lýsir sorginni sem leggst á hann þegar hann hefur engan til að deila henni með."],
+["Hávamál 95","„Öng er sótt verri ... en sér engu at una.“"]],
+c:[
+["Grísk","Pýþagóríngar","„Ekki éta hjartað“ (mē esthiein kardian), táknræn regla Pýþagóringa sem merkti að kveljast ekki af sorg."],
+["Biblíuleg","Orðskviðirnir 17:17","„Vinur elskar ætíð.“"]]};
+
+D[122] = {t:"Ósvinnir apar",
+s:"Ráðið: skiptu aldrei orðum við heimska apa. Erindið heldur áfram í 123. erindi. Það er tímasóun að deila við heimskingja.",
+no:[
+["Hávamál 125","„Þrimr orðum senna skal-at-tu þér við verra mann.“"]],
+c:[
+["Biblíuleg","Orðskviðirnir 26:4","„Svara ekki heimskingjanum eftir flónsku hans, svo að þú verðir ekki líkur honum.“"]]};
+
+D[123] = {t:"Líknfastr at lofi",
+s:"Því að af illum manni færðu aldrei góð laun, en góður maður getur gert þig traustan í lofi. Félagsskapur góðra manna gerir mann betri.",
+no:[
+["Hávamál 117","„Af illum manni fær þú aldregi gjöld ins góða hugar.“"]],
+c:[
+["Grísk","Aristóteles","Vinátta hinna góðu gerir þá betri (Siðfræði Níkomakkosar 9.12)."]]};
+
+D[124] = {t:"Sifjum er þá blandat",
+s:"Vinátta (sifjar) er gerð þegar maður getur sagt öðrum allan hug sinn. Allt er betra en að vera ótrúr. Sá er ekki vinur annars sem segir aðeins það sem hann vill heyra. Sönn vinátta krefst hreinskilni.",
+no:[
+["Sifjar","„Sifjar“ eru tengdir, en hér merkir orðið náið samband eða vináttu."]],
+c:[
+["Grísk","Plútarkos","Sannur vinur segir manni sannleikann; smjaðrarinn segir það sem maður vill heyra."],
+["Biblíuleg","Orðskviðirnir 27:6","„Trúföst eru vinar sárin.“"]]};
+
+D[125] = {t:"Þrimr orðum senna",
+s:"Ráðið: deildu ekki þremur orðum við verri mann. Oft bilar hinn betri þegar hinn verri berst. Þrjóskur heimskingi getur sigrað í deilu.",
+no:[
+["Lokasenna","Goðin tapa senna við Loka þar til Þór kemur með hamarinn."]],
+c:[
+["Ensk","Máltæki","„Aldrei deila við heimskingja; áhorfendur sjá ekki muninn.“"],
+["Biblíuleg","Orðskviðirnir 29:9","„Deili vitur maður við heimskingja, þá reiðist hann eða hlær, og engin ró fæst.“"]]};
+
+D[126] = {t:"Skósmiðr",
+s:"Ráðið: vertu ekki skósmiður né skeftismiður (smiður spjótskafta) nema fyrir sjálfan þig. Ef skórinn er illa gerður eða skaftið skakkt, er þér böls beðið (þér er bölvað). Varað er við að taka að sér verk fyrir aðra.",
+no:[
+["Völsunga saga","Sigurður og Reginn: smiður sem vinnur fyrir aðra getur bakað sér ógæfu."],
+["Handverk","Iðnaðarmenn gátu orðið fyrir hefnd ef verk þeirra brugðust."]],
+c:[
+["Rómversk","Ne sutor ultra crepidam","„Skósmiðurinn fari ekki lengra en skórinn“ (Pliníus eldri um málarann Apelles). Hver haldi sig við sitt."]]};
+
+D[127] = {t:"Hvars þú böl kannt",
+s:"Ráðið: þar sem þú verður var við böl, skaltu kalla það böl og gefa óvinum þínum engan frið. Hreinskilni gegn illu og harka gegn óvinum.",
+no:[
+["Hefndarsiðferði","Heiðið siðferði krafðist þess að óvinir hlytu ekki frið."]],
+c:[
+["Biblíuleg","Andstæða","„Elskið óvini yðar“ (Matteus 5:44) er andstæða þessa ráðs."],
+["Grísk","Pólemarkos","Í Ríki Platóns skilgreinir Pólemarkos réttlætið sem að „gera vinum gott og óvinum illt“, og Sókrates hrekur það."]]};
+
+D[128] = {t:"Illu feginn",
+s:"Ráðið: vertu aldrei feginn illu, en láttu þér líka það sem gott er. Fagnaðu ekki ógæfu annarra.",
+no:[
+["Hávamál 22","Vesall maður hlær að öllu."]],
+c:[
+["Biblíuleg","Orðskviðirnir 24:17","„Gleð þig ekki þegar óvinur þinn fellur.“"],
+["Þýsk","Schadenfreude","Þýska orðið um gleði yfir ógæfu annarra. Margar siðfræðihefðir vara við henni."]]};
+
+D[129] = {t:"Upp líta í orrustu",
+s:"Ráðið: líttu ekki upp í orrustu, því að synir manna verða eins og gjalti (ærðir, viti sínu fjær), síður en að menn taki fyrir heill þína. Óljóst erindi: líklega er varað við því að líta upp og sjá eitthvað sem veldur ofsahræðslu.",
+no:[
+["Gjalti","Orðið „gjalti“ er tökuorð úr írsku geilt (vitstola maður). Á Írlandi var sagt að menn yrðu gjalti í orrustu. Í Íslendingasögum segir frá mönnum sem „verða at gjalti“."],
+["Herfjötur","Í sögum fá menn „herfjötur“, lömun af ótta, í bardaga, t.d. í Sturlungu."]],
+c:[
+["Írsk","Suibhne Geilt","Írski konungurinn Suibhne verður vitstola í orrustunni við Mag Rath og flýgur eins og fugl um skóga (Buile Shuibhne). Beint samband við orðið gjalti."],
+["Grísk","Panik","Guðinn Pan vakti ofsahræðslu (panik) í herjum."]]};
+
+D[130] = {t:"Góða konu",
+s:"Ráðið: ef þú vilt fá góða konu til gamanrúna (ástarsamræðna) og gleðjast af henni, skaltu heita fögru og efna það. Enginn leiðist gott ef hann fær það. Andstæða við 91. og 92. erindi: hér er ráðlagt að efna loforðin.",
+no:[
+["Hávamál 92","Áður: „Fagrt skal mæla ok fé bjóða.“ Nú: efndu það sem þú lofar."]],
+c:[
+["Indversk","Kama Sutra","Kennir að heiðarleiki og gjafmildi í ást geri sambandið varanlegt."],
+["Rómversk","Óvidíus","Ars amatoria er kaldhæðnari og mælir með fölskum loforðum."]]};
+
+D[131] = {t:"Varan bið ek þik vera",
+s:"Ráðið: ég bið þig að vera varkár, en ekki of varkár. Vertu varkárastur við öl, við konu annars manns og í þriðja lagi að þjófar leiki ekki á þig. Þrjár hættur: drykkja, hórdómur og þjófnaður.",
+no:[
+["Hávamál 11–14, 115","Bæði ölið og kona annars manns hafa verið nefnd áður."]],
+c:[
+["Grísk","Meden agan","Hófleg varkárni: ekki of lítil, ekki of mikil."],
+["Búddísk","Fimm boðorð","Búddísku boðorðin fimm banna m.a. þjófnað, kynferðisbrot og vímuefni. Svipuð þrenning."]]};
+
+D[132] = {t:"At háði né hlátri",
+s:"Ráðið: hafðu aldrei gest né göngumann að háði eða hlátri. Virðing fyrir ókunnugum.",
+no:[
+["Hávamál 30","„At augabragði skal-a maðr annan hafa.“"],
+["Óðinn sem gestur","Óðinn ferðast sjálfur dulbúinn sem förumaður. Sá sem hæðist að gesti gæti verið að hæðast að guði, sbr. Grímnismál, þar sem Geirröður konungur pyntar Grímni (Óðin) og deyr fyrir það."]],
+c:[
+["Grísk","Biðlarnir","Biðlarnir hæðast að dulbúnum Ódysseifi og deyja."],
+["Biblíuleg","Hebreabréfið 13:2","„Sumir hafa hýst engla án þess að vita.“"]]};
+
+D[133] = {t:"Galli fylgir",
+s:"Þeir sem sitja inni vita oft illa hverrar ættar þeir eru sem koma. Enginn maður er svo góður að galli fylgi honum ekki, né svo illur að hann dugi ekki til neins. Hófsöm og raunsæ mannþekking.",
+no:[
+["Málsháttur","„Enginn er svo góður að galli fylgi ekki“ lifir í íslensku."]],
+c:[
+["Rómversk","Hóratíus","„Nemo sine vitiis nascitur“: enginn fæðist gallalaus (Satírur 1.3)."],
+["Kínversk","Konfúsíus","Í hverjum hópi þriggja manna er einn sem getur kennt mér; ég tek það góða og forðast hið illa (Rit Konfúsíusar 7.22)."]]};
+
+D[134] = {t:"At hárum þul",
+s:"Ráðið: hlæðu aldrei að gráhærðum þul (gömlum spekingi). Oft er gott það sem gamlir segja. Oft koma skýr orð úr skörpum (skorpnum) belg, frá þeim sem hangir með húðum, skelfur með skrám og sveiflast meðal vesalinga. Gamli maðurinn er líkt við skorpinn skinnbelg, en viska hans er dýrmæt.",
+no:[
+["Myndin","Línurnar „hangir með hám ok skollir með skrám“ lýsa skinnbelgjum eða hertum húðum sem hanga. Sumir túlka þær sem hengdan mann, sem vísar til Óðins sem hangaguðs."],
+["Virðing fyrir öldruðum","Í sögum eru gamlir menn oft vitrir ráðgjafar, eins og Njáll."]],
+c:[
+["Biblíuleg","3. Mósebók 19:32","„Þú skalt standa upp fyrir gráum hærum og heiðra gamalmenni.“"],
+["Kínversk","Konfúsíanismi","Virðing fyrir öldruðum (xiao) er grunndyggð."]]};
+
+D[135] = {t:"Gest þú né geyja",
+s:"Ráðið: geltu ekki að gesti og rektu hann ekki út um hliðið. Vertu góður við fátæka (válaða). Áhersla á gestrisni.",
+no:[
+["Hávamál 1–4","Kvæðið hefst á gestrisni og snýr aftur að henni."],
+["Grágás","Lög um framfærslu ómaga og fátækra."]],
+c:[
+["Biblíuleg","Matteus 25:35","„Gestur var ég og þér hýstuð mig.“"],
+["Íslömsk","Kóraninn","Gestrisni og gjafir til fátækra (zakat) eru ein af grunnstoðum íslams."]]};
+
+D[136] = {t:"Rammt er þat tré",
+s:"Rammt er það tré sem á að snúast við að opna fyrir öllum. Gefðu baug, annars mun það óska þér alls ills. Hurðin (tréð) sem opnast fyrir öllum verður þreytt, en gestgjafinn verður samt að vera örlátur, annars hlýtur hann bölvun.",
+no:[
+["Túlkun","Erindið er torskilið. „Tréð“ er líklega slagbrandur eða dyr, og bölvunin kemur frá gestinum sem er rekinn burt."]],
+c:[
+["Grísk","Hefnd gestsins","Í grískum sögum leggja reknir gestir oft bölvun á þá sem hraktu þá."]]};
+
+D[137] = {t:"Kjós þér jarðar megin",
+s:"Ráðið: hvar sem þú drekkur öl, skaltu kjósa þér mátt jarðar, því að jörð tekur við ölvun, eldur við sóttum, eik við harðlífi, ax við galdri, höll (eldhúspallur?) við heimilisrógi, máni við heift, beitilyng við bitsóttum, rúnir við bölvi. Fold skal taka við flóði. Upptalning á lækningum, þjóðlækningum og galdri.",
+no:[
+["Þjóðlækningar","Erindið er dýrmæt heimild um þjóðlækningar. Eik við abbindi (hægðatregðu) og ax gegn galdri sýna trú á mátt náttúrunnar."],
+["Sigrdrífumál 6–13","Sigurdrífa telur upp ólíkar rúnir: sigrúnir, ölrúnir, bjargrúnir og limrúnir. Svipuð upptalning á hagnýtum galdri."]],
+c:[
+["Fornensk","Níu jurta galdur","Fornensk galdraþula (Lacnunga, 10. öld) telur upp níu jurtir sem lækna og vernda. Náskyld germönsk hefð."],
+["Indversk","Atharvaveda","Safn galdra og lækningaþulna gegn sjúkdómum, eitri og illum öndum."],
+["Rómversk","Pliníus eldri","Náttúrusaga Pliníusar telur upp lækningamátt jurta og efna."]]};
+D[138] = {t:"Veit ek at ek hekk",
+s:"Rúnatal hefst, kunnasti kafli Hávamála. Óðinn segir: „Ég veit að ég hékk á vindgameiði (vindbörðu tré) níu nætur allar, særður geiri og gefinn Óðni, sjálfur sjálfum mér, á þeim meiði sem enginn veit af hvaða rótum rennur.“ Óðinn fórnar sjálfum sér sjálfum sér til að öðlast rúnirnar. Tréð er Yggdrasill.",
+no:[
+["Yggdrasill","Nafnið merkir líklega „hestur Yggs (Óðins)“, því gálgi var kallaður hestur hins hengda. Tréð fékk nafn sitt af fórn Óðins."],
+["Fórnir til Óðins","Adam frá Brimum lýsir mönnum og dýrum sem hengd voru í trjám við hofið í Uppsölum. Í Gautreks sögu er Víkar konungur hengdur og stunginn spjóti, „gefinn Óðni“."],
+["Hangatýr","Óðinn er kallaður Hangatýr, „guð hinna hengdu“, og Gálga farmr."]],
+c:[
+["Kristin","Krossfestingin","Kristur hangir á krossi, stunginn spjóti, og fórnar sjálfum sér. Samsvörunin er sláandi og fræðimenn hafa deilt um hvort kristin áhrif séu á erindinu eða hvort það sé alheiðið."],
+["Indversk","Prajapati og Purusha","Í Rigveda 10.90 fórna guðirnir frummanninum Purusha, og heimurinn verður til úr honum. Í Brahmana-ritum fórnar Prajapati sjálfum sér. Sjálfsfórn guðs."],
+["Síberísk","Vígsla samana","Samanar Síberíu gangast undir vígslu þar sem andar sundurlima þá og þeir „deyja“ áður en þeir öðlast mátt. Oft er tré hluti vígslunnar."],
+["Búddísk","Bodhi-tréð","Búdda öðlaðist uppljómun undir Bodhi-trénu eftir langa föstu og íhugun."]]};
+
+D[139] = {t:"Nam ek upp rúnar",
+s:"„Þeir sældu mig hvorki með brauði né drykkjarhorni. Ég horfði niður, tók upp rúnirnar, tók þær æpandi, og féll síðan þaðan.“ Án matar og drykkjar sér Óðinn rúnirnar og grípur þær með ópi.",
+no:[
+["Fasta","Fasta og þjáning eru leiðir til vitrunar. Grímnismál: Óðinn situr átta nætur milli tveggja elda án matar áður en hann opinberar sig."],
+["Rúnir","Orðið rún merkir leyndarmál. Rúnirnar eru ekki aðeins stafróf heldur leyndur máttur."]],
+c:[
+["Biblíuleg","Fasta Jesú","Jesús fastar í eyðimörkinni í fjörutíu daga áður en hann hefur starf sitt (Matteus 4:2)."],
+["Grísk","Orfeifsdulspeki","Í dulspeki voru föstur og þjáning undanfari vitrunar og æðri þekkingar."],
+["Íslömsk","Múhameð í hellinum","Múhameð fékk fyrstu opinberun sína í hellinum Hira eftir íhugun og einveru."]]};
+
+D[140] = {t:"Fimbulljóð níu",
+s:"„Níu fimbulljóð (máttug kvæði) lærði ég af hinum fræga syni Bölþorns, föður Bestlu, og ég fékk drykk af hinum dýra miði, ausinn úr Óðreri.“ Óðinn lærir galdra hjá móðurbróður sínum og fær mjöðinn.",
+no:[
+["Gylfaginning 6","Bestla er dóttir jötunsins Bölþorns og móðir Óðins. Sonur Bölþorns er því móðurbróðir Óðins. Margir telja hann vera Mími."],
+["Móðurbróðir","Móðurbróðir hafði sérstaka stöðu sem fóstri og kennari í germönskum samfélögum (Tacitus, Germania 20)."],
+["Óðrerir","Sjá 107. erindi."]],
+c:[
+["Indversk","Soma","Guðirnir öðlast mátt sinn með því að drekka soma."],
+["Írsk","Lax viskunnar","Fionn mac Cumhaill öðlast visku með því að bragða á laxi viskunnar."]]};
+
+D[141] = {t:"Orð mér af orði",
+s:"„Þá tók ég að frjóvgast og verða fróður, að vaxa og dafna vel. Orð leiddi mig af orði til orðs, verk leiddi mig af verki til verks.“ Þekkingin vex af sjálfri sér eftir vígsluna.",
+no:[
+["Hávamál 57","„Brandr af brandi brenn.“ Sama hugsun um vöxt þekkingar."]],
+c:[
+["Biblíuleg","Jóhannes 1:1","„Í upphafi var Orðið.“ Orðið sem uppspretta máttar."],
+["Indversk","Vak","Vak, gyðja orðsins, er í Rigveda 10.125 uppspretta alls."]]};
+
+D[142] = {t:"Ráðnir stafir",
+s:"„Rúnir munt þú finna og ráðna stafi, mjög stóra stafi, mjög stinna stafi, sem fimbulþulur (Óðinn) litaði, ginnregin (hin miklu goð) gerðu og Hroftur goðanna reist.“ Rúnirnar eru af guðlegum uppruna.",
+no:[
+["Hávamál 80","„Rúnum ... inum reginkunnum, þeim er gerðu ginnregin ok fáði fimbulþulr.“ Sama orðalag."],
+["Fáði","„Að fá“ merkir hér að lita. Rúnir voru litaðar með blóði eða rauðum lit, sbr. Egils sögu 44, þar sem Egill rýður rúnir blóði."]],
+c:[
+["Egypsk","Thoth","Thoth fann upp ritmálið og gaf það mönnum."],
+["Kínversk","Cangjie","Goðsöguleg persóna sem fann upp kínverska letrið með því að skoða spor fugla og dýra."]]};
+
+D[143] = {t:"Óðinn með ásum",
+s:"Óðinn reist rúnir með ásum, Dáinn fyrir álfa, Dvalinn fyrir dverga, Ásviður fyrir jötna. „Ég reist sjálfur sumar.“ Hver kynþáttur hefur sinn rúnameistara.",
+no:[
+["Dáinn og Dvalinn","Dvergar í Dvergatali Völuspár 11 og hirtir sem bíta Yggdrasil (Grímnismál 33)."],
+["Ásviður","Jötunn sem aðeins er nefndur hér."]],
+c:[
+["Grísk","Prómeþeifur","Prómeþeifur kenndi mönnum skrift, tölur og aðrar listir (Fjötraður Prómeþeifur 460)."],
+["Mesópótamísk","Apkallu","Sjö vitringar, hálfir fiskar, sem kenndu mönnum ritlist og menningu."]]};
+
+D[144] = {t:"Veistu hvé rísta skal?",
+s:"Veistu hvernig skal rista? Veistu hvernig skal ráða? Veistu hvernig skal lita? Veistu hvernig skal reyna? Veistu hvernig skal biðja? Veistu hvernig skal blóta? Veistu hvernig skal senda (fórnir)? Veistu hvernig skal sóa (slátra fórn)? Átta spurningar um rúnagaldur og fórnir.",
+no:[
+["Egils saga 72","Egill læknar stúlku sem var veik vegna rangt ristra rúna og segir: „Skalat maðr rúnar rísta, nema ráða vel kunni.“"],
+["Sigrdrífumál","Kennir hvar og hvernig rista skuli mismunandi rúnir."]],
+c:[
+["Indversk","Vedísk fórn","Vedurnar lýsa nákvæmlega hvernig fórn skuli framkvæmd. Mistök gera hana gagnslausa eða hættulega."],
+["Rómversk","Helgisiðir","Í rómverskum helgisiðum þurfti að endurtaka athöfnina ef eitt orð var rangt sagt."]]};
+
+D[145] = {t:"Betra er óbeðit",
+s:"Betra er óbeðið en ofblótað; gjöf leitar ávallt endurgjalds. Betra er ósent en ofsóað. Svo reist Þundur (Óðinn) fyrir upphaf þjóðanna; þar reis hann upp þegar hann kom aftur. Hóf í fórnum, og vísun til upprisu Óðins.",
+no:[
+["Hávamál 39–46","Gjöf krefst endurgjalds, líka gagnvart guðunum."],
+["Þundur","Þundur er heiti Óðins (Grímnismál 46)."]],
+c:[
+["Rómversk","Do ut des","„Ég gef til að þú gefir“: rómversk regla um samskipti manna og guða."],
+["Biblíuleg","Hósea 6:6","„Miskunnsemi þrái ég, ekki fórnir.“"],
+["Grísk","Hesíódos","„Færðu guðunum fórnir eftir efnum“ (Verk og dagar 336)."]]};
+
+D[146] = {t:"Hjalp heitir eitt",
+s:"Ljóðatal hefst: Óðinn telur upp átján galdra sem hann kann. „Ég kann ljóð sem hvorki kona konungs kann né sonur nokkurs manns. Hjálp heitir eitt, og það mun hjálpa þér við sökum, sorgum og öllum sútum.“ Fyrsti galdurinn er huggunargaldur.",
+no:[
+["Merseburg-galdrarnir","Fornháþýskir galdrar frá 10. öld, þar sem Wodan (Óðinn) græðir fót hests. Elsta varðveitta heimild um galdra Óðins."],
+["Sigrdrífumál","Sigurdrífa kennir Sigurði rúnir og galdra á svipaðan hátt."]],
+c:[
+["Indversk","Atharvaveda","Safn galdra gegn sorgum, sjúkdómum, óvinum og illum öndum."],
+["Finnsk","Kalevala","Väinämöinen er spekingur sem syngur galdra og hefur vald yfir náttúrunni með söng."],
+["Grísk","Orfeus","Söngur Orfeusar temur dýr, hreyfir steina og mýkir guði undirheima."]]};
+
+D[147] = {t:"Annat ljóðið",
+s:"Annað ljóðið: það sem synir manna þurfa sem vilja lifa sem læknar. Lækningagaldur.",
+no:[
+["Sigrdrífumál 11","Limrúnir skal kunna sá sem vill vera læknir."],
+["Merseburg-galdurinn","„Bein við bein, blóð við blóð, liður við lið“: Wodan læknar fót hests."]],
+c:[
+["Grísk","Asklepíos","Guð lækninga, sonur Apollons."],
+["Indversk","Ayurveda","Lækningahefð Indlands á rætur í Atharvaveda, þar sem lækning og galdur fara saman."]]};
+
+D[148] = {t:"Þriðja ljóðið",
+s:"Þriðja ljóðið: ef ég þarf mikið á hafti (hindrun) að halda gegn óvinum mínum, deyfi ég eggjar andstæðinga minna, svo að hvorki vopn né brögð bíta á þá. Galdur sem gerir vopn óvirk.",
+no:[
+["Sögurnar","Galdramenn deyfa vopn í mörgum sögum. Í Gísla sögu deyfir galdramaðurinn Þorgrímur nef vopnin."],
+["Ynglinga saga 6","Óðinn gat gert óvini sína blinda, heyrnarlausa eða hrædda og vopn þeirra bitlaus."]],
+c:[
+["Grísk","Akkilles","Akkilles var gerður ósæranlegur, nema á hælnum, þegar honum var dýft í Styx."],
+["Indversk","Mantra","Í Mahabharata nota hetjur möntrur til að gera vopn óvina gagnslaus."]]};
+
+D[149] = {t:"Fjórða ljóðið",
+s:"Fjórða ljóðið: ef menn leggja bönd á limi mína, gel ég svo að ég get gengið; fjöturinn sprettur af fótum mér og haftið af höndum mér. Galdur sem leysir fjötra.",
+no:[
+["Merseburg-galdur I","Fyrri Merseburg-galdurinn er nákvæmlega þetta: idisir (dísir) leysa fjötra af föngum. „Losnaðu úr fjötrum, sleppu frá óvinum.“"],
+["Beda prestur","Beda segir frá fanganum Imma, sem ekki var hægt að fjötra því bróðir hans söng messur fyrir honum (Kirkjusaga 4.22)."]],
+c:[
+["Biblíuleg","Pétur leystur","Fjötrar falla af Pétri postula í fangelsinu þegar engill kemur (Postulasagan 12:7)."],
+["Grísk","Díónýsos","Fjötrar falla af Bakkynjunum (Evrípídes, Bakkynjur 447–448)."]]};
+
+D[150] = {t:"Fimmta ljóðið",
+s:"Fimmta ljóðið: ef ég sé ör (flein) skotna af illum hug fljúga í herinn, flýgur hún ekki svo hratt að ég geti ekki stöðvað hana ef ég sé hana. Galdur sem stöðvar örvar.",
+no:[
+["Sögurnar","Galdrar sem stöðva skot koma fyrir í fornaldarsögum."]],
+c:[
+["Indversk","Mahabharata","Hetjur stöðva og eyða örvum óvina með eigin örvum og möntrum í bardaganum á Kurukshetra."],
+["Grísk","Aþena","Aþena sveigir ör Pandarosar frá Menelási eins og móðir sem hrekur flugu frá sofandi barni (Ilíonskviða 4.130)."]]};
+
+D[151] = {t:"Sétta ljóðið",
+s:"Sjötta ljóðið: ef maður særir mig á rótum hrás (ferskra) viðar, þá eta meinin þann mann sem kveður heift á mig fremur en mig. Galdur sem snýr bölvun á þann sem sendi hana.",
+no:[
+["Rætur","Galdrar voru ristir á rætur eða tré. Í Grettis sögu 79 ristir Þuríður rúnir á rót og sendir hana að Gretti, sem særist af henni og deyr."]],
+c:[
+["Grísk","Spegill Perseifs","Perseifur notar spegilskjöld til að snúa augnaráði Medúsu gegn henni sjálfri."],
+["Indversk","Atharvaveda","Margir galdrar í Atharvaveda eiga að snúa bölvun aftur á þann sem sendi hana (krtya-pratiharana)."]]};
+
+D[152] = {t:"Sjaunda ljóðið",
+s:"Sjöunda ljóðið: ef ég sé háan loga brenna sal yfir sessunautum mínum, brennur hann ekki svo vítt að ég geti ekki bjargað honum. Þann galdur kann ég að gala. Galdur gegn eldi.",
+no:[
+["Húsbrennur","Húsbrennur voru algengar í sögum, t.d. Njálsbrenna og Flugumýrarbrenna."]],
+c:[
+["Indversk","Agni","Bænir til eldguðsins Agni um að hlífa húsi og fólki."],
+["Biblíuleg","Eldsofninn","Þrír menn ganga ósnortnir út úr eldsofni Nebúkadnesars (Daníel 3)."]]};
+
+D[153] = {t:"Átta ljóðið",
+s:"Áttunda ljóðið, sem öllum er gagnlegt að læra: þar sem hatur vex meðal konungssona, get ég bætt það fljótt. Sáttagaldur.",
+no:[
+["Völuspá 45","„Bræður munu berjask.“ Sáttagaldur gegn frændvígum."],
+["Konungasögur","Deilur konungssona um ríki eru algengar í Heimskringlu."]],
+c:[
+["Grísk","Konkordía","Gyðja sáttar og eindrægni."],
+["Indversk","Shanti","Shanti-möntrur eru friðarbænir í Vedunum: „Om shanti shanti shanti.“"]]};
+
+D[154] = {t:"Níunda ljóðið",
+s:"Níunda ljóðið: ef ég þarf að bjarga skipi mínu á floti, kyrri ég vindinn á bylgjunum og svæfi allan sjóinn. Veðurgaldur.",
+no:[
+["Sögurnar","Galdramenn vekja eða kyrra storm, t.d. í Laxdælu þar sem Kotkell og fjölskylda hans vekja storm sem drekkir Kára."]],
+c:[
+["Biblíuleg","Jesús kyrrir vindinn","„Þögn! Vertu kyrr!“ Og vindinn lægði (Markús 4:39)."],
+["Grísk","Eólos","Vindaguðinn gefur Ódysseifi belg með öllum vindum lokuðum inni."],
+["Finnsk","Väinämöinen","Kalevala lýsir Väinämöinen kyrra sjóinn með söng sínum."]]};
+
+D[155] = {t:"Tíunda ljóðið",
+s:"Tíunda ljóðið: ef ég sé túnriður (nornir) leika í loftinu, vinn ég svo að þær villast frá heimhömum sínum og heimhugum. Galdur gegn nornum sem ríða um loftið: þær komast ekki aftur í eigin líkama.",
+no:[
+["Hamur","Talið var að galdrakonur gætu yfirgefið líkama sinn (haminn) og farið um í öðru formi. Ef þær villtust komust þær ekki aftur."],
+["Eyrbyggja saga","Galdrakonur fara um í hamförum."]],
+c:[
+["Evrópsk","Nornir á flugi","Síðari evrópskar hugmyndir um nornir sem fljúga um nætur á sópum eða dýrum."],
+["Síberísk","Samanar","Samanar senda sál sína úr líkamanum. Ef hún villist deyr töframaðurinn."]]};
+
+D[156] = {t:"Ellifta ljóðið",
+s:"Ellefta ljóðið: ef ég leiði gamla vini til orrustu, gel ég undir skjöldunum, og þeir fara með mætti heilir til bardaga, heilir úr bardaga, koma heilir hvaðan sem þeir koma. Verndargaldur hermanna.",
+no:[
+["Sigrúnir","Sigrdrífumál 6: sigrúnir skal rista á sverð."],
+["Óðinn sem sigurguð","Óðinn veitir sigur (Hárbarðsljóð 24), en getur líka tekið hann."]],
+c:[
+["Grísk","Aþena","Verndargyðja hetjanna sem fylgir þeim í bardaga, t.d. Díómedes og Ódysseifi."],
+["Fornensk","Lorica","Brynjubænir (lorica) voru kristnar verndarbænir gegn hættum, t.d. Brynja heilags Patreks."]]};
+
+D[157] = {t:"Tolfta ljóðið",
+s:"Tólfta ljóðið: ef ég sé hengdan mann (virgilná) sveiflast uppi í tré, rista ég og lita rúnir svo að maðurinn gengur og talar við mig. Galdur sem vekur hina dauðu til að spyrja þá ráða.",
+no:[
+["Hangaguð","Óðinn er guð hinna hengdu og getur fengið þá til að tala."],
+["Ynglinga saga 7","Óðinn vakti dauða menn upp úr jörðu eða settist undir hengda menn. Þess vegna var hann kallaður draugadróttinn eða hangadróttinn."],
+["Baldrs draumar","Óðinn vekur upp látna völvu til að spyrja hana."]],
+c:[
+["Grísk","Nekyia","Ódysseifur kallar fram skugga hinna dauðu til að spyrja Teiresías (Ódysseifskviða 11)."],
+["Biblíuleg","Galdrakonan í Endór","Sál konungur lætur vekja upp Samúel spámann (1. Samúelsbók 28)."]]};
+
+D[158] = {t:"Þrettánda ljóðið",
+s:"Þrettánda ljóðið: ef ég ausa ungan mann vatni mun hann ekki falla þótt hann fari í orrustu; sá maður hnígur ekki fyrir sverðum. Vatnsausa sem verndargaldur. Í heiðni voru börn ausin vatni og gefið nafn.",
+no:[
+["Vatni ausinn","Heiðnir menn jusu börn vatni við nafngift, t.d. í Rígsþulu og mörgum sögum („var ausinn vatni ok nafn gefit“)."]],
+c:[
+["Kristin","Skírn","Kristin skírn með vatni er hliðstæð athöfn. Vatnsausa kann að vera eldri en kristni eða undir áhrifum hennar."],
+["Grísk","Akkilles og Styx","Þetis dýfir Akkillesi í Styx til að gera hann ósæranlegan."]]};
+
+D[159] = {t:"Fjögurtánda ljóðið",
+s:"Fjórtánda ljóðið: ef ég á að telja upp goðin fyrir mönnum, kann ég skil á öllum ásum og álfum. Fáir heimskir kunna svo. Óðinn þekkir goðin og getur kennt mönnum að þekkja þau.",
+no:[
+["Grímnismál","Óðinn telur upp bústaði goðanna og nöfn sín."],
+["Vafþrúðnismál","Óðinn og Vafþrúðnir keppa í þekkingu á goðum og heimum."]],
+c:[
+["Grísk","Goðakyn Hesíódosar","Hesíódos telur upp ættir guðanna að kröfu Músanna."],
+["Indversk","Purana-rit","Purana-ritin telja upp ættir guða, konunga og spekinga."]]};
+
+D[160] = {t:"Fimmtánda ljóðið",
+s:"Fimmtánda ljóðið kvað dvergurinn Þjóðrerir fyrir dyrum Dellings: afl kvað hann ásum, frama álfum, hyggju Hroftatý (Óðni). Galdur sem veitir mátt, frama og visku.",
+no:[
+["Þjóðrerir","Þjóðrerir merkir „sá sem hrærir þjóðir“. Dvergurinn er aðeins nefndur hér."],
+["Dellingur","Dellingur er faðir Dags (Vafþrúðnismál 25). „Fyrir dyrum Dellings“ merkir líklega við dögun."],
+["Hroftatýr","Heiti Óðins."]],
+c:[
+["Indversk","Gayatri-mantra","Morgunbænin til sólarinnar (Savitr) er sungin við dögun: „Megi hann vekja hugsanir okkar.“"],
+["Egypsk","Sálmar til Ra","Sungnir við sólarupprás til að veita sólguðinum mátt."]]};
+
+D[161] = {t:"Sextánda ljóðið",
+s:"Sextánda ljóðið: ef ég vil fá allan hug og gaman hinnar vitru meyjar, sný ég huga hinnar hvítörmuðu konu og breyti öllum hug hennar. Ástargaldur.",
+no:[
+["Skírnismál","Skírnir hótar Gerði galdri til að fá hana til að unna Frey."],
+["Grágás","Ástargaldur var bannaður með lögum."]],
+c:[
+["Grísk","Ástargaldrar","Grískir töfrapapýrusar frá Egyptalandi innihalda fjölmarga ástargaldra (agōgai)."],
+["Rómversk","Virgill","Í 8. sveitaljóði Virgils notar kona galdur til að fá elskhuga sinn heim aftur."]]};
+
+D[162] = {t:"Sjautjánda ljóðið",
+s:"Sautjánda ljóðið: svo að hin unga mær yfirgefi mig seint. „Þessara ljóða muntu, Loddfáfnir, lengi vera án; þó væru þau þér góð ef þú fengir þau, nytsamleg ef þú lærðir þau, þörf ef þú þægir þau.“ Óðinn segir að Loddfáfnir muni ekki læra þessi ljóð.",
+no:[
+["Loddfáfnir","Nemandinn úr Loddfáfnismálum birtist aftur. Hann fær ekki að læra galdrana, aðeins að vita af þeim."],
+["Stefið","Loddfáfnis-stefið („njóta mundu ef þú nemr“) er endurómað."]],
+c:[
+["Indversk","Leynd þekking","Í Upanishöðum er æðsta þekkingin aðeins gefin nemendum sem eru hennar verðugir."],
+["Grísk","Leyndardómar","Elevsis-leyndardómana mátti ekki segja óvígðum."]]};
+
+D[163] = {t:"Átjánda ljóðið",
+s:"Átjánda ljóðið, sem ég kenni aldrei mey né konu nokkurs manns. Allt er betra sem einn kann; það fylgir ljóðalokum. Nema þeirri einu sem tekur mig í faðm sér eða er systir mín. Síðasti galdurinn er leyndur.",
+no:[
+["Leyndin","Átjánda ljóðið er aldrei opinberað. Leyndin sjálf er hluti af mætti þess."],
+["Systir","„Systir“ hefur verið túlkuð sem vísun til Freyju eða sifjaspells Vana."]],
+c:[
+["Egypsk","Leyndarnafn Ra","Máttur Ra fólst í leyndu nafni hans, sem Ísis náði með brögðum."],
+["Gyðingleg","Nafn Guðs","Hið heilaga nafn Guðs (Tetragrammaton) mátti aðeins æðsti presturinn bera fram, einu sinni á ári."]]};
+
+D[164] = {t:"Nú eru Háva mál kveðin",
+s:"Nú eru Hávamál kveðin í höll Háva, mjög þörf mönnum, óþörf jötnum. Heill sá sem kvað! Heill sá sem kann! Njóti sá sem nam! Heilir þeir sem hlýddu! Kvæðið endar á blessun yfir skáldi, nemanda og áheyrendum.",
+no:[
+["Sigrdrífumál 4","„Heilir æsir, heilar ásynjur.“ Svipuð blessunarformúla."],
+["Hávi","„Hávamál“ merkir „mál hins háa“, þ.e. Óðins."]],
+c:[
+["Indversk","Phalashruti","Indversk helgirit enda oft á „phalashruti“, lýsingu á þeirri blessun sem fylgir því að heyra eða læra textann."],
+["Fornensk","Widsith","Fornenska kvæðið Widsith endar á blessun yfir skáldum sem fara um heiminn og syngja."],
+["Grísk","Hómerssálmar","Hómerssálmar enda oft á kveðju til guðsins og loforði um annað kvæði."]]};
+const G = [
+["gáttir","gátt","Dyr, dyragætt."],
+["skoðask","skoðask","Skoðast, líta í kringum sig."],
+["skyggnast","skyggnast","Skyggnast, gá vandlega."],
+["fleti fletjum","flet","Pallur eða bekkur í skála þar sem setið var og sofið."],
+["gefendr","gefandi","Gefandi; hér gestgjafinn."],
+["bráðr","bráðr","Ákafur, fljótur, óþolinmóður."],
+["bröndum","brandr","Eldibrandur; einnig dyrastafur. „Á bröndum“ = við eldinn eða í dyrunum."],
+["frama","frami","Frami, sæmd."],
+["kalinn","kalinn","Kalinn, frosinn."],
+["váða váðum váðir","váð","Klæði, föt."],
+["verðar","verðr","Máltíð."],
+["þerru","þerra","Handklæði, þurrka."],
+["þjóðlaðar","þjóðlaðr","Vinsamlegt boð, gott viðmót."],
+["æðis","æði","Framkoma, hegðun."],
+["endrþögu","endrþaga","Endurþögn: að fá að tala og að á mann sé hlustað."],
+["ratar","rata","Fara, ferðast."],
+["dælt","dæll","Auðveldur, þægilegur. „Dælt er heima hvat“ = heima er allt auðvelt."],
+["augabragði augabragð","augabragð","Augnatillit. „At augabragði verða“ = verða að athlægi."],
+["snotrum snotr snotrs","snotr","Vitur, skynsamur."],
+["ósnotr ósnotrs","ósnotr","Óvitur, heimskur."],
+["hyggjandi","hyggjandi","Hyggindi, vit."],
+["hræsinn","hræsinn","Hreykinn, montinn."],
+["gætinn","gætinn","Gætinn, varkár."],
+["horskr horska horskan horskum","horskr","Vitur, skynsamur."],
+["heimisgarða","heimisgarðr","Heimili, bær."],
+["víti","víti","Ógæfa, refsing."],
+["vörum","varr","Varkár. „Víti vörum“ = varkárum (manni) verður ógæfa."],
+["óbrigðra","óbrigðr","Óbrigðull, traustur."],
+["mannvit","mannvit","Vit, skynsemi."],
+["þunnu","þunnr","Þunnur, lágur. „Þunnu hljóði“ = í hljóði, lágt."],
+["nýsisk","nýsask","Kanna, grennslast fyrir."],
+["fróðra fróðr fróðum fróða","fróðr","Fróður, vitur, margfróður."],
+["líknstafi","líknstafir","Vinsamleg orð."],
+["ódælla","ódæll","Erfiðari, verri viðureignar."],
+["brjóstum","brjóst","Brjóst. „Annars brjóstum í“ = í hug annars."],
+["berr-at","berr-at","Ber ekki. -at er neitunarviðskeyti."],
+["brautu","braut","Vegur."],
+["válaðs váluðum","válaðr","Fátækur, vesall."],
+["vegnest","vegnest","Vegarnesti."],
+["vegr-a","vegr-a","Ber ekki (vega = bera). -a er neitun."],
+["velli","völlr","Völlur. „Velli at“ = úti á vegi, á víðavangi."],
+["ofdrykkja","ofdrykkja","Ofdrykkja."],
+["er-a er-at","er-a","Er ekki."],
+["gótt ógótt","gótt","Gott. „Ógótt“ = illt."],
+["færa","færa","Færra, minna."],
+["gumi guma gumna gumnar","gumi","Maður."],
+["óminnishegri","óminnishegri","Hegri óminnisins: gleymskan persónugerð sem fugl."],
+["ölðrum ölðr ölðri","ölðr","Ölveisla, drykkja."],
+["þrumir","þruma","Sitja kyrr, vofa yfir."],
+["fjötraðr","fjötraðr","Fjötraður, bundinn."],
+["vark","vark","Var ég."],
+["gunnlaðar gunnlöð gunnlöðu","Gunnlöð","Dóttir Suttungs, gætti skáldamjaðarins."],
+["ölr","ölr","Ölvaður."],
+["ofrölvi","ofrölvi","Ofurölvi, dauðadrukkinn."],
+["fjalars","Fjalarr","Jötunn eða dvergur; hér líklega Suttungur."],
+["bazt beztr","beztr","Bestur."],
+["heimtir","heimta","Heimta, ná aftur."],
+["þagalt","þagall","Þögull."],
+["hugalt","hugall","Hugsandi, athugull."],
+["þjóðans","þjóðann","Konungur."],
+["vígdjarft","vígdjarfr","Djarfur í vígum."],
+["reifr","reifr","Kátur, glaður."],
+["unz","unz","Þar til."],
+["ósnjallr","ósnjallr","Huglaus."],
+["hyggsk","hyggjask","Halda, ímynda sér."],
+["ey","ey","Ætíð, alltaf."],
+["varask","varask","Varast, forðast."],
+["hánum","hánum","Honum."],
+["geirar geiri geirs","geirr","Spjót."],
+["kópir","kópa","Glápa, góna."],
+["afglapi","afglapi","Fífl, kjáni."],
+["kynnis ókynnis","kynni","Heimsókn. „Ókynni“ = ókurteisi."],
+["þylsk","þyljask","Þylja fyrir munni sér, muldra."],
+["sylg","sylgr","Sopi."],
+["fjölð","fjölð","Fjöldi, margt."],
+["vits","vit","Vit."],
+["keri","ker","Ker, bikar."],
+["hófi","hóf","Hóf."],
+["þarft","þarfr","Þarfur, gagnlegur."],
+["vár váar","vá","Lá, álasa."],
+["gráðugr","gráðugr","Gráðugur."],
+["halr hal hali halir","halr","Maður."],
+["aldrtrega","aldrtregi","Ævilöng sorg."],
+["hlægis","hlægi","Athlægi."],
+["ósviðr","ósviðr","Óvitur."],
+["ævagi æva","æva","Aldrei. „Ævagi“ = aldrei nokkurn tíma."],
+["maga magi","magi","Magi."],
+["hvívetna hotvetna","hvívetna","Allt, hvaðeina."],
+["hittki","hittki","Það ekki. -ki er neitun."],
+["vamma","vömm","Löstur, galli."],
+["víl","víl","Eymd, vesöld."],
+["viðhlæjendr","viðhlæjandi","Sá sem hlær með manni en er ekki vinur hans."],
+["fiðr","finna","Finna."],
+["fár","fár","Illt, illmælgi („fár lesa“ = tala illa um, 24. erindi). Í 159. erindi: fáir."],
+["formælendr","formælandi","Talsmaður, stuðningsmaður."],
+["þykkisk","þykkjask","Þykjast."],
+["vá","vá","Hér: skjól eða horn (óljóst)."],
+["firar","firar","Menn."],
+["aldir","aldir","Menn, fólk."],
+["vettki vættki","vettki","Ekkert."],
+["fregna freginn","fregna","Spyrja."],
+["eyvitu eyvitar","eyvit","Ekkert."],
+["ýta","ýtar","Menn. „Ýta synir“ = mannkynið."],
+["ærna","ærinn","Nógur, mikill."],
+["staðlausu","staðlauss","Staðlaus, marklaus. „Staðlausu stafi“ = merkingarlaust bull."],
+["hraðmælt","hraðmæltr","Sem talar hratt og hugsunarlaust."],
+["haldendr","haldandi","Sá sem heldur, stjórnar."],
+["gelr","gala","Gala, kveða."],
+["skal-a skal-at-tu","skal-a","Skal ekki."],
+["þurrfjallr","þurrfjallr","Með þurra fætur: óáreittur, í friði."],
+["flótta","flótti","Flótti."],
+["hæðinn","hæðinn","Háðskur."],
+["görla ógörla","görla","Gjörla, vel. „Ógörla“ = illa."],
+["glissir","glissa","Glotta, hæðast."],
+["grömum","gramr","Hér: óvinur."],
+["glami","glama","Gaspra, hafa hátt."],
+["erusk","erusk","Eru (hvor við annan)."],
+["gagnhollir","gagnhollr","Vinsamlegur hvor við annan."],
+["vrekask","vrekask","Rekast á, deila."],
+["róg","róg","Rógur, deilur."],
+["órir","óra","Deila, þrátta."],
+["árliga","árliga","Snemma."],
+["snópir","snópa","Snuðra, góna eftir mat."],
+["solginn","solginn","Sólginn, svangur."],
+["afhvarf","afhvarf","Krókur, útúrdúr."],
+["gagnvegir","gagnvegr","Bein leið."],
+["firr","firr","Fjær, langt burt."],
+["geitr","geit","Geit."],
+["taugreftan","taugreftr","Með tágaþaki."],
+["bæn","bæn","Bón, betl."],
+["vápnum vápn","vápn","Vopn."],
+["fannk-a","fannk-a","Fann ég ekki."],
+["væri-t","væri-t","Væri ekki."],
+["féar","fé","Fé, eign."],
+["svági","svági","Svo ekki."],
+["glöggvan glöggr","glöggr","Nískur, sínkur."],
+["þægi","þiggja","Þiggja."],
+["sparir","spara","Spara."],
+["varir","vara","Gruna, búast við. „Margt gengr verr en varir“ = margt fer verr en maður býst við."],
+["viðrgefendr","viðrgefandi","Sá sem gefur á móti."],
+["endrgefendr","endrgefandi","Sá sem endurgeldur gjöf."],
+["hölðar hölða","höldr","Maður, góður bóndi."],
+["lausung","lausung","Svik, óheilindi."],
+["flátt flást","flár","Fláráður, svikull."],
+["glík","glíkr","Líkur."],
+["villr","villr","Villtur."],
+["þóttumk","þóttumk","Þóttist ég."],
+["fræknir fræknum","frækn","Hugrakkur."],
+["sút sútum","sút","Sorg, áhyggja."],
+["uggir","uggja","Óttast."],
+["sýtir","sýta","Kvíða, harma."],
+["trémönnum","trémaðr","Trémaður, líkneski úr tré."],
+["rekkar","rekkr","Kappi, hetja."],
+["rift","rift","Klæði, línklæði."],
+["neiss","neiss","Smánaður, til skammar."],
+["nökkviðr","nökkviðr","Nakinn."],
+["þöll","þöll","Fura, tré."],
+["þorpi","þorp","Hér: berangur, hæð."],
+["hlýr-at","hlýr-at","Hlýjar ekki, skýlir ekki."],
+["börkr","börkr","Börkur."],
+["barr","barr","Barr, nálar."],
+["manngi","manngi","Enginn maður."],
+["sloknar","slokna","Slokkna."],
+["sétti","sétti","Sjötti."],
+["hleif hleifi","hleifr","Brauðhleifur."],
+["höllu","hallr","Hallur, hálftómur („með höllu keri“)."],
+["sæva","sær","Sjór."],
+["jafnspakir","jafnspakr","Jafnvitur."],
+["urðu-t","urðu-t","Urðu ekki."],
+["half","halfr","Hálfur."],
+["meðalsnotr","meðalsnotr","Hóflega vitur."],
+["alsnotr","alsnotr","Alvitur, of vitur."],
+["fyrða fyrðar","fyrðar","Menn."],
+["sorgalausastr","sorglauss","Sorglaus."],
+["sefi sefa","sefi","Hugur, geð."],
+["funi funa","funi","Eldur, logi."],
+["kuðr","kuðr","Kunnur."],
+["dælskr","dælskr","Heimskur, einfaldur."],
+["dul","dul","Dramb, sjálfsánægja, einangrun."],
+["ár","ár","Snemma."],
+["yrkjendr","yrkjandi","Verkamaður."],
+["hvötum","hvatr","Duglegur, röskur. „Und hvötum“ = undir hinum duglegu."],
+["skíða","skíð","Klofinn viður, eldiviður."],
+["næfra","næfr","Birkibörkur."],
+["mjöt","mjöt","Mál, magn."],
+["misseri","misseri","Hálft ár."],
+["væddr","væddr","Klæddur."],
+["sé-t hafi-t","sé-t","Sé ekki."],
+["skúa","skór","Skór."],
+["bróka","brók","Buxur."],
+["snapir","snapa","Snuðra, hnusa."],
+["gnapir","gnapa","Teygja fram hálsinn."],
+["aldinn","aldinn","Aldinn, gamall."],
+["mar","marr","Sjór (st. 62); hestur (st. 83)."],
+["ráðsnotra","ráðsnotr","Ráðsnjall."],
+["hvatastr","hvatr","Djarfur, hraustur."],
+["mikilsti","mikilsti","Allt of."],
+["ólagat","ólagaðr","Ekki tilbúið (um öl)."],
+["líð","líð","Öl."],
+["málungi","málungi","Máltíð."],
+["heilyndi","heilyndi","Heilsa."],
+["löst","löstr","Löstur."],
+["ærnu","ærinn","Nægur."],
+["lifðum ólifðum","lifðr","Lifandi. „Betra er lifðum en sé ólifðum“ = betra er að lifa en vera dáinn."],
+["kvikr","kvikr","Lifandi."],
+["daufr","daufr","Heyrnarlaus."],
+["séi","séi","Sé."],
+["nás","nár","Lík."],
+["bautarsteinar","bautarsteinn","Minningarsteinn."],
+["herjar","herr","Her, óvinur."],
+["heðin","heðinn","Skinnkápa, feldur."],
+["væni","vænn","Vænta: „handar væni“ = býst við hendi (vopni)."],
+["haustgríma","haustgríma","Haustnótt."],
+["ráar","rá","Rá á skipi."],
+["viðrir","viðra","Viðra, veður breytist."],
+["vítka","vítka","Álasa."],
+["orðstírr","orðstírr","Orðstír, frægð."],
+["grindr","grind","Grind, fjárrétt."],
+["fitjungs","Fitjungr","Hinn feiti, ríki maður."],
+["völ","völr","Stafur. „Vánar völr“ = betlistafur."],
+["vánar","ván","Von."],
+["valtastr","valtr","Valtur, óstöðugur."],
+["munuð","munuðr","Ást, unaður."],
+["drjúgt","drjúgr","Drjúgur."],
+["reginkunnum","reginkunnr","Af goðum kominn."],
+["ginnregin","ginnregin","Hin miklu goð."],
+["fimbulþulr","fimbulþulr","Hinn mikli þulur: Óðinn."],
+["fáði fák","fá","Lita, rita (rúnir)."],
+["leyfa","leyfa","Lofa, hrósa."],
+["mæki","mækir","Sverð."],
+["skriðar","skrið","Skrið, ferð."],
+["orka","orka","Treysta á, nota."],
+["saurgan","saurugr","Ryðgaður, óhreinn."],
+["hvéli hverfanda","hvél","Hjól. „Á hverfanda hvéli“ = á snúandi hjóli."],
+["brigð brigðr brigðum","brigðr","Hverflyndur, ótryggur."],
+["rýtanda","rýta","Rýta."],
+["vági vaxanda","vágr","Vogur, bylgja."],
+["vellanda","vella","Sjóða."],
+["fleini flein","fleinn","Spjót, ör."],
+["báru","bára","Bára, alda."],
+["einnættum","einnættr","Eins nætur gamall."],
+["hringlegnum","hringleginn","Hringaður."],
+["beðmálum","beðmál","Rúmtal, tal í rúminu."],
+["vilmæli","vilmæli","Ljúf orð, það sem fólk vill heyra."],
+["nýfelldum","nýfelldr","Nýfallinn."],
+["ársánum","ársáinn","Snemma sáður."],
+["alskjótum","alskjótr","Mjög fljótur."],
+["jór jó","jór","Hestur."],
+["óbryddum","óbryddr","Óskeifaður."],
+["teitum","teitr","Glaður, ólmur."],
+["tvévetrum","tvévetr","Tveggja vetra."],
+["byr","byrr","Byr, vindur."],
+["beiti","beiti / beita","Í 90. erindi: sigla (beita upp í vind). Í 137. erindi: beitilyng."],
+["hrein","hreinn","Hreindýr."],
+["þáfjalli","þáfjall","Þiðnað fjall."],
+["tælir","tæla","Tæla, blekkja."],
+["fljóðs fljóð","fljóð","Kona."],
+["mans man","man","Mær, ung kona."],
+["fríar","fría","Biðja, sækjast eftir."],
+["firna","firna","Álasa, ásaka."],
+["lostfagrir","lostfagr","Fagur og freistandi."],
+["munr munar","munr","Ást, þrá."],
+["reyri","reyrr","Reyr."],
+["vættak","vættak","Vænti ég, beið ég."],
+["þeygi","þeygi","Alls ekki."],
+["hefik","hefik","Hef ég."],
+["beðjum","beðr","Rúm."],
+["sólhvíta","sólhvítr","Hvít eins og sól, ljós á hörund."],
+["ynði","yndi","Yndi."],
+["auk","auk","Og, einnig."],
+["aftni","aftann","Kvöld."],
+["ósköp","ósköp","Ógæfa."],
+["vísum","víss","Viss."],
+["nýta","nýtr","Röskur, duglegur."],
+["vígdrótt","vígdrótt","Hirð vopnaðra manna."],
+["vílstígr","vílstígr","Eymdarstígur."],
+["saldrótt","saldrótt","Hirðin í salnum."],
+["grey","grey","Tík."],
+["hugbrigð","hugbrigðr","Hverflyndur."],
+["flærðir","flærð","Svik, lauslæti."],
+["háðungar","háðung","Háðung, smán."],
+["vífs","víf","Kona."],
+["fimbulfambi","fimbulfambi","Mikill fábjáni."],
+["aðal","aðal","Eðli."],
+["minnigr","minnigr","Minnugur."],
+["málugr","málugr","Málgefinn."],
+["suttungs suttungr suttung","Suttungr","Jötunn sem átti skáldamjöðinn."],
+["iðgjöld","iðgjöld","Endurgjald, laun."],
+["svára","svárr","Þungur, alvarlegur."],
+["rata","Rati","Bor sem Óðinn notaði til að bora sig inn í fjallið."],
+["létumk","létumk","Lét ég."],
+["gnaga","gnaga","Naga."],
+["stóðumk","stóðumk","Stóðu yfir mér."],
+["keypts","keyptr","Keyptur."],
+["litar","litr","Litur, útlit; ávinningur."],
+["óðrerir óðreri","Óðrerir","„Sá sem hrærir óð“: skáldamjöðurinn eða ker hans."],
+["vés","vé","Helgistaður."],
+["jaðar","jaðarr","Jaðar, brún."],
+["ifi","ifi","Efi, vafi."],
+["nytak","nytak","Nyti ég."],
+["lögðumk","lögðumk","Lagði ég."],
+["hindra","hindri","Síðari. „Ins hindra dags“ = daginn eftir."],
+["hrímþursar","hrímþurs","Hrímþurs, jötunn."],
+["háva","Hávi","Hinn hái: Óðinn."],
+["bölverki","Bölverkr","Dulnefni Óðins hjá jötnum."],
+["sóit sóa","sóa","Fórna, slátra."],
+["baugeið","baugeiðr","Eiður svarinn við helgan baug."],
+["tryggðum","tryggð","Tryggð, trúnaður."],
+["sumbli","sumbl","Veisla, drykkja."],
+["grætta","græta","Græta."],
+["þylja","þylja","Þylja, flytja fróðleik."],
+["þular þul","þulr","Þulur, fræðimaður, spekingur."],
+["urðarbrunni","Urðarbrunnr","Brunnur örlaganna undir Yggdrasli."],
+["þagðak","þagðak","Þagði ég."],
+["hugðak","hugðak","Hugsaði ég."],
+["ráðumk","ráðumk","Ræð ég."],
+["loddfáfnir","Loddfáfnir","Nemandinn sem ráðin eru gefin."],
+["nemir nemr","nema","Nema, læra."],
+["rís-at","rís-at","Rís ekki."],
+["njósn","njósn","Njósn."],
+["séir","séir","Sért."],
+["fjölkunnigri","fjölkunnigr","Göldróttur."],
+["lyki","lúka","Læsa."],
+["vill-at","vill-at","Vilt ekki."],
+["mannskis","mannskis","Einskis manns."],
+["eyrarúnu","eyrarúna","Trúnaðarvina, ástkona."],
+["fásktu","fásktu","Fáðu þér (mat)."],
+["virði","virðr","Máltíð."],
+["tíðir","tíða","Langa til, þurfa."],
+["ofarla","ofarla","Hátt uppi."],
+["fláráð","fláráðr","Svikull."],
+["fjörlagi","fjörlag","Bani."],
+["treðr","troða","Troða, ganga um."],
+["gamanrúnum","gamanrúnar","Gleðital, trúnaðarmál."],
+["líknargaldr","líknargaldr","Græðandi galdur."],
+["flaumslitum","flaumslit","Vinslit."],
+["ósvinna","ósvinnr","Óvitur."],
+["líknfastan","líknfastr","Traustur í vinsemd."],
+["sifjum","sifjar","Tengdir; hér: náin vinátta."],
+["senna","senna","Deila með orðum."],
+["bilar","bila","Bila, gefast upp."],
+["skeftismiðr","skeftismiðr","Smiður spjótskafta."],
+["fjándum","fjándi","Óvinur."],
+["gjalti","gjalti","Vitstola maður (úr írsku geilt). „Verða at gjalti“ = ærast af ótta."],
+["heilli","heill","Heill, gæfa."],
+["ofvaran","ofvarr","Of varkár."],
+["ganganda","gangandi","Förumaður."],
+["skörpum","skarpr","Skorpinn, þurr."],
+["belg","belgr","Skinnbelgur."],
+["hám","há","Húð, skinn."],
+["skollir","skolla","Dingla, sveiflast."],
+["skrám","skrá","Þurr húð, skinn."],
+["váfir váfa","váfa","Sveiflast, hanga."],
+["vílmögum","vílmögr","Vesalingur, þræll."],
+["geyja","geyja","Gelta, hæða."],
+["hrekir","hrekja","Hrekja burt."],
+["upploki","upplok","Opnun."],
+["læs","lá","Bölvun, böl."],
+["liðu","liðr","Liður."],
+["megin","megin","Máttur."],
+["abbindi","abbindi","Harðlífi."],
+["fjölkynngi","fjölkynngi","Galdur."],
+["hýrógi","hýrógr","Heimilisrógur, ósætti á heimili."],
+["bitsóttum","bitsótt","Kveisa, verkur."],
+["hekk","hanga","Hanga."],
+["vindga","vindugr","Vindugur, vindbarinn."],
+["meiði","meiðr","Tré: Yggdrasill."],
+["undaðr","undaðr","Særður."],
+["sældu","sæla","Gleðja, næra."],
+["hornigi","horn","Drykkjarhorn. -gi er neitun."],
+["nýsta","nýsa","Gá, skyggnast."],
+["æpandi","æpa","Æpa."],
+["fimbulljóð","fimbulljóð","Máttug kvæði."],
+["bölþorns","Bölþorn","Jötunn, afi Óðins."],
+["bestlu","Bestla","Jötnamær, móðir Óðins."],
+["frævask","frævask","Frjóvgast, dafna."],
+["hafask","hafask","Dafna."],
+["ráðna","ráðinn","Ráðinn, túlkaður."],
+["stinna","stinnr","Sterkur."],
+["hroftr hroftatý","Hroftr","Heiti Óðins."],
+["rögna","rögn","Goðin."],
+["ásviðr","Ásviðr","Jötunn, rúnameistari jötna."],
+["blóta","blóta","Færa fórn."],
+["óbeðit","óbeðinn","Óbeðinn."],
+["ofblótit","ofblótinn","Of mikið blótað."],
+["gildis","gildi","Endurgjald."],
+["ósent ofsóit","ósent","Ósent (um fórn)."],
+["þundr","Þundr","Heiti Óðins."],
+["kann-at","kann-at","Kann ekki."],
+["hjalp hjalpa","hjalp","Hjálp."],
+["görvöllum","görvallr","Allur."],
+["heiftmögu","heiftmögr","Óvinur."],
+["andskota","andskoti","Andstæðingur."],
+["bíta-t","bíta-t","Bíta ekki."],
+["velir","vél","Vél, bragð."],
+["boglimum","boglimr","Handleggur."],
+["gel","gala","Gala, kveða galdur."],
+["sprettr","spretta","Spretta af, losna."],
+["fári","fár","Illur hugur, fjandskapur."],
+["fýgr-a","fýgr-a","Flýgur ekki."],
+["stöðvig-a-k","stöðvig-a-k","Get ekki stöðvað."],
+["vrótum","vrót","Rót."],
+["hrás","hrár","Hrár, ferskur."],
+["heifta","heift","Heift, hatur."],
+["sessmögum","sessmögr","Sessunautur, félagi."],
+["brennr-at","brennr-at","Brennur ekki."],
+["bjargig-a-k","bjargig-a-k","Get ekki bjargað."],
+["hildings","hildingr","Konungur, hetja."],
+["nauðr","nauðr","Nauð, þörf."],
+["svæfik","svæfik","Svæfi ég."],
+["túnriður","túnriða","Norn sem ríður um húsþök: galdrakona á ferð."],
+["heimhama","heimhamr","Eigin líkami (sem hún yfirgaf)."],
+["heimhuga","heimhugr","Heimþrá, leið heim."],
+["langvini","langvinr","Gamall vinur."],
+["randir","rönd","Skjöldur."],
+["hildar hildi","hildr","Orrusta."],
+["virgilná","virgilnár","Hengdur maður (virgill = snara)."],
+["verpa","verpa","Ausa, kasta."],
+["mun-at","mun-at","Mun ekki."],
+["hnígr-a","hnígr-a","Hnígur ekki."],
+["hjörum","hjörr","Sverð."],
+["tíva","tívar","Goð."],
+["þjóðrerir","Þjóðrerir","Dvergur, „sá sem hrærir þjóðir“."],
+["dellings","Dellingr","Faðir Dags; „fyr Dellings durum“ = við dögun."],
+["svinna","svinnr","Vitur."],
+["hvítarmri","hvítarmr","Hvítarmaður."],
+["firrask","firrask","Fjarlægjast, yfirgefa."],
+["manunga","manungr","Ungur, á mannsaldri."],
+["kennik","kennik","Kenni ég."],
+["verr","verr","Verr (st. 56 og 125). Í 163. erindi af sögninni verja: „er mik armi verr“ = sem vefur mig örmum."],
+["allþörf","allþarfr","Mjög þarfur."],
+["óþörf","óþarfr","Óþarfur, gagnslaus."]
+];
+
+/*GLOSS*/
+
+const GM={};G.forEach((g,i)=>g[0].split(" ").forEach(f=>GM[f]=i));
+let usedG=[];
+function gl(s){return s.split(/([\p{L}]+(?:-[\p{L}]+)*)/u).map((t,i)=>{if(i%2===0)return esc(t);const k=GM[t.toLowerCase()];if(k===undefined)return esc(t);if(!usedG.includes(k))usedG.push(k);return `<span class="gl" tabindex="0" data-g="${k}">${esc(t)}</span>`}).join("")}
+function wordList(){if(!usedG.length)return "";return `<details class="words" id="words"${wordsOpen?" open":""}><summary>Orðskýringar í erindinu (${usedG.length})</summary><dl>${usedG.map(k=>`<div><dt>${esc(G[k][1])}</dt><dd>${G[k][2]}</dd></div>`).join("")}</dl></details>`}
+let wordsOpen=false;
+const tip=document.createElement("div");tip.id="tip";tip.setAttribute("role","tooltip");tip.hidden=true;document.body.appendChild(tip);
+let tipFor=null;
+function showTip(el){const g=G[+el.dataset.g];tip.innerHTML=`<b>${esc(g[1])}</b>${g[2]}`;tip.hidden=false;
+  document.querySelectorAll(".gl.act").forEach(e=>e.classList.remove("act"));el.classList.add("act");tipFor=el;
+  const r=el.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+  let x=Math.max(8,Math.min(r.left+r.width/2-tw/2,vw-tw-8)),y=r.bottom+8;if(y+th>vh-70)y=r.top-th-8;
+  tip.style.left=x+"px";tip.style.top=Math.max(8,y)+"px"}
+function hideTip(){tip.hidden=true;if(tipFor)tipFor.classList.remove("act");tipFor=null}
+document.addEventListener("mouseover",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el&&el!==tipFor)showTip(el)});
+document.addEventListener("mouseout",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el&&!(e.relatedTarget&&el.contains(e.relatedTarget))&&document.activeElement!==el)hideTip()});
+document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("gl"))showTip(e.target)});
+document.addEventListener("focusout",e=>{if(e.target.classList&&e.target.classList.contains("gl"))hideTip()});
+document.addEventListener("click",e=>{const el=e.target.closest&&e.target.closest(".gl");if(el){if(tipFor===el&&e.pointerType!=="mouse")hideTip();else showTip(el)}else if(!tip.contains(e.target))hideTip()});
+window.addEventListener("scroll",hideTip,{passive:true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")hideTip()},true);
+document.addEventListener("toggle",e=>{if(e.target.id==="words")wordsOpen=e.target.open},true);
+
+const PARTS=[[1,83,"I · Geðspeki"],[84,102,"II · Mansöngur"],[103,110,"III · Skáldamjöðurinn"],[111,137,"IV · Loddfáfnismál"],[138,145,"V · Rúnatal"],[146,163,"VI · Ljóðatal"],[164,164,"VII · Ljóðalok"]];
+const REFRAIN=Object.keys(VERSES).map(Number).filter(n=>/^Ráðumk/.test(VERSES[n][0]));
+const PAIRS=[[10,11],[24,27],[36,37],[42,43],[54,56],[58,59],[76,77]];
+const ORD=["fyrsta","annað","þriðja","fjórða","fimmta","sjötta","sjöunda","áttunda","níunda","tíunda","ellefta","tólfta","þrettánda","fjórtánda","fimmtánda","sextánda","sautjánda","átjánda"];
+const N=164;
+const partOf=n=>PARTS.find(p=>n>=p[0]&&n<=p[1]);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+let cur=1, tab=0;
+try{const t=parseInt(localStorage.getItem("hvm-tab"));if(t>=0&&t<3)tab=t}catch(e){}
+
+// rail
+const rail=document.getElementById("rail");
+PARTS.forEach(p=>{
+  const d=document.createElement("div");d.className="part";d.dataset.a=p[0];
+  const tk=document.createElement("div");tk.className="ticks";
+  for(let i=p[0];i<=p[1];i++){const b=document.createElement("button");b.className="tick"+(REFRAIN.includes(i)?" ref":"");b.title=i+". "+D[i].t;b.setAttribute("aria-label",i+". erindi: "+D[i].t);b.dataset.n=i;b.onclick=()=>go(i);tk.appendChild(b)}
+  const l=document.createElement("span");l.className="pl";l.textContent=p[2];
+  d.append(tk,l);rail.appendChild(d);
+});
+
+function renderLines(lines){
+  let out="",buf=[];
+  const flush=()=>{for(let i=0;i<buf.length;i+=2){const a=buf[i],b=buf[i+1];out+=b===undefined?`<div class="ll single"><span>${gl(a)}</span></div>`:`<div class="ll"><span class="a">${gl(a)}</span><span class="b">${gl(b)}</span></div>`}buf=[]};
+  if(/^Ráðumk/.test(lines[0])){buf=lines.slice(0,4);flush();out=`<div class="refblock" title="Loddfáfnis-stef">${out}</div>`;lines=lines.slice(4)}
+  lines.forEach(l=>{if(/^Vituð ér enn/.test(l)||/^Nú mun hon sökkvask/.test(l)){flush();out+=`<div class="refr">${gl(l)}</div>`}else buf.push(l)});
+  flush();return out;
+}
+
+function renderVerse(){
+  usedG=[];hideTip();
+  const p=partOf(cur),d=D[cur],v=document.getElementById("verse");
+  const badges=[];
+  if(REFRAIN.includes(cur))badges.push("Loddfáfnis-stef");
+  const pr=PAIRS.find(p=>cur>=p[0]&&cur<=p[1]);if(pr)badges.push("Sama upphaf · "+pr[0]+".–"+pr[1]+". erindi");
+  if(cur>=146&&cur<=163)badges.push("Galdur "+(cur-145)+" af 18 · "+ORD[cur-146]+" ljóðið");
+  badges.push(VERSES[cur].length+" vísuorð");
+  v.innerHTML=`<div class="eyebrow">${p[2]} · ${p[0]}.–${p[1]}. erindi</div>
+  <div class="num">${cur}.</div><h2 class="vtitle">${d.t}</h2>
+  <div class="lines">${renderLines(VERSES[cur])}</div>
+  <div class="meta">${badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>`;
+    v.insertAdjacentHTML("beforeend",wordList());
+  v.classList.remove("fade");void v.offsetWidth;v.classList.add("fade");
+}
+
+function renderPanel(){
+  const d=D[cur],P=document.getElementById("panel");
+  document.querySelectorAll(".tab").forEach((t,i)=>{t.setAttribute("aria-selected",i===tab);t.tabIndex=i===tab?0:-1});
+  document.getElementById("c1").textContent=d.no.length;
+  document.getElementById("c2").textContent=d.c.length;
+  P.setAttribute("aria-labelledby","t"+tab);
+  if(tab===0){P.innerHTML=`<p class="lead">${d.s}</p><p class="hint">Sjá einnig: Norrænar heimildir (${d.no.length}) og Samanburð (${d.c.length}).</p>`}
+  else if(tab===1){P.innerHTML=`<ul class="items">${d.no.map(x=>`<li><span class="src">${x[0]}</span><p>${x[1]}</p></li>`).join("")}</ul>`}
+  else{P.innerHTML=`<ul class="items">${d.c.map(x=>`<li><span class="src"><span class="chip">${x[0]}</span>${x[1]}</span><p>${x[2]}</p></li>`).join("")}</ul>`}
+  P.classList.remove("fade");void P.offsetWidth;P.classList.add("fade");
+}
+
+function renderNav(){
+  document.querySelectorAll(".tick").forEach(t=>t.classList.toggle("on",+t.dataset.n===cur));
+  const p=partOf(cur);
+  document.querySelectorAll(".part").forEach(e=>e.classList.toggle("cur",+e.dataset.a===p[0]));
+  const on=document.querySelector(".tick.on");if(on&&on.scrollIntoView)on.scrollIntoView({block:"nearest",inline:"nearest"});
+  document.getElementById("count").textContent=cur+" / "+N;
+  const pv=document.getElementById("prev"),nx=document.getElementById("next");
+  pv.disabled=cur===1;nx.disabled=cur===N;
+  document.getElementById("prevT").textContent=cur>1?(cur-1)+". "+D[cur-1].t:"";
+  document.getElementById("nextT").textContent=cur<N?(cur+1)+". "+D[cur+1].t:"";
+  pv.setAttribute("aria-label",cur>1?"Fyrra erindi":"");nx.setAttribute("aria-label",cur<N?"Næsta erindi":"");
+}
+
+function go(n,fromHash){
+  n=Math.max(1,Math.min(N,n));if(n===cur&&!fromHash&&document.getElementById("verse").innerHTML)return;
+  cur=n;renderVerse();renderPanel();renderNav();
+  if(!fromHash&&location.hash!=="#v"+n){try{history.replaceState(null,"","#v"+n)}catch(e){location.hash="v"+n}}
+  if(!fromHash&&window.innerWidth<=860){const r=document.getElementById("verse").getBoundingClientRect();if(r.top<0)window.scrollTo({top:window.scrollY+r.top-12,behavior:"smooth"})}
+}
+function setTab(i){tab=i;try{localStorage.setItem("hvm-tab",i)}catch(e){}renderPanel()}
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>setTab(+t.dataset.i));
+document.querySelector(".tabs").addEventListener("keydown",e=>{if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.stopPropagation();const i=(tab+(e.key==="ArrowRight"?1:2))%3;setTab(i);document.getElementById("t"+i).focus()}});
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){go(cur+1);e.preventDefault()}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){go(cur-1);e.preventDefault()}
+  else if(e.key==="1"||e.key==="2"||e.key==="3")setTab(+e.key-1);
+});
+const ab=document.getElementById("aboutBtn"),abs=document.getElementById("about");
+ab.onclick=()=>{abs.hidden=!abs.hidden;ab.setAttribute("aria-expanded",!abs.hidden)};
+
+function fromHash(){const m=/^#v(\d+)$/.exec(location.hash);return m?+m[1]:1}
+window.addEventListener("hashchange",()=>go(fromHash(),true));
+go(fromHash(),true);
+</script>
+
+</body></html>
