@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Swing Grid — 16-Step Drum Machine</title>
+<style>
+:root{
+  --bg:#0d0e12; --panel:#16181f; --panel2:#1c1f28; --line:#2a2d39;
+  --text:#ebe8e1; --dim:#7b7f8f;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:radial-gradient(1200px 600px at 15% -10%,#22253a 0%,transparent 60%),
+             radial-gradient(900px 500px at 110% 110%,#2a1d24 0%,transparent 55%),var(--bg);
+  color:var(--text);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
+  padding:40px 16px;
+}
+.machine{
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid var(--line); border-radius:20px; padding:24px 26px 18px;
+  box-shadow:0 40px 90px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+  max-width:100%;
+}
+header{display:flex; align-items:center; gap:22px; flex-wrap:wrap; margin-bottom:22px}
+.brand{display:flex; flex-direction:column; margin-right:auto}
+.brand h1{margin:0; font-size:17px; letter-spacing:.32em; text-transform:uppercase}
+.brand small{color:var(--dim); letter-spacing:.18em; font-size:10px; text-transform:uppercase; margin-top:4px}
+
+.play{
+  width:58px; height:58px; border-radius:50%; border:1px solid #3a3e4d; cursor:pointer;
+  background:radial-gradient(circle at 35% 30%,#3a3f50,#1d2029); color:var(--text);
+  display:grid; place-items:center; box-shadow:0 6px 18px rgba(0,0,0,.4);
+  transition:transform .08s;
+}
+.play:active{transform:scale(.95)}
+.play svg{width:20px; height:20px; fill:currentColor}
+.play.on{background:radial-gradient(circle at 35% 30%,#ff7a6e,#c33a30); border-color:#ff8a7e; box-shadow:0 0 24px rgba(255,90,78,.45)}
+
+.knob{display:flex; flex-direction:column; gap:6px; min-width:170px}
+.knob label{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); display:flex; justify-content:space-between}
+.knob label b{color:var(--text); font-weight:600; letter-spacing:.05em; font-size:13px}
+.knob input[type=range]{width:100%}
+
+.btns{display:flex; gap:8px; flex-wrap:wrap}
+.btn{
+  background:#20232d; color:var(--text); border:1px solid var(--line); border-radius:8px;
+  font:inherit; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  padding:8px 11px; cursor:pointer;
+}
+.btn:hover{border-color:#4a4f60; background:#262a36}
+
+/* tempo / master volume */
+input[type=range].big{-webkit-appearance:none; appearance:none; height:22px; background:transparent}
+input[type=range].big::-webkit-slider-runnable-track{height:6px; border-radius:3px; background:#2a2d39}
+input[type=range].big::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#ebe8e1; margin-top:-6px; box-shadow:0 2px 6px rgba(0,0,0,.5)}
+input[type=range].big::-moz-range-track{height:6px; border-radius:3px; background:#2a2d39}
+input[type=range].big::-moz-range-thumb{width:18px; height:18px; border:0; border-radius:50%; background:#ebe8e1}
+
+.scroller{overflow-x:auto; padding-bottom:4px}
+.grid{display:flex; flex-direction:column; gap:14px; min-width:max-content}
+.row{display:flex; align-items:flex-start; gap:6px}
+
+/* left-hand track strip: name/mute on top, volume slider underneath */
+.track{width:132px; flex:none; display:flex; flex-direction:column; margin-right:4px}
+.label{
+  width:100%; height:40px; display:flex; align-items:center; gap:9px; white-space:nowrap;
+  background:#1d2029; border:1px solid var(--line); border-radius:9px; color:var(--text);
+  font:inherit; font-size:12px; letter-spacing:.12em; text-transform:uppercase; padding:0 10px; cursor:pointer;
+}
+.label .name{flex:1; text-align:left}
+.label .m{font-size:9px; color:var(--dim); border:1px solid var(--line); border-radius:4px; padding:1px 4px}
+.led{width:9px; height:9px; flex:none; border-radius:50%; background:var(--c); opacity:.25; transition:opacity .25s, box-shadow .25s}
+.led.hit{opacity:1; box-shadow:0 0 10px var(--c); transition:none}
+.row.muted .label{opacity:.45}
+.row.muted .label .m{background:var(--c); color:#111; border-color:var(--c)}
+.row.muted .pad.on{opacity:.35}
+.tv{display:flex; align-items:center; gap:6px; margin-top:6px; height:18px}
+.tv span{font-size:9px; color:var(--dim); width:24px; text-align:right; letter-spacing:.04em}
+input.tvol{-webkit-appearance:none; appearance:none; flex:1; min-width:0; width:0; height:18px; margin:0; background:transparent; cursor:pointer}
+input.tvol::-webkit-slider-runnable-track{height:4px; border-radius:2px; background:linear-gradient(90deg,var(--c) var(--p,80%),#2a2d39 var(--p,80%))}
+input.tvol::-webkit-slider-thumb{-webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:#ebe8e1; margin-top:-4px}
+input.tvol::-moz-range-track{height:4px; border-radius:2px; background:linear-gradient(90deg,var(--c) var(--p,80%),#2a2d39 var(--p,80%))}
+input.tvol::-moz-range-thumb{width:12px; height:12px; border:0; border-radius:50%; background:#ebe8e1}
+
+.head .track{height:18px; justify-content:center; color:var(--dim); font-size:9px; letter-spacing:.2em; text-transform:uppercase; padding-left:11px}
+.cell{width:42px; flex:none; display:flex; flex-direction:column; align-items:center}
+.cell.gs{margin-left:10px}
+.num{height:18px; font-size:10px; color:#555a6a; display:flex; align-items:center; justify-content:center; border-radius:4px; transition:color .1s, background .1s}
+.num.beat{color:#8a8fa0}
+.num.now{color:#111; background:#ebe8e1}
+
+.pad{
+  position:relative; width:42px; height:40px; border-radius:8px; cursor:pointer; padding:0;
+  border:1px solid #2c3040; background:linear-gradient(180deg,#262a36,#1e212b);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.35); overflow:hidden; touch-action:none;
+  transition:background .12s, box-shadow .12s, transform .06s;
+}
+.cell.beat .pad{background:linear-gradient(180deg,#2c303e,#232632)}
+/* same specificity as the beat rule above, so active beat pads light up too */
+.cell .pad.on{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 100%,#fff 12%),var(--c));
+  border-color:color-mix(in srgb,var(--c) 70%,#fff 30%);
+  box-shadow:0 0 14px color-mix(in srgb,var(--c) 45%,transparent), inset 0 -3px 0 rgba(0,0,0,.25);
+}
+.cell.now .pad{outline:2px solid rgba(235,232,225,.55); outline-offset:1px}
+.pad.hit{animation:hit .22s ease-out}
+@keyframes hit{0%{transform:scale(.88); filter:brightness(1.7)}100%{transform:scale(1); filter:brightness(1)}}
+
+/* ghost marker: where the hit really lands inside the step */
+.pad .ghost{
+  position:absolute; top:5px; bottom:5px; width:2px; border-radius:1px;
+  left:calc(50% + var(--off,0) * 50% - 1px); background:transparent; pointer-events:none; z-index:2;
+}
+.pad.shifted .ghost{background:rgba(255,255,255,.35)}
+.pad.on.shifted .ghost{background:rgba(10,10,14,.65)}
+
+/* velocity: horizontal line, higher = louder; darker shade above the line */
+.pad .lvl{
+  position:absolute; left:0; right:0; top:0; pointer-events:none; z-index:1;
+  height:calc((1 - var(--vel,.8)) * 100%);
+  border-bottom:2px solid transparent;
+}
+.pad.on .lvl{background:rgba(10,10,14,.28); border-bottom-color:rgba(255,255,255,.85)}
+.pad:not(.on) .lvl{border-bottom-color:rgba(255,255,255,.07)}
+body.velmode .pad{cursor:ns-resize}
+
+/* timing (nudge) slider under each pad */
+input.nudge{-webkit-appearance:none; appearance:none; width:42px; height:18px; margin:6px 0 0; background:transparent; cursor:ew-resize}
+input.nudge::-webkit-slider-runnable-track{
+  height:4px; border-radius:2px;
+  background:linear-gradient(90deg,transparent calc(50% - 1px),#6a6f80 calc(50% - 1px),#6a6f80 calc(50% + 1px),transparent calc(50% + 1px)),#2a2d39;
+}
+input.nudge::-webkit-slider-thumb{-webkit-appearance:none; width:9px; height:14px; border-radius:3px; background:#8d92a3; margin-top:-5px; border:0}
+input.nudge.moved::-webkit-slider-thumb{background:var(--c); box-shadow:0 0 8px var(--c)}
+input.nudge::-moz-range-track{
+  height:4px; border-radius:2px;
+  background:linear-gradient(90deg,transparent calc(50% - 1px),#6a6f80 calc(50% - 1px),#6a6f80 calc(50% + 1px),transparent calc(50% + 1px)),#2a2d39;
+}
+input.nudge::-moz-range-thumb{width:9px; height:14px; border-radius:3px; background:#8d92a3; border:0}
+input.nudge.moved::-moz-range-thumb{background:var(--c); box-shadow:0 0 8px var(--c)}
+
+footer{margin-top:18px; border-top:1px solid var(--line); padding-top:12px; display:flex; flex-direction:column; gap:6px}
+#status{font-size:12px; color:var(--text); min-height:16px}
+.hint{font-size:10.5px; color:var(--dim); line-height:1.7}
+kbd{border:1px solid var(--line); border-radius:4px; padding:0 4px; font:inherit}
+</style>
+</head>
+<body>
+<div class="machine">
+  <header>
+    <div class="brand">
+      <h1>Swing&nbsp;Grid</h1>
+      <small>16-step · per-hit timing &amp; level</small>
+    </div>
+    <button class="play" id="play" title="Play / Stop (Space)">
+      <svg id="icon" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>
+    </button>
+    <div class="knob">
+      <label>Tempo <b id="bpmOut">110 BPM</b></label>
+      <input class="big" id="bpm" type="range" min="50" max="200" value="110">
+    </div>
+    <div class="knob">
+      <label>Master <b id="volOut">80%</b></label>
+      <input class="big" id="vol" type="range" min="0" max="100" value="80">
+    </div>
+    <div class="btns">
+      <button class="btn" id="humanize" title="Small random nudges on active hits">Humanize</button>
+      <button class="btn" id="resetTiming" title="Center every timing slider">Reset timing</button>
+      <button class="btn" id="resetLevels" title="Set every hit back to the default level">Reset levels</button>
+      <button class="btn" id="clear">Clear</button>
+    </div>
+  </header>
+
+  <div class="scroller"><div class="grid" id="grid"></div></div>
+
+  <footer>
+    <div id="status">Move a slider under any pad to push that hit early or late.</div>
+    <div class="hint" id="hint"></div>
+  </footer>
+</div>
+
+<script>
+const TRACKS = [
+  { id:'kick',  name:'Kick',   color:'#ff5a4e' },
+  { id:'snare', name:'Snare',  color:'#ffb23e' },
+  { id:'hat',   name:'Hi-hat', color:'#4fd1c5' },
+  { id:'click', name:'Click',  color:'#a78bfa' },
+];
+const N = 16, DEF_VEL = 0.8;
+const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+const MOD = isMac ? '⌘' : 'Ctrl';
+const pattern = TRACKS.map(() => Array(N).fill(false));
+const offsets = TRACKS.map(() => Array(N).fill(0));        // -1 … +1, fraction of one step
+const vels    = TRACKS.map(() => Array(N).fill(DEF_VEL));  // 0 … 1, per-hit level
+const muted   = TRACKS.map(() => false);
+const tVol    = TRACKS.map(() => 80);                      // per-track volume, 0 … 100
+const START = { kick:[0,6,8,11], snare:[4,12], hat:[0,2,4,6,8,10,12,14], click:[] };
+
+const $ = s => document.querySelector(s);
+const grid = $('#grid'), statusEl = $('#status');
+const pads = [], sliders = [], cols = Array.from({length:N}, () => []), nums = [], leds = [];
+let bpm = 110;
+const stepDur = () => 60 / bpm / 4;
+
+$('#hint').innerHTML =
+  `Click pads to toggle (drag to paint) · <kbd>${MOD}</kbd>+drag over pads to set each hit's level (line height = volume) · ` +
+  `Slider under a pad: left = toward previous step, right = toward next step · Right-click a pad (or double-click its slider) to center its timing · ` +
+  `Click a track name to mute · <kbd>Space</kbd> play/stop`;
+
+/* ---------- build the grid ---------- */
+const head = document.createElement('div');
+head.className = 'row head';
+head.innerHTML = '<div class="track">step</div>';
+for (let i = 0; i < N; i++) {
+  const n = document.createElement('div');
+  n.className = 'cell num' + (i % 4 === 0 ? ' beat' : '') + (i % 4 === 0 && i ? ' gs' : '');
+  n.textContent = i + 1;
+  head.appendChild(n); nums.push(n);
+}
+grid.appendChild(head);
+
+let paint = null, velDrag = false;
+
+TRACKS.forEach((t, r) => {
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.style.setProperty('--c', t.color);
+
+  const strip = document.createElement('div');
+  strip.className = 'track';
+  strip.innerHTML =
+    `<button class="label" title="Mute / unmute"><span class="led"></span><span class="name">${t.name}</span><span class="m">M</span></button>` +
+    `<div class="tv"><input class="tvol" type="range" min="0" max="100" value="${tVol[r]}" title="${t.name} volume (double-click for default)"><span>${tVol[r]}</span></div>`;
+  strip.querySelector('.label').onclick = () => { muted[r] = !muted[r]; row.classList.toggle('muted', muted[r]); };
+  const tv = strip.querySelector('.tvol'), tvOut = strip.querySelector('.tv span');
+  const applyTVol = v => {
+    tVol[r] = v; tv.value = v; tvOut.textContent = v; tv.style.setProperty('--p', v + '%');
+    if (trackBus[r]) trackBus[r].gain.setTargetAtTime(v / 80, ctx.currentTime, 0.02);
+  };
+  tv.addEventListener('input', () => applyTVol(+tv.value));
+  tv.addEventListener('dblclick', () => applyTVol(80));
+  row.appendChild(strip);
+  leds[r] = strip.querySelector('.led');
+
+  pads[r] = []; sliders[r] = [];
+  for (let i = 0; i < N; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell' + (i % 4 === 0 ? ' beat' : '') + (i % 4 === 0 && i ? ' gs' : '');
+
+    const pad = document.createElement('button');
+    pad.className = 'pad';
+    pad.dataset.r = r; pad.dataset.i = i;
+    pad.innerHTML = '<i class="lvl"></i><i class="ghost"></i>';
+    pad.setAttribute('aria-label', `${t.name} step ${i + 1}`);
+
+    pad.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;                       // right-click is handled by contextmenu
+      e.preventDefault();
+      if (isMod(e)) {                                   // ⌘/Ctrl: set level instead of toggling
+        velDrag = true;
+        velFromPointer(e);
+        return;
+      }
+      paint = !pattern[r][i];
+      setStep(r, i, paint);
+    });
+    pad.addEventListener('pointerenter', e => { if (!velDrag && paint !== null && e.buttons) setStep(r, i, paint); });
+    pad.addEventListener('click', e => { if (e.detail === 0) setStep(r, i, !pattern[r][i]); }); // keyboard
+    pad.addEventListener('contextmenu', e => { e.preventDefault(); setOffset(r, i, 0, true); });
+
+    const sl = document.createElement('input');
+    sl.type = 'range'; sl.className = 'nudge';
+    sl.min = -100; sl.max = 100; sl.step = 1; sl.value = 0;
+    sl.title = 'Timing: left = earlier (toward previous step), right = later (toward next step). Double-click to center.';
+    sl.addEventListener('input', () => setOffset(r, i, sl.value / 100, true));
+    sl.addEventListener('dblclick', () => setOffset(r, i, 0, true));
+    sl.addEventListener('focus', () => readout(r, i));
+
+    cell.append(pad, sl);
+    row.appendChild(cell);
+    pads[r][i] = pad; sliders[r][i] = sl; cols[i].push(cell);
+    setVel(r, i, DEF_VEL);
+  }
+  grid.appendChild(row);
+  tv.style.setProperty('--p', tVol[r] + '%');
+  START[t.id].forEach(i => setStep(r, i, true));
+});
+
+/* ---------- velocity painting with ⌘ / Ctrl ---------- */
+function isMod(e) { return isMac ? e.metaKey : e.ctrlKey; }
+function velFromPointer(e) {
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const pad = el && el.closest('.pad');
+  if (!pad) return;
+  const r = +pad.dataset.r, i = +pad.dataset.i, rect = pad.getBoundingClientRect();
+  const v = Math.max(0.02, Math.min(1, 1 - (e.clientY - rect.top) / rect.height));
+  setVel(r, i, v);
+  statusEl.textContent = `${TRACKS[r].name} · step ${i + 1} · level ${Math.round(v * 100)}%${pattern[r][i] ? '' : ' (step is off)'}`;
+}
+window.addEventListener('pointermove', e => { if (velDrag) velFromPointer(e); });
+window.addEventListener('pointerup', () => { paint = null; velDrag = false; });
+const setModClass = e => document.body.classList.toggle('velmode', isMod(e));
+window.addEventListener('keydown', setModClass);
+window.addEventListener('keyup', setModClass);
+window.addEventListener('blur', () => document.body.classList.remove('velmode'));
+
+function setStep(r, i, on) {
+  pattern[r][i] = on;
+  pads[r][i].classList.toggle('on', on);
+}
+function setVel(r, i, v) {
+  vels[r][i] = v;
+  pads[r][i].style.setProperty('--vel', v);
+}
+function setOffset(r, i, v, show) {
+  offsets[r][i] = v;
+  sliders[r][i].value = Math.round(v * 100);
+  pads[r][i].style.setProperty('--off', v);
+  const moved = Math.abs(v) > 0.001;
+  pads[r][i].classList.toggle('shifted', moved);
+  sliders[r][i].classList.toggle('moved', moved);
+  if (show) readout(r, i);
+}
+function readout(r, i) {
+  const v = offsets[r][i], pct = Math.round(v * 100), ms = v * stepDur() * 1000;
+  const feel = pct === 0 ? 'on the grid' : pct < 0 ? 'pushed early' : 'laid back';
+  statusEl.textContent = `${TRACKS[r].name} · step ${i + 1} · ${pct > 0 ? '+' : ''}${pct}% of a step (${ms > 0 ? '+' : ''}${ms.toFixed(1)} ms) — ${feel}`;
+}
+
+/* ---------- audio ---------- */
+let ctx, master, noiseBuf;
+const trackBus = [];
+function initAudio() {
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -10; comp.ratio.value = 4;
+  master = ctx.createGain();
+  master.gain.value = $('#vol').value / 100;
+  master.connect(comp).connect(ctx.destination);
+  TRACKS.forEach((_, r) => {
+    const g = ctx.createGain();
+    g.gain.value = tVol[r] / 80;            // 80 = unity
+    g.connect(master);
+    trackBus[r] = g;
+  });
+  noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+  const d = noiseBuf.getChannelData(0);
+  for (let k = 0; k < d.length; k++) d[k] = Math.random() * 2 - 1;
+}
+function env(t, peak, decay, attack = 0.002) {
+  const g = ctx.createGain();
+  peak = Math.max(peak, 0.0002);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(peak, t + attack);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+  return g;
+}
+function noise(t, dur) {
+  const s = ctx.createBufferSource();
+  s.buffer = noiseBuf;
+  s.start(t, Math.random() * 0.5);
+  s.stop(t + dur);
+  return s;
+}
+/* v = per-hit level (1.0 at the default 0.8), out = the track's bus */
+const VOICES = {
+  kick(t, i, v, out) {
+    const o = ctx.createOscillator();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(165, t);
+    o.frequency.exponentialRampToValueAtTime(44, t + 0.13);
+    o.connect(env(t, 1 * v, 0.5)).connect(out);
+    o.start(t); o.stop(t + 0.55);
+    const c = noise(t, 0.02), hp = ctx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 2500;
+    c.connect(hp).connect(env(t, 0.25 * v, 0.015, 0.001)).connect(out);
+  },
+  snare(t, i, v, out) {
+    const n = noise(t, 0.25), hp = ctx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 1300;
+    n.connect(hp).connect(env(t, 0.7 * v, 0.2)).connect(out);
+    const o = ctx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(220, t);
+    o.frequency.exponentialRampToValueAtTime(170, t + 0.08);
+    o.connect(env(t, 0.6 * v, 0.11)).connect(out);
+    o.start(t); o.stop(t + 0.15);
+  },
+  hat(t, i, v, out) {
+    const n = noise(t, 0.08), hp = ctx.createBiquadFilter(), bp = ctx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 7000;
+    bp.type = 'bandpass'; bp.frequency.value = 10500; bp.Q.value = 0.8;
+    n.connect(hp).connect(bp).connect(env(t, 0.45 * v, 0.055, 0.001)).connect(out);
+  },
+  click(t, i, v, out) {
+    const o = ctx.createOscillator();
+    o.type = 'square';
+    o.frequency.value = i === 0 ? 2400 : 1600;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = o.frequency.value; bp.Q.value = 3;
+    o.connect(bp).connect(env(t, 0.35 * v, 0.03, 0.001)).connect(out);
+    o.start(t); o.stop(t + 0.05);
+  },
+};
+
+/* ---------- scheduler ----------
+   Hits can land up to one full step BEFORE their nominal time,
+   so each step is scheduled one step-length ahead of where it sits on the grid. */
+const LOOKAHEAD = 0.12, TICK = 25;
+let playing = false, timer = null, current = 0, nextTime = 0;
+let stepQ = [], hitQ = [];
+
+function scheduler() {
+  while (true) {
+    const d = stepDur();
+    if (nextTime - d >= ctx.currentTime + LOOKAHEAD) break;
+    scheduleStep(current, nextTime, d);
+    nextTime += d;
+    current = (current + 1) % N;
+  }
+}
+function scheduleStep(i, t, d) {
+  stepQ.push({ step: i, time: t });
+  TRACKS.forEach((tr, r) => {
+    if (!pattern[r][i] || muted[r]) return;
+    const when = Math.max(ctx.currentTime, t + offsets[r][i] * d);
+    VOICES[tr.id](when, i, vels[r][i] / DEF_VEL, trackBus[r]);
+    hitQ.push({ r, i, time: when });
+  });
+}
+
+function start() {
+  if (!ctx) initAudio();
+  ctx.resume();
+  playing = true;
+  current = 0;
+  nextTime = ctx.currentTime + stepDur() + 0.06;
+  scheduler();
+  timer = setInterval(scheduler, TICK);
+  $('#play').classList.add('on');
+  $('#icon').innerHTML = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+}
+function stop() {
+  playing = false;
+  clearInterval(timer);
+  stepQ = []; hitQ = [];
+  if (lastStep >= 0) { cols[lastStep].forEach(c => c.classList.remove('now')); nums[lastStep].classList.remove('now'); }
+  lastStep = -1;
+  $('#play').classList.remove('on');
+  $('#icon').innerHTML = '<path d="M7 4l13 8-13 8z"/>';
+}
+const toggle = () => playing ? stop() : start();
+
+/* ---------- visuals ---------- */
+let lastStep = -1;
+function flash(h) {
+  const p = pads[h.r][h.i], l = leds[h.r];
+  p.classList.remove('hit'); void p.offsetWidth; p.classList.add('hit');
+  l.classList.add('hit'); setTimeout(() => l.classList.remove('hit'), 60);
+}
+function draw() {
+  if (ctx && playing) {
+    const now = ctx.currentTime;
+    while (stepQ.length && stepQ[0].time <= now) {
+      const s = stepQ.shift().step;
+      if (lastStep >= 0) { cols[lastStep].forEach(c => c.classList.remove('now')); nums[lastStep].classList.remove('now'); }
+      cols[s].forEach(c => c.classList.add('now')); nums[s].classList.add('now');
+      lastStep = s;
+    }
+    for (let k = hitQ.length - 1; k >= 0; k--) {
+      if (hitQ[k].time <= now) { flash(hitQ[k]); hitQ.splice(k, 1); }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+/* ---------- controls ---------- */
+$('#play').onclick = toggle;
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+});
+$('#bpm').oninput = e => { bpm = +e.target.value; $('#bpmOut').textContent = bpm + ' BPM'; };
+$('#vol').oninput = e => {
+  $('#volOut').textContent = e.target.value + '%';
+  if (master) master.gain.setTargetAtTime(e.target.value / 100, ctx.currentTime, 0.02);
+};
+$('#resetTiming').onclick = () => {
+  TRACKS.forEach((_, r) => { for (let i = 0; i < N; i++) setOffset(r, i, 0); });
+  statusEl.textContent = 'All hits back on the grid.';
+};
+$('#resetLevels').onclick = () => {
+  TRACKS.forEach((_, r) => { for (let i = 0; i < N; i++) setVel(r, i, DEF_VEL); });
+  statusEl.textContent = 'All hit levels back to default.';
+};
+$('#humanize').onclick = () => {
+  TRACKS.forEach((_, r) => { for (let i = 0; i < N; i++) if (pattern[r][i]) {
+    setOffset(r, i, Math.max(-1, Math.min(1, offsets[r][i] + (Math.random() * 2 - 1) * 0.08)));
+  }});
+  statusEl.textContent = 'Added small random nudges to active hits.';
+};
+$('#clear').onclick = () => {
+  TRACKS.forEach((_, r) => { for (let i = 0; i < N; i++) setStep(r, i, false); });
+  statusEl.textContent = 'Pattern cleared (timing and levels kept).';
+};
+</script>
+</body>
